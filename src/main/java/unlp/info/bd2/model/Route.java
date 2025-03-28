@@ -3,23 +3,63 @@ package unlp.info.bd2.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "routes")
 public class Route {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private float price;
 
+    @Column(name = "total_km", nullable = false)
     private float totalKm;
 
+    @Column(name = "max_number_users", nullable = false)
     private int maxNumberUsers;
 
+    @OneToMany
     private List<Stop> stops;
 
+    @ManyToMany(mappedBy = "routes")
     private List<DriverUser> driverList;
 
+    @ManyToMany(mappedBy = "routes")
     private List<TourGuideUser> tourGuideList;
+
+    
+
+    public Route(String name, float price, float totalKm, int maxNumberUsers, List<Stop> stops) {
+        this.name = name;
+        this.price = price;
+        this.totalKm = totalKm;
+        this.maxNumberUsers = maxNumberUsers;
+        this.stops = stops;
+        this.driverList = new ArrayList<DriverUser>();
+        this.tourGuideList = new ArrayList<TourGuideUser>();
+    }
+
+    public void addDriver(DriverUser driverUser){
+        this.driverList.add(driverUser);
+    }
+
+    public void addTourGuide(TourGuideUser tourGuide){
+        this.tourGuideList.add(tourGuide);
+    }
 
     public Long getId() {
         return id;

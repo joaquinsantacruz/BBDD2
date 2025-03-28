@@ -1,27 +1,73 @@
 package unlp.info.bd2.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "purchases")
 public class Purchase {
 
-    Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column
     private String code;
 
+    @Column(name = "total_price")
     private float totalPrice;
 
+    @Column
     private Date date;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "route_id")
     private Route route;
 
+    @OneToOne
+    @JoinColumn(name = "review_id")
     private Review review;
 
+    @OneToMany(mappedBy = "purchase")
     private List<ItemService> itemServiceList;
 
+    
 
+    public Purchase(String code, User user, Route route) {
+        this.code = code;
+        this.user = user;
+        this.route = route;
+        this.itemServiceList = new ArrayList<ItemService>();
+    }
+
+    public Purchase(String code, User user, Route route, Date date){
+        this.code = code;
+        this.user = user;
+        this.route = route;
+        this.date = date;
+        this.itemServiceList = new ArrayList<ItemService>();
+    }
+
+    public void addItem(ItemService item, float price){
+        this.itemServiceList.add(item);
+        this.totalPrice += price;
+    }
 
     public Long getId() {
         return id;

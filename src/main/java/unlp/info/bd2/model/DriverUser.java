@@ -3,11 +3,25 @@ package unlp.info.bd2.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+
+@Entity
 public class DriverUser extends User {
 
+    @Column(nullable = false)
     private String expedient;
 
-    private List<Route> routes;
+    @ManyToMany
+    @JoinTable(
+        name = "drivers_routes", 
+        joinColumns = @JoinColumn(name = "driver_user_id"),
+        inverseJoinColumns = @JoinColumn(name = "route_id")
+    )
+    private List<Route> routes; 
 
     public String getExpedient() {
         return expedient;
@@ -21,7 +35,7 @@ public class DriverUser extends User {
         return routes;
     }
 
-    public void setRouts(List<Route> routs) {
+    public void setRouts(List<Route> routs) { //TODO: ESTA MAL ESCRITO EL NOMBRE??
         this.routes = routs;
     }
 }

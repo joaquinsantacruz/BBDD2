@@ -1,14 +1,25 @@
 package unlp.info.bd2.model;
 
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+
+@Entity
 public class TourGuideUser extends User {
 
+    @Column
     private String education;
 
+    @ManyToMany
+    @JoinTable(
+        name = "tourguide_routes",
+        joinColumns = @JoinColumn(name = "tour_guide_id"),
+        inverseJoinColumns = @JoinColumn(name = "route_id")
+    )
     private List<Route> routes;
 
 
