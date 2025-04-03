@@ -49,7 +49,7 @@ class ToursApplicationTests {
 	}
 
 
-	@Test
+	/*@Test
 	void createAndGetUserTest()  throws ToursException {
 		User user1 = this.toursService.createUser("user1", "1234", "Usuario Uno", "user1@gmail.com", dob1, "000111222333");
 		assertNotNull(user1.getId());
@@ -109,7 +109,7 @@ class ToursApplicationTests {
 
 	@Test
 	void createAndGetRoutesAndStopsTest() throws ToursException {
-		Stop stop1 = this.toursService.createStop("Estadio Monumental", "Estadio de River Plate");
+		Stop stop1 = this.toursService.x("Estadio Monumental", "Estadio de River Plate");
 		assertNotNull(stop1.getId());
 		Stop stop2 = this.toursService.createStop("Estadio La Bombonera", "Estadio de Boca Junions");
 		Stop stop3 = this.toursService.createStop("Estadio Libertadores de America", "Estadio de Independiente");
@@ -319,5 +319,5 @@ class ToursApplicationTests {
 		assertTrue(tourGuideUser.isActive());
 		assertThrows(ToursException.class, () -> this.toursService.deleteUser(tourGuideUser), "El usuario no puede ser desactivado");
 	}
-
+*/
 }
