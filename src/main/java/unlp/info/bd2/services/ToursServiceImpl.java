@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import unlp.info.bd2.model.DriverUser;
 import unlp.info.bd2.model.ItemService;
 import unlp.info.bd2.model.Purchase;
@@ -79,6 +81,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops)
             throws ToursException {
         Route route = new Route(name, price, totalKm, maxNumberOfUsers, stops);

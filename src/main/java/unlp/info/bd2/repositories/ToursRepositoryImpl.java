@@ -1,57 +1,33 @@
 package unlp.info.bd2.repositories;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import unlp.info.bd2.model.*;
 
 public class ToursRepositoryImpl implements ToursRepository{
 
-    
-    
-        SessionFactory factory;
-    
-        public void saveItem(ItemService item){
-            Transaction tx = null;
-            try(Session session = factory.openSession()){
-                tx = session.beginTransaction();
-                session.persist(item);
-                tx.commit();
-            }
-            catch (Exception e){
-                if(tx != null){
-                    tx.rollback();
-                }
-            }
-        }
-    
-        public void savePurchase(Purchase purchase){
-            Transaction tx = null;
-            try(Session session = factory.openSession()){
-                tx = session.beginTransaction();
-                session.persist(purchase);
-                tx.commit();
-            }
-            catch (Exception e){
-                if(tx != null){
-                    tx.rollback();
-                }
-            }
-        }
-    
-        public void saveRoute(Route route){
-            Transaction tx = null;
-            try(Session session = factory.openSession()){
-                tx = session.beginTransaction();
-                session.persist(route);
-                tx.commit();
-            }
-            catch (Exception e){
-                if(tx != null){
-                    tx.rollback();
-                }
-            }
-        }
-    
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Override
+    public void saveItem(ItemService item) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void savePurchase(Purchase purchase) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void saveRoute(Route route) {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.persist(route);
+
+    }
+
 }
