@@ -3,6 +3,7 @@ package unlp.info.bd2.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ public class Route {
     @Column(name = "max_number_users", nullable = false)
     private int maxNumberUsers;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Stop> stops;
 
     @ManyToMany(mappedBy = "routes")
