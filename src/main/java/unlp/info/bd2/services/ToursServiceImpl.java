@@ -29,10 +29,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public ItemService addItemToPurchase(Service service, int quantity, Purchase purchase) throws ToursException {
-        ItemService item = new ItemService(quantity, purchase, service);
-        purchase.addItem(item, 0.5f);
-        repository.saveItem(item);
-        return item;
+        return null;
     }
 
     @Override
@@ -50,13 +47,11 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
-        // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
-        // TODO Auto-generated method stub
         
     }
 
@@ -90,9 +85,11 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public Stop createStop(String name, String description) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        Stop stop = new Stop(name, description);
+        this.repository.saveStop(stop);
+        return stop;
     }
 
     @Override
@@ -141,8 +138,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Long getMaxStopOfRoutes() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getMaxStopOfRoutes();
     }
 
     @Override
@@ -159,26 +155,22 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Optional<Route> getRouteById(Long id) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.repository.getRouteById(id);
     }
 
     @Override
     public List<Route> getRoutesBelowPrice(float price) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getRoutesBelowPrice(price);
     }
 
     @Override
     public List<Route> getRoutesWithStop(Stop stop) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getRoutesWithStop(stop);
     }
 
     @Override
     public List<Route> getRoutsNotSell() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getRoutesNotSell();
     }
 
     @Override
@@ -195,8 +187,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<Stop> getStopByNameStart(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getStopByNameStart(name);
     }
 
     @Override
@@ -219,8 +210,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<Route> getTop3RoutesWithMaxRating() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getTop3RoutesWithMaxRating();
     }
 
     @Override
