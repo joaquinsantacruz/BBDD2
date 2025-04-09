@@ -61,10 +61,10 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
-    public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate,
-            String phoneNumber, String expedient) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+    public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) throws ToursException {
+        DriverUser driverUser = new DriverUser(username, password, fullName, email, birthdate, phoneNumber, expedient);
+        repository.saveDriverUser(driverUser);
+        return driverUser;
     }
 
     @Override
@@ -82,8 +82,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     @Transactional
-    public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops)
-            throws ToursException {
+    public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops) throws ToursException {
         Route route = new Route(name, price, totalKm, maxNumberOfUsers, stops);
         repository.saveRoute(route);
         return route;
@@ -91,28 +90,30 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Stop createStop(String name, String description) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        Stop stop = new Stop(name, description);
+        repository.saveStop(stop);
+        return stop;
     }
 
     @Override
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        Supplier supplier = new Supplier(businessName, authorizationNumber);
+        repository.saveSupplier(supplier);
+        return supplier;
     }
 
     @Override
-    public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email,
-            Date birthdate, String phoneNumber, String education) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+    public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) throws ToursException {
+        TourGuideUser tourGuideUser = new TourGuideUser(username, password, fullName, email, birthdate, phoneNumber, education);
+        repository.saveTourGuideUser(tourGuideUser);
+        return tourGuideUser;
     }
 
     @Override
-    public User createUser(String username, String password, String fullName, String email, Date birthdate,
-            String phoneNumber) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+    public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
+        User user = new User(username, password, fullName, email, birthdate, phoneNumber);
+        repository.saveUser(user);
+        return user;
     }
 
     @Override

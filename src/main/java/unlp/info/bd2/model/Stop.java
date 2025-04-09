@@ -21,6 +21,10 @@ public class Stop {
     @Column(nullable = false)
     private String description;
 
+    public Stop(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
     public Long getId() {
         return id;

@@ -1,5 +1,6 @@
 package unlp.info.bd2.model;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -26,6 +27,11 @@ public class Supplier {
 
     @OneToMany(mappedBy = "supplier")
     private List<Service> services;
+
+    public Supplier(String businessName, String authorizationNumber) {
+        this.businessName = businessName;
+        this.authorizationNumber = authorizationNumber;
+    }
 
     public Long getId() {
         return id;
