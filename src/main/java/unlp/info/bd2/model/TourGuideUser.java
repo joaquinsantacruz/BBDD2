@@ -1,5 +1,6 @@
 package unlp.info.bd2.model;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -24,6 +25,11 @@ public class TourGuideUser extends User {
     )
     private List<Route> routes;
 
+
+    public TourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) {
+        super(username, password, fullName, email, birthdate, phoneNumber);
+        this.education = education;
+    }
 
     public String getEducation() {
         return education;

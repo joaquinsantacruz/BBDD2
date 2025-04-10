@@ -1,7 +1,10 @@
 package unlp.info.bd2.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -24,6 +27,11 @@ public class DriverUser extends User {
         inverseJoinColumns = @JoinColumn(name = "route_id")
     )
     private List<Route> routes; 
+
+    public DriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) {
+        super(username, password, fullName, email, birthdate, phoneNumber);
+        this.expedient = expedient;
+    }
 
     public String getExpedient() {
         return expedient;

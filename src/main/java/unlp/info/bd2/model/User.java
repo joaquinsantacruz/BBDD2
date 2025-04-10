@@ -46,6 +46,15 @@ public class User {
     private List<Purchase> purchaseList;
 
 
+    public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) {
+        this.username = username;
+        this.password = password;
+        this.name = fullName;
+        this.email = email;
+        this.birthdate = birthdate;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Long getId() {
         return id;
     }
