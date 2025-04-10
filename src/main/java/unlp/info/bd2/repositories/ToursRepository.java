@@ -1,5 +1,8 @@
 package unlp.info.bd2.repositories;
 
+import java.util.List;
+import java.util.Optional;
+
 import unlp.info.bd2.model.*;
 
 public interface ToursRepository {
@@ -12,5 +15,8 @@ public interface ToursRepository {
     void saveSupplier(Supplier supplier);
     void saveStop(Stop stop);
     void saveUser(User user);
-
+    
+    Optional<Supplier> getSupplierById(Long id);
+    Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber);
+    List<Supplier> getTopNSuppliersInPurchases(int n);
 }

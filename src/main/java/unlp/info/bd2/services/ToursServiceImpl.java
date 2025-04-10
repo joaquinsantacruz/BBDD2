@@ -208,8 +208,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Optional<Supplier> getSupplierById(Long id) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.repository.getSupplierById(id);
     }
 
     @Override
