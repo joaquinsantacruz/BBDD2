@@ -63,4 +63,7 @@ public class ToursRepositoryImpl implements ToursRepository{
                                 .uniqueResultOptional();
     }
 
+    public User updateUser(User user) {
+        return this.getSession().merge(user);
+    }
 }

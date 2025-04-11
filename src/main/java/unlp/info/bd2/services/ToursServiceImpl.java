@@ -270,8 +270,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public User updateUser(User user) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.updateUser(user);
     }
 
 }

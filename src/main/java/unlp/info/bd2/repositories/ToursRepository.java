@@ -16,5 +16,5 @@ public interface ToursRepository {
     void saveUser(User user);
     Optional<User> getUserById(Long id);
     Optional<User> getUserByUsername(String username);
-
+    User updateUser(User user);
 }
