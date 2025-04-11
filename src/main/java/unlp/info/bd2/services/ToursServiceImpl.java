@@ -77,6 +77,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
         Purchase purchase = new Purchase(code, user, route, date);
+        repository.savePurchase(purchase);
         return purchase;
     }
 
@@ -270,8 +271,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public User updateUser(User user) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.updateUser(user);
     }
 
 }
