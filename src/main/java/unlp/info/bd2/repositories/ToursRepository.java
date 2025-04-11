@@ -22,5 +22,8 @@ public interface ToursRepository {
     List<Route> getRoutesWithStop(Stop stop);
     Long getMaxStopOfRoutes();
     List<Route> getRoutesNotSell();
-    List<Route> getTop3RoutesWithMaxRating();
+    List<Route> getTop3RoutesWithMaxRating();    
+    Optional<User> getUserById(Long id);
+    Optional<User> getUserByUsername(String username);
+    User updateUser(User user);
 }

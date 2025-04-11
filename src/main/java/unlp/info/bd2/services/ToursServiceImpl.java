@@ -72,6 +72,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
         Purchase purchase = new Purchase(code, user, route, date);
+        repository.savePurchase(purchase);
         return purchase;
     }
 
@@ -107,9 +108,13 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
-        User user = new User(username, password, fullName, email, birthdate, phoneNumber);
-        repository.saveUser(user);
-        return user;
+        try {
+            User user = new User(username, password, fullName, email, birthdate, phoneNumber);
+            repository.saveUser(user);
+            return user;
+        } catch (Exception e) {
+            throw new ToursException("Error creating user: " + e.getMessage());
+        }
     }
 
     @Override
@@ -233,14 +238,12 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Optional<User> getUserById(Long id) throws ToursException {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.repository.getUserById(id);
     }
 
     @Override
     public Optional<User> getUserByUsername(String username) throws ToursException {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.repository.getUserByUsername(username);
     }
 
     @Override
@@ -257,8 +260,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public User updateUser(User user) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.updateUser(user);
     }
 
 }

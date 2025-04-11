@@ -1,7 +1,6 @@
 package unlp.info.bd2.model;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
@@ -17,7 +16,7 @@ import jakarta.persistence.ManyToMany;
 @DiscriminatorValue("DRIVER")
 public class DriverUser extends User {
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String expedient;
 
     @ManyToMany
@@ -45,7 +44,7 @@ public class DriverUser extends User {
         return routes;
     }
 
-    public void setRouts(List<Route> routs) { //TODO: ESTA MAL ESCRITO EL NOMBRE??
+    public void setRouts(List<Route> routs) {
         this.routes = routs;
     }
 }
