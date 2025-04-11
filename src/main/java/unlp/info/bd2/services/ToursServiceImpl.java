@@ -77,6 +77,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
         Purchase purchase = new Purchase(code, user, route, date);
+        repository.savePurchase(purchase);
         return purchase;
     }
 

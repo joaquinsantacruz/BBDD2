@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -33,7 +35,12 @@ public class Route {
     @Column(name = "max_number_users", nullable = false)
     private int maxNumberUsers;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
+    @JoinTable(
+        name = "routes_stops",
+        joinColumns = @JoinColumn(name = "route_id"),
+        inverseJoinColumns = @JoinColumn(name = "stop_id")
+    )
     private List<Stop> stops;
 
     @ManyToMany(mappedBy = "routes")

@@ -50,7 +50,7 @@ public class ToursQuerysTests {
     void init() {
 
     }
- /* 
+/*
     @Test
     void getAllPurchasesOfUsernameTest() throws ToursException {
         List<Purchase> purchases1 = this.service.getAllPurchasesOfUsername("user1");
@@ -177,5 +177,5 @@ public class ToursQuerysTests {
                 Assert.fail(objectInList1 + " is not present in list2");
             }
         }
-    }       */
+    }           */
 }
