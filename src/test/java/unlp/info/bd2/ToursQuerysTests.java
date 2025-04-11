@@ -74,7 +74,7 @@ public class ToursQuerysTests {
         List<User> users3 = this.service.getUserSpendingMoreThan(1000);
         assertEquals(0, users3.size());
     }
-
+*/
     @Test
     void getTopNSuppliersInPurchasesTest() throws ToursException {
         List<Supplier> suppliers1 = this.service.getTopNSuppliersInPurchases(3);
@@ -84,6 +84,7 @@ public class ToursQuerysTests {
         assertEquals(1, suppliers2.size());
         this.assertListEquality(suppliers2.stream().map(Supplier::getAuthorizationNumber).collect(Collectors.toList()), Arrays.asList("12345"));
     }
+ /* 
 
     @Test
     void getTop10MoreExpensivePurchasesInServicesTest() throws ToursException {
@@ -166,7 +167,7 @@ public class ToursQuerysTests {
         assertEquals(3, tourGuidesWithRating1.size());
         this.assertListEquality(tourGuidesWithRating1.stream().map(TourGuideUser::getUsername).collect(Collectors.toList()), List.of("userG1", "userG3", "userG4"));
     }
-
+*/
     private <T> void assertListEquality(List<T> list1, List<T> list2) {
         if (list1.size() != list2.size()) {
             Assert.fail("Lists have different size");
@@ -177,5 +178,5 @@ public class ToursQuerysTests {
                 Assert.fail(objectInList1 + " is not present in list2");
             }
         }
-    }       */
+    }       
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.PersistenceException;
 import unlp.info.bd2.model.DriverUser;
 import unlp.info.bd2.model.ItemService;
 import unlp.info.bd2.model.Purchase;
@@ -42,10 +43,11 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
-    public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)
-            throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+    public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
+        Service service = new Service(name, price, description, supplier);
+        supplier.addSevice(service);
+        repository.saveService(service);
+        return service;
     }
 
     @Override
@@ -77,6 +79,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
         Purchase purchase = new Purchase(code, user, route, date);
+        repository.savePurchase(purchase);
         return purchase;
     }
 
@@ -97,9 +100,13 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
+        try {
         Supplier supplier = new Supplier(businessName, authorizationNumber);
         repository.saveSupplier(supplier);
         return supplier;
+        } catch (PersistenceException e) {
+            throw new ToursException("Constraint Violation");
+        }
     }
 
     @Override
@@ -184,8 +191,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Optional<Service> getServiceByNameAndSupplierId(String name, Long id) throws ToursException {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.repository.getServiceByNameAndSupplierId(name, id);
     }
 
     @Override
@@ -202,8 +208,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.repository.getSupplierByAuthorizationNumber(authorizationNumber);
     }
 
     @Override
@@ -231,8 +236,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getTopNSuppliersInPurchases(n);
     }
 
     @Override

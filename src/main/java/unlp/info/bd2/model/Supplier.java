@@ -1,5 +1,6 @@
 package unlp.info.bd2.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,15 +23,18 @@ public class Supplier {
     @Column(name = "business_name")
     private String businessName;
 
-    @Column(name = "authorization_number")
+    @Column(name = "authorization_number", unique = true, nullable = false)
     private String authorizationNumber;
 
     @OneToMany(mappedBy = "supplier")
     private List<Service> services;
 
+    public Supplier() {}
+
     public Supplier(String businessName, String authorizationNumber) {
         this.businessName = businessName;
         this.authorizationNumber = authorizationNumber;
+        this.services = new ArrayList<Service>();
     }
 
     public Long getId() {
@@ -63,6 +67,10 @@ public class Supplier {
 
     public void setServices(List<Service> services) {
         this.services = services;
+    }
+
+    public void addSevice(Service service){
+        this.services.add(service);
     }
 
 }
