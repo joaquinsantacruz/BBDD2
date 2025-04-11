@@ -1,5 +1,7 @@
 package unlp.info.bd2.repositories;
 
+import java.util.Optional;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,51 +13,54 @@ public class ToursRepositoryImpl implements ToursRepository{
     @Autowired
     private SessionFactory sessionFactory;
 
+    private Session getSession() {
+        return this.sessionFactory.getCurrentSession();
+    }
+
     @Override
     public void saveItem(ItemService item) {
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(item);
+        this.getSession().persist(item);
     }
 
     @Override
     public void savePurchase(Purchase purchase) {
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(purchase);
+        this.getSession().persist(purchase);
     }
 
     @Override
     public void saveRoute(Route route) {
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(route);
+        this.getSession().persist(route);
     }
 
     @Override
     public void saveDriverUser(DriverUser driverUser) {
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(driverUser);
-
+        this.getSession().persist(driverUser);
     }
 
     public void saveTourGuideUser(TourGuideUser tourGuideUser){
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(tourGuideUser);
+        this.getSession().persist(tourGuideUser);
     }
 
     public void saveSupplier(Supplier supplier){
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(supplier);
+        this.getSession().persist(supplier);
     }
     
     public void saveStop(Stop stop){
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(stop);
+        this.getSession().persist(stop);
     }
 
     public void saveUser(User user){
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(user);
+        this.getSession().persist(user);
     }
     
-    
+    public Optional<User> getUserById(Long id) {
+        return Optional.ofNullable(this.getSession().get(User.class, id));
+    }
+
+    public Optional<User> getUserByUsername(String username) {
+        return this.getSession().createQuery("FROM User WHERE username = :username", User.class)
+                                .setParameter("username", username)
+                                .uniqueResultOptional();
+    }
 
 }
