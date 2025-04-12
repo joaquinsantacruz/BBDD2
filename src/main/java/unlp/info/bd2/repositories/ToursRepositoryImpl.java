@@ -111,7 +111,29 @@ public class ToursRepositoryImpl implements ToursRepository{
                     .setParameter("id", id)
                     .uniqueResultOptional();
     }
-
     
+    @Override
+    public Service getMostDemandedService(){
+        String hql = "SELECT is.service FROM ItemService is GROUP BY is.service ORDER BY SUM(is.quantity) DESC ";
+        return this.getSession()
+                    .createQuery(hql, Service.class)
+                    .setMaxResults(1)
+                    .uniqueResult();
+    }
+
+    @Override
+    public List<Service> getServiceNoAddedToPurchases(){
+        String hql = "FROM Service s WHERE s NOT IN (SELECT is.service FROM ItemService is)";
+        return this.getSession()
+                    .createQuery(hql, Service.class)
+                    .getResultList();
+    }
+
+    @Override
+    public Service updateServicePriceById(Long id, float newPrice){
+        Service service = this.getSession().get(Service.class, id);
+        service.setPrice(newPrice);
+        return service;
+    }
 
 }

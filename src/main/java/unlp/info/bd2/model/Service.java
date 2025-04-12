@@ -37,6 +37,8 @@ public class Service {
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
+    public Service(){}
+
     public Service(String name, float price, String description, Supplier supplier) {
         this.name = name;
         this.price = price;

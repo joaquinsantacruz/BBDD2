@@ -155,8 +155,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Service getMostDemandedService() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getMostDemandedService();
     }
 
     @Override
@@ -196,8 +195,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<Service> getServiceNoAddedToPurchases() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getServiceNoAddedToPurchases();
     }
 
     @Override
@@ -265,8 +263,11 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return this.repository.updateServicePriceById(id, newPrice);
+        } catch (Exception e) {
+            throw new ToursException("No existe el producto");
+        }
     }
 
     @Override

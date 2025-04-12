@@ -23,4 +23,7 @@ public interface ToursRepository {
     List<Supplier> getTopNSuppliersInPurchases(int n);
     Optional<Service> getServiceByNameAndSupplierId(String name, Long id);
     
+    Service getMostDemandedService();
+    List<Service> getServiceNoAddedToPurchases();
+    Service updateServicePriceById(Long id, float newPrice);
 }
