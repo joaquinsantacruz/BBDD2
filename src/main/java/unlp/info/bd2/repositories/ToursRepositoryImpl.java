@@ -46,23 +46,12 @@ public class ToursRepositoryImpl implements ToursRepository{
         this.getSession().persist(supplier);
     }
     
-
     public void saveUser(User user){
         this.getSession().persist(user);
     }
-    
-    public Optional<User> getUserById(Long id) {
+
+    public Optional<User> getUserById(Long id){
         return Optional.ofNullable(this.getSession().get(User.class, id));
-    }
-
-    public Optional<User> getUserByUsername(String username) {
-        return this.getSession().createQuery("FROM User WHERE username = :username", User.class)
-                                .setParameter("username", username)
-                                .uniqueResultOptional();
-    }
-
-    public User updateUser(User user) {
-        return this.getSession().merge(user);
     }
 
     @Override
@@ -107,13 +96,15 @@ public class ToursRepositoryImpl implements ToursRepository{
 
     @Override
     public Long getMaxStopOfRoutes() {
-        return this.getSession().createQuery("SELECT max(size(r.stops)) FROM Route r JOIN r.stops", Long.class)
+        Integer amount = this.getSession().createQuery("SELECT max(size(r.stops)) FROM Route r", Integer.class)
                                 .getSingleResult();
+        return amount.longValue();
     }
 
     @Override
     public List<Route> getRoutesNotSell() {
         String hql = """
+
                         FROM Route r 
                         WHERE NOT EXISTS (
                             FROM Purchase p

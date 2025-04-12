@@ -16,13 +16,13 @@ import jakarta.persistence.ManyToMany;
 @DiscriminatorValue("DRIVER")
 public class DriverUser extends User {
 
-    @Column(nullable = true)
+    @Column    
     private String expedient;
 
     @ManyToMany
     @JoinTable(
         name = "drivers_routes", 
-        joinColumns = @JoinColumn(name = "driver_user_id"),
+        joinColumns = @JoinColumn(name = "driver_id"),
         inverseJoinColumns = @JoinColumn(name = "route_id")
     )
     private List<Route> routes; 

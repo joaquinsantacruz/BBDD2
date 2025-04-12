@@ -19,7 +19,7 @@ public class TourGuideUser extends User {
 
     @ManyToMany
     @JoinTable(
-        name = "tourguide_routes",
+        name = "tourguides_routes",
         joinColumns = @JoinColumn(name = "tour_guide_id"),
         inverseJoinColumns = @JoinColumn(name = "route_id")
     )

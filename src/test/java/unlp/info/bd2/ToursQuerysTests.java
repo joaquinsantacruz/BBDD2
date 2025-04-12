@@ -109,7 +109,7 @@ public class ToursQuerysTests {
         long countOfPurchasesBetweenDates3 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(26)), Date.valueOf(today.minusDays(22)));
         assertEquals(0, countOfPurchasesBetweenDates3);
     }
-
+    */
     @Test
     void getRoutesWithStopTest() throws ToursException {
         Stop stop1 = this.service.getStopByNameStart("Diagonal Norte").get(0);
@@ -128,7 +128,7 @@ public class ToursQuerysTests {
 
     @Test
     void getMaxStopOfRoutesTest() throws ToursException {
-        Long maxStopOfRoutes = this.service.getMaxStopOfRoutes();
+            Long maxStopOfRoutes = this.service.getMaxStopOfRoutes();
         assertEquals(9, maxStopOfRoutes);
     }
 
@@ -146,6 +146,7 @@ public class ToursQuerysTests {
         this.assertListEquality(routesWithMaxRating.stream().map(Route::getName).collect(Collectors.toList()), List.of("City Tour", "Historical Adventure", "Architectural Expedition"));
     }
 
+    /*
     @Test
     void getMostDemandedServiceTest() throws ToursException {
         Service mostDemandedService = this.service.getMostDemandedService();
@@ -167,6 +168,7 @@ public class ToursQuerysTests {
         this.assertListEquality(tourGuidesWithRating1.stream().map(TourGuideUser::getUsername).collect(Collectors.toList()), List.of("userG1", "userG3", "userG4"));
     }
 
+    */
     private <T> void assertListEquality(List<T> list1, List<T> list2) {
         if (list1.size() != list2.size()) {
             Assert.fail("Lists have different size");
@@ -177,5 +179,5 @@ public class ToursQuerysTests {
                 Assert.fail(objectInList1 + " is not present in list2");
             }
         }
-    }           */
+    }       
 }

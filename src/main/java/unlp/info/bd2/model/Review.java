@@ -23,7 +23,7 @@ public class Review {
     @Column(nullable = false)
     private String comment;
 
-    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "review")
     private Purchase purchase;
 
 
