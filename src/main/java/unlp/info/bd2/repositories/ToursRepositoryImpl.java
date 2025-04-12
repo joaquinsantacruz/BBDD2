@@ -54,6 +54,16 @@ public class ToursRepositoryImpl implements ToursRepository{
         return Optional.ofNullable(this.getSession().get(User.class, id));
     }
 
+    public Optional<User> getUserByUsername(String username) {
+        return this.getSession().createQuery("FROM User WHERE username = :username", User.class)
+                                .setParameter("username", username)
+                                .uniqueResultOptional();
+    }
+
+    public User updateUser(User user) {
+        return this.getSession().merge(user);
+    }
+
     @Override
     public void updateRoute(Route route) {
         this.getSession().merge(route);
