@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import unlp.info.bd2.model.*;
+import unlp.info.bd2.utils.ToursException;
 
 public class ToursRepositoryImpl implements ToursRepository{
 
@@ -38,14 +39,17 @@ public class ToursRepositoryImpl implements ToursRepository{
         this.getSession().persist(driverUser);
     }
 
+    @Override
     public void saveTourGuideUser(TourGuideUser tourGuideUser){
         this.getSession().persist(tourGuideUser);
     }
 
+    @Override
     public void saveSupplier(Supplier supplier){
         this.getSession().persist(supplier);
     }
-    
+
+    @Override
     public void saveUser(User user){
         this.getSession().persist(user);
     }
@@ -109,6 +113,74 @@ public class ToursRepositoryImpl implements ToursRepository{
         Integer amount = this.getSession().createQuery("SELECT max(size(r.stops)) FROM Route r", Integer.class)
                                 .getSingleResult();
         return amount.longValue();
+    }
+    
+    @Override
+    public void saveService(Service service){
+        Session session = this.sessionFactory.getCurrentSession();
+        session.persist(service);
+    }
+
+    @Override
+    public Optional<Supplier> getSupplierById(Long id){
+        Supplier supplier = this.getSession().get(Supplier.class, id);
+        return Optional.ofNullable(supplier);
+    }
+
+    @Override
+    public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber){
+        String hql = "FROM Supplier s WHERE s.authorizationNumber = :authorizationNumber";
+        return this.getSession()
+                    .createQuery(hql, Supplier.class)
+                    .setParameter("authorizationNumber", authorizationNumber)
+                    .uniqueResultOptional();
+    }
+
+    @Override
+    public List<Supplier> getTopNSuppliersInPurchases(int n){
+        return this.getSession()
+        .createQuery("""
+            SELECT is.service.supplier 
+            FROM ItemService is 
+            GROUP BY is.service.supplier 
+            ORDER BY SUM(is.quantity) DESC
+            """, Supplier.class)
+        .setMaxResults(n)
+        .getResultList();
+    }
+
+    @Override
+    public Optional<Service> getServiceByNameAndSupplierId(String name, Long id){
+        String hql = "FROM Service s WHERE s.name = :name and s.supplier.id = :id";
+        return this.getSession()
+                    .createQuery(hql, Service.class)
+                    .setParameter("name", name)
+                    .setParameter("id", id)
+                    .uniqueResultOptional();
+    }
+    
+    @Override
+    public Service getMostDemandedService(){
+        String hql = "SELECT is.service FROM ItemService is GROUP BY is.service ORDER BY SUM(is.quantity) DESC ";
+        return this.getSession()
+                    .createQuery(hql, Service.class)
+                    .setMaxResults(1)
+                    .uniqueResult();
+    }
+
+    @Override
+    public List<Service> getServiceNoAddedToPurchases(){
+        String hql = "FROM Service s WHERE s NOT IN (SELECT is.service FROM ItemService is)";
+        return this.getSession()
+                    .createQuery(hql, Service.class)
+                    .getResultList();
+    }
+
+    @Override
+    public Service updateServicePriceById(Long id, float newPrice){
+        Service service = this.getSession().get(Service.class, id);
+        service.setPrice(newPrice);
+        return service;
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import unlp.info.bd2.model.*;
+import unlp.info.bd2.utils.ToursException;
 
 public interface ToursRepository {
 
@@ -25,5 +26,13 @@ public interface ToursRepository {
     List<Route> getTop3RoutesWithMaxRating();    
     Optional<User> getUserById(Long id);
     Optional<User> getUserByUsername(String username);
-    User updateUser(User user);
+    User updateUser(User user);    
+    void saveService(Service service);
+    Optional<Supplier> getSupplierById(Long id);
+    Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber);
+    List<Supplier> getTopNSuppliersInPurchases(int n);
+    Optional<Service> getServiceByNameAndSupplierId(String name, Long id);
+    Service getMostDemandedService();
+    List<Service> getServiceNoAddedToPurchases();
+    Service updateServicePriceById(Long id, float newPrice);
 }
