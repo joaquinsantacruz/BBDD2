@@ -52,12 +52,44 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
+        Optional<User> optionalUser = this.getUserByUsername(username);
+        if(!optionalUser.isPresent()){
+            throw new ToursException("No pudo realizarse la asignación");
+        }
 
+        Optional<Route> optionalRoute = this.getRouteById(idRoute);
+        if(!optionalRoute.isPresent()){
+            throw new ToursException("No pudo realizarse la asignación");
+        }
+
+        DriverUser driverUser = (DriverUser) optionalUser.get();
+        Route route = optionalRoute.get();
+
+        route.addDriver(driverUser);
+        driverUser.addRoute(route);
+        
+        this.repository.updateUser(driverUser);
     }
 
     @Override
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
+        Optional<User> optionalUser = this.getUserByUsername(username);
+        if(!optionalUser.isPresent()){
+            throw new ToursException("No pudo realizarse la asignación");
+        }
+
+        Optional<Route> optionalRoute = this.getRouteById(idRoute);
+        if(!optionalRoute.isPresent()){
+            throw new ToursException("No pudo realizarse la asignación");
+        }
+
+        TourGuideUser tourGuideUser = (TourGuideUser) optionalUser.get();
+        Route route = optionalRoute.get();
+
+        route.addTourGuide(tourGuideUser);
+        tourGuideUser.addRoute(route);
         
+        this.repository.updateUser(tourGuideUser);
     }
 
     @Override

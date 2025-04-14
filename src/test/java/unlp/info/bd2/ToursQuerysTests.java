@@ -51,6 +51,7 @@ public class ToursQuerysTests {
 
     }
 
+
     @Test
     void getAllPurchasesOfUsernameTest() throws ToursException {
         List<Purchase> purchases1 = this.service.getAllPurchasesOfUsername("user1");
@@ -84,7 +85,7 @@ public class ToursQuerysTests {
         assertEquals(1, suppliers2.size());
         this.assertListEquality(suppliers2.stream().map(Supplier::getAuthorizationNumber).collect(Collectors.toList()), Arrays.asList("12345"));
     }
- 
+
 
     @Test
     void getTop10MoreExpensivePurchasesInServicesTest() throws ToursException {

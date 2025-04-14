@@ -49,6 +49,7 @@ class ToursApplicationTests {
 	}
 
 	
+	
 	@Test
 	void createAndGetUserTest()  throws ToursException {
 		User user1 = this.toursService.createUser("user1", "1234", "Usuario Uno", "user1@gmail.com", dob1, "000111222333");
@@ -106,7 +107,7 @@ class ToursApplicationTests {
 		User unmodifiedUserFromDB = opUnmodifiedUserFromDB.get();
 		assertEquals(unmodifiedUserFromDB.getId(), user1.getId());
 	}
-	 
+	
 	@Test
 	void createAndGetRoutesAndStopsTest() throws ToursException {
 		Stop stop1 = this.toursService.createStop("Estadio Monumental", "Estadio de River Plate");
@@ -162,7 +163,7 @@ class ToursApplicationTests {
 		assertEquals(1, route.getTourGuideList().size());
 		assertEquals("userG1", route.getTourGuideList().get(0).getUsername());
 
-		assertThrows(ToursException.class, () -> this.toursService.assignTourGuideByUsername("user_no_existente", tourGuideUser1.getId()) , "No pudo realizarse la asignación");
+		assertThrows(ToursException.class, () -> this.toursService.assignTourGuideByUsername("user_no_existente", tourGuideUser1.getId()) , "|");
 		assertThrows(ToursException.class, () -> this.toursService.assignDriverByUsername(driverUser1.getUsername(), 1000000L) , "No pudo realizarse la asignación");
 	}
 
@@ -199,7 +200,7 @@ class ToursApplicationTests {
 
 		assertThrows(ToursException.class, () -> this.toursService.createSupplier("Supplier2", "000111"), "Constraint Violation");
 	}
- 
+
 	@Test
 	void updateServicePriceTest() throws ToursException {
 		Supplier supplier1 = this.toursService.createSupplier("Supplier1", "000111");
