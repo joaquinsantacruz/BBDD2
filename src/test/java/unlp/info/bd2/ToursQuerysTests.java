@@ -154,8 +154,7 @@ public class ToursQuerysTests {
         assertEquals("souvenir t-shirt", mostDemandedService.getName());
         assertEquals("I love Buenos Aires t-shirt", mostDemandedService.getDescription());
     }
-        */
-/* 
+        
     @Test
     void getServiceNoAddedToPurchasesTest() throws ToursException {
         List<Service> serviceNoAddedToPurchases = this.service.getServiceNoAddedToPurchases();
