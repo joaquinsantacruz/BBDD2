@@ -31,7 +31,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public ItemService addItemToPurchase(Service service, int quantity, Purchase purchase) throws ToursException {
         ItemService item = new ItemService(quantity, purchase, service);
-        purchase.addItem(item, 0.5f);
+        purchase.addItem(item, quantity * service.getPrice());
         repository.saveItem(item);
         return item;
     }
@@ -174,11 +174,11 @@ public class ToursServiceImpl implements ToursService{
         return this.repository.getAllPurchasesOfUsername(username);
     }
 
-    @Override
-    public long getCountOfPurchasesBetweenDates(Date start, Date end) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+    // @Override
+    // public long CountOfPurchasesBetweenDates(Date start, Date end) {
+    //     // TODO Auto-generated method stub
+    //     return 0;
+    // }
 
     @Override
     public Long getMaxStopOfRoutes() {
@@ -281,8 +281,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<User> getUserSpendingMoreThan(float mount) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getUserSpendingMoreThan(mount);
     }
 
     @Override

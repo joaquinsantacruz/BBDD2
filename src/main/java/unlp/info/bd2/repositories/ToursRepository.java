@@ -36,4 +36,5 @@ public interface ToursRepository {
     List<Service> getServiceNoAddedToPurchases();
     Service updateServicePriceById(Long id, float newPrice);
     List<Purchase> getAllPurchasesOfUsername(String username);
+    List<User> getUserSpendingMoreThan(float amount);
 }

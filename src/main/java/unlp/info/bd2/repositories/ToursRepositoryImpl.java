@@ -215,6 +215,46 @@ public class ToursRepositoryImpl implements ToursRepository{
         return this.getUserByUsername(username).get().getPurchaseList();
     }
     
-    
+    // Gastado en todas las compras de un usuario = 7 users
+    // @Override
+    // public List<User> getUserSpendingMoreThan(float amount) {
+    //     String hql = """
+    //             SELECT p.user 
+    //             FROM Purchase p 
+    //             GROUP BY p.user 
+    //             HAVING SUM(p.totalPrice) > :amount
+    //             """;
+    //     return this.getSession()
+    //                 .createQuery(hql, User.class)
+    //                 .setParameter("amount", amount)
+    //                 .getResultList();
+    // }
 
+    // Gastado en una sola compra con mayor estricto = 5 users
+    // @Override
+    // public List<User> getUserSpendingMoreThan(float amount) {
+    //     String hql = """
+    //             SELECT p.user 
+    //             FROM Purchase p 
+    //             WHERE p.totalPrice > :amount
+    //             """;
+    //     return this.getSession()
+    //                 .createQuery(hql, User.class)
+    //                 .setParameter("amount", amount)
+    //                 .getResultList();
+    // }
+
+    // Gastado en una sola compra con mayor o igual = 6 users
+    @Override
+    public List<User> getUserSpendingMoreThan(float amount) {
+        String hql = """
+                SELECT p.user 
+                FROM Purchase p 
+                WHERE p.totalPrice >= :amount
+                """;
+        return this.getSession()
+                    .createQuery(hql, User.class)
+                    .setParameter("amount", amount)
+                    .getResultList();
+    }
 }

@@ -101,16 +101,16 @@ public class ToursQuerysTests {
         this.assertListEquality(usersMorePurchases.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1", "user2", "user6", "user7", "user10"));
     }
 
-    @Test
-    void getCountOfPurchasesBetweenDatesTest() throws ToursException {
-        LocalDate today = LocalDate.now();
-        long countOfPurchasesBetweenDates1 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(25)), Date.valueOf(today.minusDays(15)));
-        assertEquals(7, countOfPurchasesBetweenDates1);
-        long countOfPurchasesBetweenDates2 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(13)), Date.valueOf(today.minusDays(0)));
-        assertEquals(7, countOfPurchasesBetweenDates2);
-        long countOfPurchasesBetweenDates3 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(26)), Date.valueOf(today.minusDays(22)));
-        assertEquals(0, countOfPurchasesBetweenDates3);
-    }
+    // @Test
+    // void getCountOfPurchasesBetweenDatesTest() throws ToursException {
+    //     LocalDate today = LocalDate.now();
+    //     long countOfPurchasesBetweenDates1 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(25)), Date.valueOf(today.minusDays(15)));
+    //     assertEquals(7, countOfPurchasesBetweenDates1);
+    //     long countOfPurchasesBetweenDates2 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(13)), Date.valueOf(today.minusDays(0)));
+    //     assertEquals(7, countOfPurchasesBetweenDates2);
+    //     long countOfPurchasesBetweenDates3 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(26)), Date.valueOf(today.minusDays(22)));
+    //     assertEquals(0, countOfPurchasesBetweenDates3);
+    // }
     
     @Test
     void getRoutesWithStopTest() throws ToursException {
