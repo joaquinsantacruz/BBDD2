@@ -56,6 +56,7 @@ public class User {
         this.birthdate = birthdate;
         this.phoneNumber = phoneNumber;
         this.purchaseList = new ArrayList<Purchase>();
+        this.active = true;
     }
 
     public Long getId() {
