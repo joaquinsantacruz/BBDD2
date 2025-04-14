@@ -106,7 +106,7 @@ class ToursApplicationTests {
 		User unmodifiedUserFromDB = opUnmodifiedUserFromDB.get();
 		assertEquals(unmodifiedUserFromDB.getId(), user1.getId());
 	}
-	 
+	
 	@Test
 	void createAndGetRoutesAndStopsTest() throws ToursException {
 		Stop stop1 = this.toursService.createStop("Estadio Monumental", "Estadio de River Plate");
@@ -162,7 +162,7 @@ class ToursApplicationTests {
 		assertEquals(1, route.getTourGuideList().size());
 		assertEquals("userG1", route.getTourGuideList().get(0).getUsername());
 
-		assertThrows(ToursException.class, () -> this.toursService.assignTourGuideByUsername("user_no_existente", tourGuideUser1.getId()) , "No pudo realizarse la asignación");
+		assertThrows(ToursException.class, () -> this.toursService.assignTourGuideByUsername("user_no_existente", tourGuideUser1.getId()) , "|");
 		assertThrows(ToursException.class, () -> this.toursService.assignDriverByUsername(driverUser1.getUsername(), 1000000L) , "No pudo realizarse la asignación");
 	}
 
