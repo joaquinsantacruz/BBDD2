@@ -210,4 +210,11 @@ public class ToursRepositoryImpl implements ToursRepository{
                                 .getResultList();
     }
 
+    @Override
+    public List<Purchase> getAllPurchasesOfUsername(String username) {
+        return this.getUserByUsername(username).get().getPurchaseList();
+    }
+    
+    
+
 }

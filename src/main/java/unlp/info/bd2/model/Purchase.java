@@ -47,7 +47,9 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase")
     private List<ItemService> itemServiceList;
 
-    
+    public Purchase() {
+        this.itemServiceList = new ArrayList<ItemService>();
+    }
 
     public Purchase(String code, User user, Route route) {
         this.code = code;

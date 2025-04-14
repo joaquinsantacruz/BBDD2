@@ -10,7 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -47,6 +46,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Purchase> purchaseList;
 
+    public User() {
+        this.purchaseList = new ArrayList<Purchase>();
+        this.active = true;
+    }
 
     public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) {
         this.username = username;

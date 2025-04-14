@@ -167,13 +167,11 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public void deleteUser(User user) throws ToursException {
         // TODO Auto-generated method stub
-        
     }
 
     @Override
     public List<Purchase> getAllPurchasesOfUsername(String username) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getAllPurchasesOfUsername(username);
     }
 
     @Override

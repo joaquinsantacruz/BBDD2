@@ -35,4 +35,5 @@ public interface ToursRepository {
     Service getMostDemandedService();
     List<Service> getServiceNoAddedToPurchases();
     Service updateServicePriceById(Long id, float newPrice);
+    List<Purchase> getAllPurchasesOfUsername(String username);
 }
