@@ -47,7 +47,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Purchase> purchaseList;
 
-
+    public User(){}
+    
     public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) {
         this.username = username;
         this.password = password;
@@ -57,6 +58,10 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.purchaseList = new ArrayList<Purchase>();
         this.active = true;
+    }
+
+    public void addPurchase(Purchase purchase){
+        this.purchaseList.add(purchase);
     }
 
     public Long getId() {

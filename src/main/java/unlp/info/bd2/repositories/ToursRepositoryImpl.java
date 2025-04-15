@@ -30,6 +30,11 @@ public class ToursRepositoryImpl implements ToursRepository{
     }
 
     @Override
+    public void saveReview(Review review){
+        this.getSession().persist(review);
+    }
+
+    @Override
     public void saveRoute(Route route) {
         this.getSession().persist(route);
     }
@@ -208,6 +213,55 @@ public class ToursRepositoryImpl implements ToursRepository{
         return this.getSession().createQuery(hql, Route.class)
                                 .setMaxResults(3)
                                 .getResultList();
+    }
+
+    @Override
+    public Optional<Purchase> getPurchaseByCode(String code){
+        return this.getSession().createQuery("FROM Purchase p WHERE p.code = :code", Purchase.class)
+                                .setParameter("code", code)
+                                .uniqueResultOptional();
+    }
+
+    @Override
+    public Long purchasesOnRoute(Route route){
+        return this.getSession().createQuery("SELECT count(*) FROM Purchase p WHERE p.route = :route", Long.class)
+                                .setParameter("route", route)
+                                .getSingleResult();
+    }
+
+    @Override
+    public List<Purchase> getAllPurchasesOfUsername(String username){
+        return this.getSession().createQuery("FROM Purchase p WHERE p.user.username = :username", Purchase.class)
+                                .setParameter("username", username)
+                                .getResultList();
+    }
+
+    @Override
+    public List<User> getUserSpendingMoreThan(float mount){
+        String hql = """
+                    SELECT DISTINCT u
+                    FROM User u 
+                    JOIN u.purchaseList p
+                    GROUP BY u
+                    HAVING sum(p.totalPrice) > :mount
+                    """;
+        return this.getSession().createQuery(hql, User.class)
+                                .setParameter("mount", mount)
+                                .getResultList();
+    }
+
+    @Override
+    public List<Purchase> getTop10MoreExpensivePurchasesInServices(){
+        String hql = """
+                FROM Purchase p
+                JOIN p.itemServiceList is
+                JOIN is.service s
+                GROUP BY p
+                ORDER BY p.totalPrice DESC
+                """;
+        return this.getSession().createQuery(hql, Purchase.class)
+                        .setMaxResults(10)
+                        .getResultList();                        
     }
 
 }

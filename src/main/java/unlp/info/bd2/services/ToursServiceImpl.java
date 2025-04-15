@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.PersistenceException;
@@ -29,17 +30,26 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public ItemService addItemToPurchase(Service service, int quantity, Purchase purchase) throws ToursException {
-        return null;
+        ItemService item = new ItemService(quantity, purchase, service);
+        service.addItem(item);
+        purchase.addItem(item, service.getPrice()*quantity);
+        repository.saveItem(item);
+        return item;
     }
 
     @Override
+    @Transactional
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
-        // TODO Auto-generated method stub
-        return null;
+        Review review = new Review(rating, comment, purchase);
+        purchase.setReview(review);
+        this.repository.saveReview(review);
+        return review;
     }
 
     @Override
+    @Transactional
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
         Service service = new Service(name, price, description, supplier);
         supplier.addSevice(service);
@@ -48,6 +58,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
         Optional<User> optionalUser = this.getUserByUsername(username);
         if(!optionalUser.isPresent()){
@@ -69,6 +80,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
         Optional<User> optionalUser = this.getUserByUsername(username);
         if(!optionalUser.isPresent()){
@@ -97,15 +109,32 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
-        Purchase purchase = new Purchase(code, user, route);
-        repository.savePurchase(purchase);
-        return purchase;
+        if(this.repository.purchasesOnRoute(route) > route.getMaxNumberUsers()){
+            throw new ToursException("No puede realizarse la compra");
+        }
+
+        try{
+            Purchase purchase = new Purchase(code, user, route);
+            user.addPurchase(purchase);
+            repository.savePurchase(purchase);
+            return purchase;
+        }
+        catch(ConstraintViolationException e){
+            throw new ToursException("Constraint Violation");
+        }
     }
 
     @Override
+    @Transactional
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
+        if(this.repository.purchasesOnRoute(route) == route.getMaxNumberUsers()){
+            throw new ToursException("No puede realizarse la compra");
+        }
+
         Purchase purchase = new Purchase(code, user, route, date);
+        user.addPurchase(purchase);
         repository.savePurchase(purchase);
         return purchase;
     }
@@ -127,6 +156,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
         try {
         Supplier supplier = new Supplier(businessName, authorizationNumber);
@@ -145,6 +175,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
         try {
             User user = new User(username, password, fullName, email, birthdate, phoneNumber);
@@ -157,8 +188,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public void deletePurchase(Purchase purchase) throws ToursException {
-        // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -169,8 +199,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<Purchase> getAllPurchasesOfUsername(String username) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getAllPurchasesOfUsername(username);
     }
 
     @Override
@@ -190,9 +219,9 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Purchase> getPurchaseByCode(String code) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.repository.getPurchaseByCode(code);
     }
 
     @Override
@@ -242,8 +271,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<Purchase> getTop10MoreExpensivePurchasesInServices() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getTop10MoreExpensivePurchasesInServices();
     }
 
     @Override
@@ -280,8 +308,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<User> getUserSpendingMoreThan(float mount) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getUserSpendingMoreThan(mount);
     }
 
     @Override

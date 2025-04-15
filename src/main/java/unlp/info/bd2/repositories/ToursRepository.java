@@ -35,4 +35,10 @@ public interface ToursRepository {
     Service getMostDemandedService();
     List<Service> getServiceNoAddedToPurchases();
     Service updateServicePriceById(Long id, float newPrice);
+    Optional<Purchase> getPurchaseByCode(String code);
+    Long purchasesOnRoute(Route route);
+    void saveReview(Review review);
+    List<Purchase> getAllPurchasesOfUsername(String username);
+    List<User> getUserSpendingMoreThan(float mount);
+    List<Purchase> getTop10MoreExpensivePurchasesInServices();
 }

@@ -3,6 +3,8 @@ package unlp.info.bd2.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.Persister;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,6 +47,11 @@ public class Service {
         this.description = description;
         this.itemServiceList = new ArrayList<ItemService>();
         this.supplier = supplier;
+    }
+
+
+    public void addItem(ItemService item){
+        this.itemServiceList.add(item);
     }
 
     public Long getId() {

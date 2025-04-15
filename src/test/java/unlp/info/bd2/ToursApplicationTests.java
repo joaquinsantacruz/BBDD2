@@ -49,6 +49,7 @@ class ToursApplicationTests {
 	}
 
 	
+	
 	@Test
 	void createAndGetUserTest()  throws ToursException {
 		User user1 = this.toursService.createUser("user1", "1234", "Usuario Uno", "user1@gmail.com", dob1, "000111222333");

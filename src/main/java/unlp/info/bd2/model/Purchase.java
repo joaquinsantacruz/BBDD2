@@ -1,5 +1,6 @@
 package unlp.info.bd2.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String code;
 
     @Column(name = "total_price")
@@ -41,19 +42,20 @@ public class Purchase {
     @JoinColumn(name = "route_id")
     private Route route;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "review_id")
     private Review review;
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.PERSIST)
     private List<ItemService> itemServiceList;
 
-    
+    public Purchase(){}
 
     public Purchase(String code, User user, Route route) {
         this.code = code;
         this.user = user;
         this.route = route;
+        this.totalPrice = route.getPrice();
         this.itemServiceList = new ArrayList<ItemService>();
     }
 
@@ -62,6 +64,7 @@ public class Purchase {
         this.user = user;
         this.route = route;
         this.date = date;
+        this.totalPrice = route.getPrice();
         this.itemServiceList = new ArrayList<ItemService>();
     }
 
