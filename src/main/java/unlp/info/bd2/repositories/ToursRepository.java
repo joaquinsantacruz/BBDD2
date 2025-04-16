@@ -37,4 +37,6 @@ public interface ToursRepository {
     Service updateServicePriceById(Long id, float newPrice);
     List<Purchase> getAllPurchasesOfUsername(String username);
     List<User> getUserSpendingMoreThan(float amount);
+    List<User> getTop5UsersMorePurchases();
+    void deleteUser(User user);
 }

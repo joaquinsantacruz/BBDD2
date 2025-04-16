@@ -41,7 +41,7 @@ public interface ToursService {
     List<Supplier> getTopNSuppliersInPurchases(int n);
     List<Purchase> getTop10MoreExpensivePurchasesInServices();
     List<User> getTop5UsersMorePurchases();
-    // long getCountOfPurchasesBetweenDates(Date start, Date end);
+    long getCountOfPurchasesBetweenDates(Date start, Date end);
     List<Route> getRoutesWithStop(Stop stop);
     Long getMaxStopOfRoutes();
     List<Route> getRoutsNotSell();

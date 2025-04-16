@@ -59,7 +59,7 @@ public class ToursRepositoryImpl implements ToursRepository{
     }
 
     public Optional<User> getUserByUsername(String username) {
-        return this.getSession().createQuery("FROM User WHERE username = :username", User.class)
+        return this.getSession().createQuery("FROM User WHERE username = :username AND active = true", User.class)
                                 .setParameter("username", username)
                                 .uniqueResultOptional();
     }
@@ -256,5 +256,36 @@ public class ToursRepositoryImpl implements ToursRepository{
                     .createQuery(hql, User.class)
                     .setParameter("amount", amount)
                     .getResultList();
+    }
+
+    @Override
+    public List<User> getTop5UsersMorePurchases() {
+        String hql = """
+                SELECT p.user 
+                FROM Purchase p 
+                GROUP BY p.user 
+                ORDER BY COUNT(p) DESC
+                """;
+        return this.getSession()
+                    .createQuery(hql, User.class)
+                    .setMaxResults(5)
+                    .getResultList();
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        // Si el usuario tiene compras, no se toca
+        // Si el usuario no tiene compras y active = true, se pone active = false
+        // Si el usuario no tiene compras y active = false, se elimina fisicamente y en cascada se eliminan sus compras e items
+        if (user.getPurchaseList().isEmpty()) {
+            if (user.isActive()) {
+                user.setActive(false);
+                this.updateUser(user);
+            } else {
+                this.getSession().remove(user);
+            }
+        } else {
+            System.out.println("El usuario tiene compras, no se puede eliminar.");
+        }
     }
 }

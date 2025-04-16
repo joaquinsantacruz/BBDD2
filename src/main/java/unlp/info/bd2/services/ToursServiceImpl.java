@@ -166,7 +166,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public void deleteUser(User user) throws ToursException {
-        // TODO Auto-generated method stub
+        this.repository.deleteUser(user);
     }
 
     @Override
@@ -174,11 +174,11 @@ public class ToursServiceImpl implements ToursService{
         return this.repository.getAllPurchasesOfUsername(username);
     }
 
-    // @Override
-    // public long CountOfPurchasesBetweenDates(Date start, Date end) {
-    //     // TODO Auto-generated method stub
-    //     return 0;
-    // }
+    @Override
+    public long getCountOfPurchasesBetweenDates(Date start, Date end) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
     @Override
     public Long getMaxStopOfRoutes() {
@@ -254,8 +254,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<User> getTop5UsersMorePurchases() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getTop5UsersMorePurchases();
     }
 
     @Override
