@@ -44,4 +44,8 @@ public interface ToursRepository {
     List<User> getUserSpendingMoreThan(float mount);
     List<Purchase> getTop10MoreExpensivePurchasesInServices();
     Long getCountOfPurchasesBetweenDates(Date start, Date end);
+    List<User> getTop5UsersMorePurchases();
+    void deleteUser(User user);
+    boolean isTourGuideOnARoute(User user);
+    List<TourGuideUser> getTourGuidesWithRating1();
 }

@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -142,4 +141,5 @@ public class User {
     public void setActive(boolean active) {
         this.active = active;
     }
+
 }

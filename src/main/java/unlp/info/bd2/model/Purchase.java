@@ -64,6 +64,7 @@ public class Purchase {
         this.code = code;
         this.user = user;
         this.route = route;
+        this.totalPrice = route.getPrice();
         this.date = date;
         this.totalPrice = route.getPrice();
         this.itemServiceList = new ArrayList<ItemService>();

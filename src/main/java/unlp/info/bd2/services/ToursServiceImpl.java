@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import unlp.info.bd2.model.DriverUser;
@@ -109,12 +110,6 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     @Transactional
-    public User updateUser(User user) throws ToursException {
-        return this.repository.updateUser(user);
-    }
-
-    @Override
-    @Transactional
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
         if(this.repository.purchasesOnRoute(route) > route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
@@ -141,7 +136,7 @@ public class ToursServiceImpl implements ToursService{
         if(this.repository.getPurchaseByCode(code).isPresent()){
             throw new ToursException("Constraint Violation");
         }
-
+        
         Purchase purchase = new Purchase(code, user, route, date);
         user.addPurchase(purchase);
         repository.savePurchase(purchase);
@@ -207,7 +202,16 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void deleteUser(User user) throws ToursException {
-        
+        if (!user.isActive()) {
+            throw new ToursException("El usuario se ecuentra desactivado");            
+        }
+
+        // Preguntar, muy dudoso
+        if (user instanceof TourGuideUser && this.repository.isTourGuideOnARoute(user)) {
+            throw new ToursException("El usuario no puede ser desactivado");
+        }
+
+        this.repository.deleteUser(user);
     }
 
     @Override
@@ -309,8 +313,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<User> getTop5UsersMorePurchases() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getTop5UsersMorePurchases();
     }
 
     @Override
@@ -322,8 +325,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<TourGuideUser> getTourGuidesWithRating1() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getTourGuidesWithRating1();
     }
 
     @Override
@@ -355,5 +357,10 @@ public class ToursServiceImpl implements ToursService{
         
     }
 
+    @Override
+    @Transactional
+    public User updateUser(User user) throws ToursException {
+        return this.repository.updateUser(user);
+    }
 
 }
