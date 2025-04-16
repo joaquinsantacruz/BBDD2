@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -43,7 +43,8 @@ public class User {
     @Column(nullable = false)
     private boolean active;
 
-    @OneToMany(mappedBy = "user")
+    // Preguntar
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Purchase> purchaseList;
 
     public User() {

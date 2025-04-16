@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -47,9 +48,7 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase")
     private List<ItemService> itemServiceList;
 
-    public Purchase() {
-        this.itemServiceList = new ArrayList<ItemService>();
-    }
+    public Purchase(){}
 
     public Purchase(String code, User user, Route route) {
         this.code = code;
