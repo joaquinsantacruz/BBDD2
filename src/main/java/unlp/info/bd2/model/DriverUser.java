@@ -8,6 +8,7 @@ import java.util.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -19,7 +20,7 @@ public class DriverUser extends User {
     @Column    
     private String expedient;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "driver_route", 
         joinColumns = @JoinColumn(name = "driver_id"),
