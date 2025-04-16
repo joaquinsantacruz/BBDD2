@@ -18,7 +18,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "purchases")
+@Table(name = "purchase")
 public class Purchase {
 
     @Id

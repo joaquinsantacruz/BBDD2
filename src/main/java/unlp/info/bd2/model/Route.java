@@ -16,7 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "routes")
+@Table(name = "route")
 public class Route {
 
     @Id
@@ -37,7 +37,7 @@ public class Route {
 
     @ManyToMany
     @JoinTable(
-        name = "routes_stops",
+        name = "route_stop",
         joinColumns = @JoinColumn(name = "route_id"),
         inverseJoinColumns = @JoinColumn(name = "stop_id")
     )

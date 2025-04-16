@@ -22,7 +22,7 @@ public class DriverUser extends User {
 
     @ManyToMany
     @JoinTable(
-        name = "drivers_routes", 
+        name = "driver_route", 
         joinColumns = @JoinColumn(name = "driver_id"),
         inverseJoinColumns = @JoinColumn(name = "route_id")
     )
