@@ -1,5 +1,6 @@
 package unlp.info.bd2.repositories;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -267,6 +268,14 @@ public class ToursRepositoryImpl implements ToursRepository{
         return this.getSession().createQuery(hql, Purchase.class)
                         .setMaxResults(10)
                         .getResultList();                        
+    }
+
+    @Override
+    public Long getCountOfPurchasesBetweenDates(Date start, Date end){
+        return this.getSession().createQuery("SELECT count(p) FROM Purchase p WHERE p.date >= :start AND p.date <= :end", Long.class)
+                                .setParameter("start", start)
+                                .setParameter("end", end)
+                                .getSingleResult();
     }
 
 }

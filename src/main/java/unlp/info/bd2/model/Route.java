@@ -43,10 +43,10 @@ public class Route {
     )
     private List<Stop> stops;
 
-    @ManyToMany(mappedBy = "routes")
+    @ManyToMany(mappedBy = "routes", cascade = CascadeType.MERGE)
     private List<DriverUser> driverList;
 
-    @ManyToMany(mappedBy = "routes")
+    @ManyToMany(mappedBy = "routes", cascade = CascadeType.MERGE)
     private List<TourGuideUser> tourGuideList;
 
     public Route() {

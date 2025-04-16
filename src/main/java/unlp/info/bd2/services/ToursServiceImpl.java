@@ -76,6 +76,7 @@ public class ToursServiceImpl implements ToursService{
         route.addDriver(driverUser);
         driverUser.addRoute(route);
         
+        this.repository.updateRoute(route);
     }
 
     @Override
@@ -97,6 +98,7 @@ public class ToursServiceImpl implements ToursService{
         route.addTourGuide(tourGuideUser);
         tourGuideUser.addRoute(route);
         
+        this.repository.updateRoute(route);
     }
 
     @Override
@@ -215,8 +217,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public long getCountOfPurchasesBetweenDates(Date start, Date end) {
-        // TODO Auto-generated method stub
-        return 0;
+        return this.repository.getCountOfPurchasesBetweenDates(start, end);
     }
 
     @Override

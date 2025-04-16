@@ -56,6 +56,7 @@ public class Purchase {
         this.user = user;
         this.route = route;
         this.totalPrice = route.getPrice();
+        this.date = new Date();
         this.itemServiceList = new ArrayList<ItemService>();
     }
 

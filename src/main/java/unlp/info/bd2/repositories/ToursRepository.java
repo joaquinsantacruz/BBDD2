@@ -1,5 +1,6 @@
 package unlp.info.bd2.repositories;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,4 +43,5 @@ public interface ToursRepository {
     List<Purchase> getAllPurchasesOfUsername(String username);
     List<User> getUserSpendingMoreThan(float mount);
     List<Purchase> getTop10MoreExpensivePurchasesInServices();
+    Long getCountOfPurchasesBetweenDates(Date start, Date end);
 }
