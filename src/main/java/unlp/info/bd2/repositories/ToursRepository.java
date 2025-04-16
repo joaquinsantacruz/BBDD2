@@ -17,6 +17,7 @@ public interface ToursRepository {
     void saveStop(Stop stop);
     void saveUser(User user);
     void updateRoute(Route route);
+    void removePurchase(Purchase purchase);
     List<Stop> getStopByNameStart(String name);
     Optional<Route> getRouteById(Long id);
     List<Route> getRoutesBelowPrice(float price);

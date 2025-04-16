@@ -46,7 +46,7 @@ public class Purchase {
     @JoinColumn(name = "review_id")
     private Review review;
 
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.REMOVE)
     private List<ItemService> itemServiceList;
 
     public Purchase(){}

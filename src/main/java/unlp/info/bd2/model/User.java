@@ -64,6 +64,10 @@ public class User {
         this.purchaseList.add(purchase);
     }
 
+    public void removePurchase(Purchase purchase){
+        this.purchaseList.remove(purchase);
+    }
+    
     public Long getId() {
         return id;
     }

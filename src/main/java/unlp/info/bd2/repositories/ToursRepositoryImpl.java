@@ -77,7 +77,11 @@ public class ToursRepositoryImpl implements ToursRepository{
     public void updateRoute(Route route) {
         this.getSession().merge(route);
     }
-    
+
+    @Override
+    public void removePurchase(Purchase purchase){
+        this.getSession().remove(purchase);
+    }
 
     @Override
     public void saveStop(Stop stop) {

@@ -195,13 +195,14 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void deletePurchase(Purchase purchase) throws ToursException {
-
+        purchase.getUser().removePurchase(purchase);
+        purchase.getItemServiceList().stream().forEach(item -> item.getService().removeItem(item));
+        this.repository.removePurchase(purchase);
     }
 
     @Override
     @Transactional
     public void deleteUser(User user) throws ToursException {
-        // TODO Auto-generated method stub
         
     }
 

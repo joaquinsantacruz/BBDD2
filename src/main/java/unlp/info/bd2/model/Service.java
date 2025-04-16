@@ -54,6 +54,10 @@ public class Service {
         this.itemServiceList.add(item);
     }
 
+    public void removeItem(ItemService item){
+        this.itemServiceList.remove(item);
+    }
+
     public Long getId() {
         return id;
     }
