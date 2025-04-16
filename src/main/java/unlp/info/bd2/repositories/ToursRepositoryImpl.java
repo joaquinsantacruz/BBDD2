@@ -9,7 +9,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import unlp.info.bd2.model.*;
-import unlp.info.bd2.utils.ToursException;
 
 public class ToursRepositoryImpl implements ToursRepository{
 
@@ -98,10 +97,7 @@ public class ToursRepositoryImpl implements ToursRepository{
 
     @Override
     public Optional<Route> getRouteById(Long id) {
-        return this.getSession().createQuery("FROM Route r WHERE r.id = :id", Route.class)
-                                .setParameter("id", id)
-                                .getResultStream()
-                                .findFirst();
+        return Optional.ofNullable(this.getSession().get(Route.class, id));
     }
 
     @Override
@@ -135,6 +131,11 @@ public class ToursRepositoryImpl implements ToursRepository{
     public Optional<Supplier> getSupplierById(Long id){
         Supplier supplier = this.getSession().get(Supplier.class, id);
         return Optional.ofNullable(supplier);
+    }
+
+    @Override
+    public Optional<Service> getServiceById(Long id){
+        return Optional.ofNullable(this.getSession().get(Service.class, id));
     }
 
     @Override

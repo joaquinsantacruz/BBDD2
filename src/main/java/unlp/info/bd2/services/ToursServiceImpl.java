@@ -4,10 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.PersistenceException;
 import unlp.info.bd2.model.DriverUser;
 import unlp.info.bd2.model.ItemService;
 import unlp.info.bd2.model.Purchase;
@@ -122,15 +120,15 @@ public class ToursServiceImpl implements ToursService{
             throw new ToursException("No puede realizarse la compra");
         }
 
-        try{
-            Purchase purchase = new Purchase(code, user, route);
-            user.addPurchase(purchase);
-            repository.savePurchase(purchase);
-            return purchase;
-        }
-        catch(ConstraintViolationException e){
+        if(this.repository.getPurchaseByCode(code).isPresent()){
             throw new ToursException("Constraint Violation");
         }
+
+        Purchase purchase = new Purchase(code, user, route);
+        user.addPurchase(purchase);
+        repository.savePurchase(purchase);
+        return purchase;
+        
     }
 
     @Override
@@ -138,6 +136,10 @@ public class ToursServiceImpl implements ToursService{
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
         if(this.repository.purchasesOnRoute(route) == route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
+        }
+
+        if(this.repository.getPurchaseByCode(code).isPresent()){
+            throw new ToursException("Constraint Violation");
         }
 
         Purchase purchase = new Purchase(code, user, route, date);
@@ -165,13 +167,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
-        try {
+        if(this.repository.getSupplierByAuthorizationNumber(authorizationNumber).isPresent()){
+            throw new ToursException("Constraint Violation");
+        }
+
         Supplier supplier = new Supplier(businessName, authorizationNumber);
         repository.saveSupplier(supplier);
         return supplier;
-        } catch (PersistenceException e) {
-            throw new ToursException("Constraint Violation");
-        }
     }
 
     @Override
@@ -185,13 +187,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
-        try {
-            User user = new User(username, password, fullName, email, birthdate, phoneNumber);
-            repository.saveUser(user);
-            return user;
-        } catch (Exception e) {
-            throw new ToursException("Error creating user: " + e.getMessage());
+        if(this.repository.getUserByUsername(username).isPresent()){
+            throw new ToursException("Constraint Violation");
         }
+
+        User user = new User(username, password, fullName, email, birthdate, phoneNumber);
+        repository.saveUser(user);
+        return user;
     }
 
     @Override
@@ -345,11 +347,12 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        try {
-            return this.repository.updateServicePriceById(id, newPrice);
-        } catch (Exception e) {
-            throw new ToursException("No existe el producto");
+        if(!this.repository.getServiceById(id).isPresent()){
+            throw new ToursException("Constraint Violation");
         }
+
+        return this.repository.updateServicePriceById(id, newPrice);
+        
     }
 
 
