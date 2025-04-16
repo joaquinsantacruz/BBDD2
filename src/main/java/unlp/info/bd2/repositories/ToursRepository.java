@@ -39,4 +39,7 @@ public interface ToursRepository {
     List<User> getUserSpendingMoreThan(float amount);
     List<User> getTop5UsersMorePurchases();
     void deleteUser(User user);
+    Long purchasesOnRoute(Route route);
+    boolean isTourGuideOnARoute(User user);
+    List<TourGuideUser> getTourGuidesWithRating1();
 }

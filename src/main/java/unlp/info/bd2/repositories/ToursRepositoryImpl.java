@@ -59,7 +59,7 @@ public class ToursRepositoryImpl implements ToursRepository{
     }
 
     public Optional<User> getUserByUsername(String username) {
-        return this.getSession().createQuery("FROM User WHERE username = :username AND active = true", User.class)
+        return this.getSession().createQuery("FROM User WHERE username = :username", User.class)
                                 .setParameter("username", username)
                                 .uniqueResultOptional();
     }
@@ -272,20 +272,64 @@ public class ToursRepositoryImpl implements ToursRepository{
                     .getResultList();
     }
 
+    // @Override
+    // public void deleteUser(User user) {
+    //     // Si el usuario tiene compras, no se toca
+    //     // Si el usuario no tiene compras y active = true, se pone active = false
+    //     // Si el usuario no tiene compras y active = false, se elimina fisicamente y en cascada se eliminan sus compras e items
+    //     if (user.getPurchaseList().isEmpty()) {
+    //         if (user.isActive()) {
+    //             user.setActive(false);
+    //             this.updateUser(user);
+    //         } else {
+    //             this.getSession().remove(user);
+    //         }
+    //     } else {
+    //         System.out.println("El usuario tiene compras, no se puede eliminar.");
+    //     }
+    // }
+
     @Override
     public void deleteUser(User user) {
-        // Si el usuario tiene compras, no se toca
-        // Si el usuario no tiene compras y active = true, se pone active = false
-        // Si el usuario no tiene compras y active = false, se elimina fisicamente y en cascada se eliminan sus compras e items
+        // Si el usuario tiene compras, active = false
+        // Si el usuario no tiene compras, se elimina fisicamente y en cascada se eliminan sus compras e items
         if (user.getPurchaseList().isEmpty()) {
-            if (user.isActive()) {
-                user.setActive(false);
-                this.updateUser(user);
-            } else {
-                this.getSession().remove(user);
-            }
+            this.getSession().remove(user);
         } else {
-            System.out.println("El usuario tiene compras, no se puede eliminar.");
+            user.setActive(false);
+            this.updateUser(user);
         }
+    }
+
+    @Override
+    public Long purchasesOnRoute(Route route){
+        return this.getSession().createQuery("SELECT count(*) FROM Purchase p WHERE p.route = :route", Long.class)
+                                .setParameter("route", route)
+                                .getSingleResult();
+    }
+
+    @Override
+    public boolean isTourGuideOnARoute(User user) {
+        String hql = """
+                SELECT COUNT(r) > 0 
+                FROM Route r 
+                WHERE :user MEMBER OF r.tourGuideList
+                """;
+        return this.getSession()
+                    .createQuery(hql, Boolean.class)
+                    .setParameter("user", user)
+                    .getSingleResult();
+    }
+
+    @Override
+    public List<TourGuideUser> getTourGuidesWithRating1() {
+        String hql = """
+                SELECT DISTINCT p.tourGuide 
+                FROM Purchase p 
+                WHERE p.review.rating = 1
+                """;
+        return this.getSession()
+                    .createQuery(hql, TourGuideUser.class)
+                    .getResultList();
     }
 }

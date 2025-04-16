@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.PersistenceException;
@@ -93,6 +94,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) throws ToursException {
         DriverUser driverUser = new DriverUser(username, password, fullName, email, birthdate, phoneNumber, expedient);
         repository.saveDriverUser(driverUser);
@@ -100,15 +102,32 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
-        Purchase purchase = new Purchase(code, user, route);
-        repository.savePurchase(purchase);
-        return purchase;
+        if(this.repository.purchasesOnRoute(route) > route.getMaxNumberUsers()){
+            throw new ToursException("No puede realizarse la compra");
+        }
+
+        try{
+            Purchase purchase = new Purchase(code, user, route);
+            user.addPurchase(purchase);
+            repository.savePurchase(purchase);
+            return purchase;
+        }
+        catch(ConstraintViolationException e){
+            throw new ToursException("Constraint Violation");
+        }
     }
 
     @Override
+    @Transactional
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
+        if(this.repository.purchasesOnRoute(route) == route.getMaxNumberUsers()){
+            throw new ToursException("No puede realizarse la compra");
+        }
+
         Purchase purchase = new Purchase(code, user, route, date);
+        user.addPurchase(purchase);
         repository.savePurchase(purchase);
         return purchase;
     }
@@ -141,6 +160,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) throws ToursException {
         TourGuideUser tourGuideUser = new TourGuideUser(username, password, fullName, email, birthdate, phoneNumber, education);
         repository.saveTourGuideUser(tourGuideUser);
@@ -148,6 +168,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
         try {
             User user = new User(username, password, fullName, email, birthdate, phoneNumber);
@@ -166,10 +187,20 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public void deleteUser(User user) throws ToursException {
+        if (!user.isActive()) {
+            throw new ToursException("El usuario se ecuentra desactivado");            
+        }
+
+        // Preguntar, muy dudoso
+        if (user instanceof TourGuideUser && this.repository.isTourGuideOnARoute(user)) {
+            throw new ToursException("El usuario no puede ser desactivado");
+        }
+
         this.repository.deleteUser(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Purchase> getAllPurchasesOfUsername(String username) {
         return this.repository.getAllPurchasesOfUsername(username);
     }
@@ -253,6 +284,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> getTop5UsersMorePurchases() {
         return this.repository.getTop5UsersMorePurchases();
     }
@@ -263,22 +295,25 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TourGuideUser> getTourGuidesWithRating1() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.repository.getTourGuidesWithRating1();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> getUserById(Long id) throws ToursException {
         return this.repository.getUserById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> getUserByUsername(String username) throws ToursException {
         return this.repository.getUserByUsername(username);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
         return this.repository.getUserSpendingMoreThan(mount);
     }
@@ -293,6 +328,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) throws ToursException {
         return this.repository.updateUser(user);
     }
