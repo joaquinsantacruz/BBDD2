@@ -42,11 +42,11 @@ public class Purchase {
     @JoinColumn(name = "route_id")
     private Route route;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne
     @JoinColumn(name = "review_id")
     private Review review;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "purchase")
     private List<ItemService> itemServiceList;
 
     public Purchase(){}

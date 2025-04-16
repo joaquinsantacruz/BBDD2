@@ -20,7 +20,7 @@ public class DriverUser extends User {
     @Column    
     private String expedient;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany
     @JoinTable(
         name = "drivers_routes", 
         joinColumns = @JoinColumn(name = "driver_id"),

@@ -76,7 +76,6 @@ public class ToursServiceImpl implements ToursService{
         route.addDriver(driverUser);
         driverUser.addRoute(route);
         
-        this.repository.updateUser(driverUser);
     }
 
     @Override
@@ -98,14 +97,20 @@ public class ToursServiceImpl implements ToursService{
         route.addTourGuide(tourGuideUser);
         tourGuideUser.addRoute(route);
         
-        this.repository.updateUser(tourGuideUser);
     }
 
     @Override
+    @Transactional
     public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) throws ToursException {
         DriverUser driverUser = new DriverUser(username, password, fullName, email, birthdate, phoneNumber, expedient);
         repository.saveDriverUser(driverUser);
         return driverUser;
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(User user) throws ToursException {
+        return this.repository.updateUser(user);
     }
 
     @Override
@@ -168,6 +173,7 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) throws ToursException {
         TourGuideUser tourGuideUser = new TourGuideUser(username, password, fullName, email, birthdate, phoneNumber, education);
         repository.saveTourGuideUser(tourGuideUser);
@@ -187,33 +193,39 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional
     public void deletePurchase(Purchase purchase) throws ToursException {
 
     }
 
     @Override
+    @Transactional
     public void deleteUser(User user) throws ToursException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Purchase> getAllPurchasesOfUsername(String username) {
         return this.repository.getAllPurchasesOfUsername(username);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getCountOfPurchasesBetweenDates(Date start, Date end) {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long getMaxStopOfRoutes() {
         return this.repository.getMaxStopOfRoutes();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Service getMostDemandedService() {
         return this.repository.getMostDemandedService();
     }
@@ -225,93 +237,111 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Route> getRouteById(Long id) {
         return this.repository.getRouteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Route> getRoutesBelowPrice(float price) {
         return this.repository.getRoutesBelowPrice(price);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Route> getRoutesWithStop(Stop stop) {
         return this.repository.getRoutesWithStop(stop);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Route> getRoutsNotSell() {
         return this.repository.getRoutesNotSell();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Service> getServiceByNameAndSupplierId(String name, Long id) throws ToursException {
         return this.repository.getServiceByNameAndSupplierId(name, id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Service> getServiceNoAddedToPurchases() {
         return this.repository.getServiceNoAddedToPurchases();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Stop> getStopByNameStart(String name) {
         return this.repository.getStopByNameStart(name);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
         return this.repository.getSupplierByAuthorizationNumber(authorizationNumber);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierById(Long id) {
         return this.repository.getSupplierById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Purchase> getTop10MoreExpensivePurchasesInServices() {
         return this.repository.getTop10MoreExpensivePurchasesInServices();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Route> getTop3RoutesWithMaxRating() {
         return this.repository.getTop3RoutesWithMaxRating();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> getTop5UsersMorePurchases() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
         return this.repository.getTopNSuppliersInPurchases(n);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TourGuideUser> getTourGuidesWithRating1() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> getUserById(Long id) throws ToursException {
         return this.repository.getUserById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> getUserByUsername(String username) throws ToursException {
         return this.repository.getUserByUsername(username);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
         return this.repository.getUserSpendingMoreThan(mount);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
         try {
             return this.repository.updateServicePriceById(id, newPrice);
@@ -320,9 +350,5 @@ public class ToursServiceImpl implements ToursService{
         }
     }
 
-    @Override
-    public User updateUser(User user) throws ToursException {
-        return this.repository.updateUser(user);
-    }
 
 }

@@ -205,8 +205,9 @@ public class ToursRepositoryImpl implements ToursRepository{
     @Override
     public List<Route> getTop3RoutesWithMaxRating() {
         String hql = """
+                SELECT p.route
                 FROM Purchase p
-                WHERE p.review.rating IS NOT NULL
+                WHERE p.review IS NOT NULL
                 GROUP BY p.route
                 ORDER BY avg(p.review.rating) DESC
                 """;
