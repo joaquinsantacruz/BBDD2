@@ -201,6 +201,10 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void deleteUser(User user) throws ToursException {
+        Optional<User> opUser = this.repository.getUserByUsername(user.getUsername());
+        if(!opUser.isPresent())
+            throw new ToursException("El usuario no existe");
+            
         if (!user.isActive()) {
             throw new ToursException("El usuario se encuentra desactivado");            
         }

@@ -243,7 +243,7 @@ public class ToursRepositoryImpl implements ToursRepository{
                 JOIN rev.purchase p
                 JOIN p.route r              
                 JOIN r.tourGuideList tg
-                WHERE p.review.rating = 1
+                WHERE rev.rating = 1
                 """;
         return this.getSession()
                     .createQuery(hql, TourGuideUser.class)
