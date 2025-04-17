@@ -88,6 +88,8 @@ public class ToursServiceImpl implements ToursService{
             TourGuideUser tourGuide = opTourGuide.get();
             route.addTourGuide(tourGuide);
             this.repository.merge(route);
+            tourGuide.addRoute(route);
+            this.repository.save(tourGuide);
         }
 
         
@@ -200,15 +202,19 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public void deleteUser(User user) throws ToursException {
         if (!user.isActive()) {
-            throw new ToursException("El usuario se ecuentra desactivado");            
+            throw new ToursException("El usuario se encuentra desactivado");            
         }
 
-        // Preguntar, muy dudoso
-        if (user instanceof TourGuideUser && this.repository.isTourGuideOnARoute(user)) {
+        if (!user.canBeDeactivated()) {
             throw new ToursException("El usuario no puede ser desactivado");
         }
 
-        this.repository.remove(user);
+        if (!user.canBeRemoved()){
+            user.setActive(false);
+            this.repository.merge(user);
+        } else {
+            this.repository.remove(user);
+        }
     }
 
     @Override

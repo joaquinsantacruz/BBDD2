@@ -36,7 +36,6 @@ public interface ToursRepository {
     List<Purchase> getTop10MoreExpensivePurchasesInServices();
     Long getCountOfPurchasesBetweenDates(Date start, Date end);
     List<User> getTop5UsersMorePurchases();
-    boolean isTourGuideOnARoute(User user);
     List<TourGuideUser> getTourGuidesWithRating1();
     Optional<TourGuideUser> getTourGuideByUsername(String username);
     Optional<DriverUser> getDriverUserByUsername(String username);

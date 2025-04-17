@@ -178,36 +178,6 @@ public class ToursRepositoryImpl implements ToursRepository{
         return this.getUserByUsername(username).get().getPurchaseList();
     }
     
-    // Gastado en todas las compras de un usuario = 7 users
-    // @Override
-    // public List<User> getUserSpendingMoreThan(float amount) {
-    //     String hql = """
-    //             SELECT p.user 
-    //             FROM Purchase p 
-    //             GROUP BY p.user 
-    //             HAVING SUM(p.totalPrice) > :amount
-    //             """;
-    //     return this.getSession()
-    //                 .createQuery(hql, User.class)
-    //                 .setParameter("amount", amount)
-    //                 .getResultList();
-    // }
-
-    // Gastado en una sola compra con mayor estricto = 5 users
-    // @Override
-    // public List<User> getUserSpendingMoreThan(float amount) {
-    //     String hql = """
-    //             SELECT p.user 
-    //             FROM Purchase p 
-    //             WHERE p.totalPrice > :amount
-    //             """;
-    //     return this.getSession()
-    //                 .createQuery(hql, User.class)
-    //                 .setParameter("amount", amount)
-    //                 .getResultList();
-    // }
-
-    // Gastado en una sola compra con mayor o igual = 6 users
     @Override
     public List<User> getUserSpendingMoreThan(float amount) {
         String hql = """
@@ -234,36 +204,6 @@ public class ToursRepositoryImpl implements ToursRepository{
                     .setMaxResults(5)
                     .getResultList();
     }
-
-    // @Override
-    // public void deleteUser(User user) {
-    //     // Si el usuario tiene compras, no se toca
-    //     // Si el usuario no tiene compras y active = true, se pone active = false
-    //     // Si el usuario no tiene compras y active = false, se elimina fisicamente y en cascada se eliminan sus compras e items
-    //     if (user.getPurchaseList().isEmpty()) {
-    //         if (user.isActive()) {
-    //             user.setActive(false);
-    //             this.updateUser(user);
-    //         } else {
-    //             this.getSession().remove(user);
-    //         }
-    //     } else {
-    //         System.out.println("El usuario tiene compras, no se puede eliminar.");
-    //     }
-    // }
-
-    //@Override
-    //public void deleteUser(User user) {
-
-    /*     // Si el usuario tiene compras, active = false
-        // Si el usuario no tiene compras, se elimina fisicamente y en cascada se eliminan sus compras e items
-        if (user.getPurchaseList().isEmpty()) {
-            this.getSession().remove(user);
-        } else {
-            user.setActive(false);
-            this.updateUser(user);
-        }*/
-    //}
 
     @Override
     public Long purchasesOnRoute(Route route){
@@ -293,18 +233,6 @@ public class ToursRepositoryImpl implements ToursRepository{
                                 .setParameter("start", start)
                                 .setParameter("end", end)
                                 .getSingleResult();
-    }
-
-    public boolean isTourGuideOnARoute(User user) {
-        String hql = """
-                SELECT COUNT(r) > 0 
-                FROM Route r 
-                WHERE :user MEMBER OF r.tourGuideList
-                """;
-        return this.getSession()
-                    .createQuery(hql, Boolean.class)
-                    .setParameter("user", user)
-                    .getSingleResult();
     }
 
     @Override

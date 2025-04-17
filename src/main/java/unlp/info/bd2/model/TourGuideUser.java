@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -55,4 +54,11 @@ public class TourGuideUser extends User {
         this.routes = routes;
     }
 
+    public boolean canBeDeactivated(){
+        return this.routes.isEmpty();
+    }
+
+    public boolean canBeRemoved(){
+        return this.routes.isEmpty();
+    }
 }
