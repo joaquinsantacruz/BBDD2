@@ -1,6 +1,5 @@
 package unlp.info.bd2.services;
 
-import java.sql.Driver;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -204,7 +203,7 @@ public class ToursServiceImpl implements ToursService{
         Optional<User> opUser = this.repository.getUserByUsername(user.getUsername());
         if(!opUser.isPresent())
             throw new ToursException("El usuario no existe");
-            
+
         if (!user.isActive()) {
             throw new ToursException("El usuario se encuentra desactivado");            
         }
