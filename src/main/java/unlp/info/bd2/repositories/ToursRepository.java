@@ -8,16 +8,11 @@ import unlp.info.bd2.model.*;
 
 public interface ToursRepository {
 
-    void saveRoute(Route route);
-    void saveItem(ItemService item);
-    void savePurchase(Purchase purchase);
-    void saveDriverUser(DriverUser driverUser);
-    void saveTourGuideUser(TourGuideUser tourGuideUser);
-    void saveSupplier(Supplier supplier);
-    void saveStop(Stop stop);
-    void saveUser(User user);
-    void updateRoute(Route route);
-    void removePurchase(Purchase purchase);
+    void save(Object o);
+    void merge(Object o);
+    void remove(Object o);
+
+
     List<Stop> getStopByNameStart(String name);
     Optional<Route> getRouteById(Long id);
     List<Route> getRoutesBelowPrice(float price);
@@ -28,24 +23,21 @@ public interface ToursRepository {
     Optional<User> getUserById(Long id);
     Optional<Service> getServiceById(Long id);
     Optional<User> getUserByUsername(String username);
-    User updateUser(User user);    
-    void saveService(Service service);
     Optional<Supplier> getSupplierById(Long id);
     Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber);
     List<Supplier> getTopNSuppliersInPurchases(int n);
     Optional<Service> getServiceByNameAndSupplierId(String name, Long id);
     Service getMostDemandedService();
     List<Service> getServiceNoAddedToPurchases();
-    Service updateServicePriceById(Long id, float newPrice);
     Optional<Purchase> getPurchaseByCode(String code);
     Long purchasesOnRoute(Route route);
-    void saveReview(Review review);
     List<Purchase> getAllPurchasesOfUsername(String username);
     List<User> getUserSpendingMoreThan(float mount);
     List<Purchase> getTop10MoreExpensivePurchasesInServices();
     Long getCountOfPurchasesBetweenDates(Date start, Date end);
     List<User> getTop5UsersMorePurchases();
-    void deleteUser(User user);
     boolean isTourGuideOnARoute(User user);
     List<TourGuideUser> getTourGuidesWithRating1();
+    Optional<TourGuideUser> getTourGuideByUsername(String username);
+    Optional<DriverUser> getDriverUserByUsername(String username);
 }

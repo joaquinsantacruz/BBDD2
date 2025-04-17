@@ -1,10 +1,10 @@
 package unlp.info.bd2.services;
 
+import java.sql.Driver;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import unlp.info.bd2.model.DriverUser;
@@ -34,7 +34,7 @@ public class ToursServiceImpl implements ToursService{
         ItemService item = new ItemService(quantity, purchase, service);
         service.addItem(item);
         purchase.addItem(item, service.getPrice()*quantity);
-        repository.saveItem(item);
+        repository.save(item);
         return item;
     }
 
@@ -43,7 +43,7 @@ public class ToursServiceImpl implements ToursService{
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
         Review review = new Review(rating, comment, purchase);
         purchase.setReview(review);
-        this.repository.saveReview(review);
+        this.repository.save(review);
         return review;
     }
 
@@ -52,59 +52,56 @@ public class ToursServiceImpl implements ToursService{
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
         Service service = new Service(name, price, description, supplier);
         supplier.addSevice(service);
-        repository.saveService(service);
+        repository.save(service);
         return service;
     }
 
     @Override
     @Transactional
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
-        Optional<User> optionalUser = this.getUserByUsername(username);
-        if(!optionalUser.isPresent()){
-            throw new ToursException("No pudo realizarse la asignación");
+        Optional<DriverUser> opDriverUser = this.repository.getDriverUserByUsername(username);
+        Optional<Route> optionalRoute = this.getRouteById(idRoute);
+        
+        
+        if(opDriverUser.isPresent() && optionalRoute.isPresent()){
+            Route route = optionalRoute.get();
+            DriverUser driver = opDriverUser.get();
+            route.addDriver(driver);
+            this.repository.merge(route);
         }
 
-        Optional<Route> optionalRoute = this.getRouteById(idRoute);
+        
         if(!optionalRoute.isPresent()){
             throw new ToursException("No pudo realizarse la asignación");
         }
-
-        DriverUser driverUser = (DriverUser) optionalUser.get();
-        Route route = optionalRoute.get();
-
-        route.addDriver(driverUser);
-        driverUser.addRoute(route);
-        
-        this.repository.updateRoute(route);
     }
 
     @Override
     @Transactional
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
-        Optional<User> optionalUser = this.getUserByUsername(username);
-        if(!optionalUser.isPresent()){
-            throw new ToursException("No pudo realizarse la asignación");
+        Optional<TourGuideUser> opTourGuide = this.repository.getTourGuideByUsername(username);
+        Optional<Route> optionalRoute = this.getRouteById(idRoute);
+        
+        
+        if(opTourGuide.isPresent() && optionalRoute.isPresent()){
+            Route route = optionalRoute.get();
+            TourGuideUser tourGuide = opTourGuide.get();
+            route.addTourGuide(tourGuide);
+            this.repository.merge(route);
         }
 
-        Optional<Route> optionalRoute = this.getRouteById(idRoute);
+        
         if(!optionalRoute.isPresent()){
             throw new ToursException("No pudo realizarse la asignación");
         }
 
-        TourGuideUser tourGuideUser = (TourGuideUser) optionalUser.get();
-        Route route = optionalRoute.get();
-
-        route.addTourGuide(tourGuideUser);
-        tourGuideUser.addRoute(route);
-        
-        this.repository.updateRoute(route);
     }
 
     @Override
     @Transactional
     public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) throws ToursException {
         DriverUser driverUser = new DriverUser(username, password, fullName, email, birthdate, phoneNumber, expedient);
-        repository.saveDriverUser(driverUser);
+        repository.save(driverUser);
         return driverUser;
     }
 
@@ -121,7 +118,7 @@ public class ToursServiceImpl implements ToursService{
 
         Purchase purchase = new Purchase(code, user, route);
         user.addPurchase(purchase);
-        repository.savePurchase(purchase);
+        repository.save(purchase);
         return purchase;
         
     }
@@ -139,7 +136,7 @@ public class ToursServiceImpl implements ToursService{
         
         Purchase purchase = new Purchase(code, user, route, date);
         user.addPurchase(purchase);
-        repository.savePurchase(purchase);
+        repository.save(purchase);
         return purchase;
     }
 
@@ -147,7 +144,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops) throws ToursException {
         Route route = new Route(name, price, totalKm, maxNumberOfUsers, stops);
-        repository.saveRoute(route);
+        repository.save(route);
         return route;
     }
 
@@ -155,7 +152,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Stop createStop(String name, String description) throws ToursException {
         Stop stop = new Stop(name, description);
-        this.repository.saveStop(stop);
+        this.repository.save(stop);
         return stop;
     }
 
@@ -167,7 +164,7 @@ public class ToursServiceImpl implements ToursService{
         }
 
         Supplier supplier = new Supplier(businessName, authorizationNumber);
-        repository.saveSupplier(supplier);
+        repository.save(supplier);
         return supplier;
     }
 
@@ -175,7 +172,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) throws ToursException {
         TourGuideUser tourGuideUser = new TourGuideUser(username, password, fullName, email, birthdate, phoneNumber, education);
-        repository.saveTourGuideUser(tourGuideUser);
+        repository.save(tourGuideUser);
         return tourGuideUser;
     }
 
@@ -187,7 +184,7 @@ public class ToursServiceImpl implements ToursService{
         }
 
         User user = new User(username, password, fullName, email, birthdate, phoneNumber);
-        repository.saveUser(user);
+        repository.save(user);
         return user;
     }
 
@@ -196,7 +193,7 @@ public class ToursServiceImpl implements ToursService{
     public void deletePurchase(Purchase purchase) throws ToursException {
         purchase.getUser().removePurchase(purchase);
         purchase.getItemServiceList().stream().forEach(item -> item.getService().removeItem(item));
-        this.repository.removePurchase(purchase);
+        this.repository.remove(purchase);
     }
 
     @Override
@@ -211,7 +208,14 @@ public class ToursServiceImpl implements ToursService{
             throw new ToursException("El usuario no puede ser desactivado");
         }
 
-        this.repository.deleteUser(user);
+        this.repository.remove(user);
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(User user) throws ToursException {
+        this.repository.merge(user);
+        return user;
     }
 
     @Override
@@ -353,14 +357,12 @@ public class ToursServiceImpl implements ToursService{
             throw new ToursException("Constraint Violation");
         }
 
-        return this.repository.updateServicePriceById(id, newPrice);
+        Optional<Service> opService = this.repository.getServiceById(id);
+        Service service = opService.get();
+        service.setPrice(newPrice);
+        this.repository.merge(service);
+        return service;
         
-    }
-
-    @Override
-    @Transactional
-    public User updateUser(User user) throws ToursException {
-        return this.repository.updateUser(user);
     }
 
 }

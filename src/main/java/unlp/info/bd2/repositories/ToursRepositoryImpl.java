@@ -20,44 +20,20 @@ public class ToursRepositoryImpl implements ToursRepository{
     }
 
     @Override
-    public void saveItem(ItemService item) {
-        this.getSession().persist(item);
+    public void save(Object o){
+        this.getSession().persist(o);
     }
 
     @Override
-    public void savePurchase(Purchase purchase) {
-        this.getSession().persist(purchase);
+    public void merge(Object o){
+        this.getSession().merge(o);
     }
 
     @Override
-    public void saveReview(Review review){
-        this.getSession().persist(review);
+    public void remove(Object o){
+        this.getSession().remove(o);
     }
 
-    @Override
-    public void saveRoute(Route route) {
-        this.getSession().persist(route);
-    }
-
-    @Override
-    public void saveDriverUser(DriverUser driverUser) {
-        this.getSession().persist(driverUser);
-    }
-
-    @Override
-    public void saveTourGuideUser(TourGuideUser tourGuideUser){
-        this.getSession().persist(tourGuideUser);
-    }
-
-    @Override
-    public void saveSupplier(Supplier supplier){
-        this.getSession().persist(supplier);
-    }
-
-    @Override
-    public void saveUser(User user){
-        this.getSession().persist(user);
-    }
 
     public Optional<User> getUserById(Long id){
         return Optional.ofNullable(this.getSession().get(User.class, id));
@@ -69,25 +45,7 @@ public class ToursRepositoryImpl implements ToursRepository{
                                 .uniqueResultOptional();
     }
 
-    public User updateUser(User user) {
-        return this.getSession().merge(user);
-    }
 
-    @Override
-    public void updateRoute(Route route) {
-        this.getSession().merge(route);
-    }
-
-    @Override
-    public void removePurchase(Purchase purchase){
-        this.getSession().remove(purchase);
-    }
-
-    @Override
-    public void saveStop(Stop stop) {
-        this.getSession().persist(stop);
-    }
-    
     @Override
     public List<Stop> getStopByNameStart(String name) {
         return this.getSession().createQuery("FROM Stop s WHERE s.name LIKE :name", Stop.class)
@@ -121,12 +79,6 @@ public class ToursRepositoryImpl implements ToursRepository{
         return amount.longValue();
     }
     
-    @Override
-    public void saveService(Service service){
-        Session session = this.sessionFactory.getCurrentSession();
-        session.persist(service);
-    }
-
     @Override
     public Optional<Supplier> getSupplierById(Long id){
         Supplier supplier = this.getSession().get(Supplier.class, id);
@@ -185,13 +137,6 @@ public class ToursRepositoryImpl implements ToursRepository{
         return this.getSession()
                     .createQuery(hql, Service.class)
                     .getResultList();
-    }
-
-    @Override
-    public Service updateServicePriceById(Long id, float newPrice){
-        Service service = this.getSession().get(Service.class, id);
-        service.setPrice(newPrice);
-        return service;
     }
 
     @Override
@@ -307,17 +252,18 @@ public class ToursRepositoryImpl implements ToursRepository{
     //     }
     // }
 
-    @Override
-    public void deleteUser(User user) {
-        // Si el usuario tiene compras, active = false
+    //@Override
+    //public void deleteUser(User user) {
+
+    /*     // Si el usuario tiene compras, active = false
         // Si el usuario no tiene compras, se elimina fisicamente y en cascada se eliminan sus compras e items
         if (user.getPurchaseList().isEmpty()) {
             this.getSession().remove(user);
         } else {
             user.setActive(false);
             this.updateUser(user);
-        }
-    }
+        }*/
+    //}
 
     @Override
     public Long purchasesOnRoute(Route route){
@@ -364,12 +310,27 @@ public class ToursRepositoryImpl implements ToursRepository{
     @Override
     public List<TourGuideUser> getTourGuidesWithRating1() {
         String hql = """
-                SELECT DISTINCT p.tourGuide 
-                FROM Purchase p 
+                SELECT DISTINCT tg
+                FROM Review rev
+                JOIN rev.purchase p
+                JOIN p.route r              
+                JOIN r.tourGuideList tg
                 WHERE p.review.rating = 1
                 """;
         return this.getSession()
                     .createQuery(hql, TourGuideUser.class)
                     .getResultList();
+    }
+
+    public Optional<TourGuideUser> getTourGuideByUsername(String username){
+        return this.getSession().createQuery("FROM TourGuideUser u WHERE u.username = :username", TourGuideUser.class)
+                                .setParameter("username", username)
+                                .uniqueResultOptional();
+    }
+
+    public Optional<DriverUser> getDriverUserByUsername(String username){
+        return this.getSession().createQuery("FROM DriverUser u WHERE u.username = :username", DriverUser.class)
+                                .setParameter("username", username)
+                                .uniqueResultOptional();
     }
 }
