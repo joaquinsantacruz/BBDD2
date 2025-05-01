@@ -34,40 +34,38 @@ public class Purchase {
     @Column
     private Date date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {})
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {})
     @JoinColumn(name = "route_id")
     private Route route;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "review_id")
     private Review review;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<ItemService> itemServiceList;
+    @OneToMany(mappedBy = "purchase", cascade = {CascadeType.REMOVE, CascadeType.PERSIST},  fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ItemService> itemServiceList = new ArrayList<ItemService>();
 
     public Purchase(){}
 
-    public Purchase(String code, User user, Route route) {
+    
+    public Purchase(String code, User user, Route route){
         this.code = code;
         this.user = user;
         this.route = route;
         this.totalPrice = route.getPrice();
         this.date = new Date();
-        this.itemServiceList = new ArrayList<ItemService>();
     }
 
     public Purchase(String code, User user, Route route, Date date){
         this.code = code;
         this.user = user;
         this.route = route;
-        this.totalPrice = route.getPrice();
         this.date = date;
         this.totalPrice = route.getPrice();
-        this.itemServiceList = new ArrayList<ItemService>();
     }
 
     public void addItem(ItemService item, float price){

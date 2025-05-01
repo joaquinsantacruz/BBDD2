@@ -35,7 +35,7 @@ public class Route {
     @Column(name = "max_number_users", nullable = false)
     private int maxNumberUsers;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {})
     @JoinTable(
         name = "route_stop",
         joinColumns = @JoinColumn(name = "route_id"),

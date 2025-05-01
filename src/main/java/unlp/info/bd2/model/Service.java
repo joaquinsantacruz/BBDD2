@@ -32,10 +32,10 @@ public class Service {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {})
     private List<ItemService> itemServiceList;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {})
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 

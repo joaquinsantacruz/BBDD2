@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ public class DriverUser extends User {
     @Column    
     private String expedient;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {})
     @JoinTable(
         name = "driver_route", 
         joinColumns = @JoinColumn(name = "driver_id"),

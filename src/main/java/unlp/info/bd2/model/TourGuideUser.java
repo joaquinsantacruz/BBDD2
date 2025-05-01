@@ -20,7 +20,7 @@ public class TourGuideUser extends User {
     @Column
     private String education;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {})
     @JoinTable(
         name = "tourguide_route",
         joinColumns = @JoinColumn(name = "tour_guide_id"),

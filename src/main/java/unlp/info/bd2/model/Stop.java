@@ -25,7 +25,7 @@ public class Stop {
     @Column(nullable = false)
     private String description;
 
-    @ManyToMany(mappedBy = "stops", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "stops", fetch = FetchType.LAZY, cascade = {})
     private List<Route> routes;
 
     public Stop() {

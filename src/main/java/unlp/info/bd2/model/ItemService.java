@@ -21,15 +21,22 @@ public class ItemService {
     @Column(nullable = false)
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {})
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {})
     @JoinColumn(name = "service_id")
     private Service service;
 
     public ItemService(){}
+
+    public ItemService(Long id, int quantity, Purchase purchase, Service service){
+        this.id = id;
+        this.quantity = quantity;
+        this.purchase = purchase;
+        this.service = service;
+    }
     
     public ItemService(int quantity, Purchase purchase, Service service){
         this.quantity = quantity;
