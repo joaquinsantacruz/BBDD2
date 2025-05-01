@@ -142,4 +142,12 @@ public class User {
         this.active = active;
     }
 
+    public boolean canBeDeactivated(){
+        return true;
+    }
+
+    public boolean canBeRemoved(){
+        return this.purchaseList.isEmpty();
+    }
+
 }
