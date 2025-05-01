@@ -42,7 +42,7 @@ public class Purchase {
     @JoinColumn(name = "route_id")
     private Route route;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "review_id")
     private Review review;
 

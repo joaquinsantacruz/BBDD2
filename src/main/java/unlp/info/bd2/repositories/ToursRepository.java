@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import unlp.info.bd2.model.*;
+import unlp.info.bd2.utils.ToursException;
 
 public interface ToursRepository {
 
-    void save(Object o);
-    void merge(Object o);
-    void remove(Object o);
+    void save(Object o) throws ToursException;
+    void merge(Object o) throws ToursException;
+    void remove(Object o) throws ToursException;
 
 
     List<Stop> getStopByNameStart(String name);

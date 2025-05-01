@@ -26,17 +26,39 @@ public class ToursRepositoryImpl implements ToursRepository{
         try{
             this.getSession().persist(o);
         }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
         
     }
 
     @Override
-    public void merge(Object o){
-        this.getSession().merge(o);
+    public void merge(Object o) throws ToursException{
+        try{
+            this.getSession().merge(o);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
-    public void remove(Object o){
-        this.getSession().remove(o);
+    public void remove(Object o) throws ToursException{
+        try{
+            this.getSession().remove(o);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
 
