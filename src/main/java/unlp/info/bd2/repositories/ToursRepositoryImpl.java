@@ -94,7 +94,7 @@ public class ToursRepositoryImpl implements ToursRepository{
 
     @Override
     public List<Route> getRoutesWithStop(Stop stop) {
-        return this.getSession().createQuery("FROM Route r JOIN r.stops s WHERE s = :stop", Route.class)
+        return this.getSession().createQuery("SELECT DISTINCT r FROM Route r JOIN r.stops s WHERE s = :stop", Route.class)
                                 .setParameter("stop", stop)
                                 .getResultList();
     }
@@ -160,7 +160,7 @@ public class ToursRepositoryImpl implements ToursRepository{
 
     @Override
     public List<Service> getServiceNoAddedToPurchases(){
-        String hql = "FROM Service s WHERE s NOT IN (SELECT is.service FROM ItemService is)";
+        String hql = "FROM Service s WHERE size(s.itemServiceList) = 0";
         return this.getSession()
                     .createQuery(hql, Service.class)
                     .getResultList();
@@ -171,9 +171,8 @@ public class ToursRepositoryImpl implements ToursRepository{
         String hql = """
 
                         FROM Route r 
-                        WHERE NOT EXISTS (
-                            FROM Purchase p
-                            WHERE p.route = r)
+                        LEFT JOIN Purchase p ON p.route = r
+                        WHERE p IS NULL
                      """;
 
         return this.getSession().createQuery(hql, Route.class)
@@ -202,7 +201,9 @@ public class ToursRepositoryImpl implements ToursRepository{
     }
     
     public List<Purchase> getAllPurchasesOfUsername(String username) {
-        return this.getUserByUsername(username).get().getPurchaseList();
+        return this.getSession().createQuery("FROM Purchase p WHERE p.user.username = :username", Purchase.class)
+                                .setParameter("username", username)
+                                .getResultList();
     }
     
     @Override
@@ -244,9 +245,7 @@ public class ToursRepositoryImpl implements ToursRepository{
     public List<Purchase> getTop10MoreExpensivePurchasesInServices(){
         String hql = """
                 FROM Purchase p
-                JOIN p.itemServiceList is
-                JOIN is.service s
-                GROUP BY p
+                WHERE size(p.itemServiceList) > 0
                 ORDER BY p.totalPrice DESC
                 """;
         return this.getSession().createQuery(hql, Purchase.class)

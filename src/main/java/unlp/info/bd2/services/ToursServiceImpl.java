@@ -31,9 +31,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public ItemService addItemToPurchase(Service service, int quantity, Purchase purchase) throws ToursException {
         ItemService item = new ItemService(quantity, purchase, service);
-        service.addItem(item);
-        purchase.addItem(item, service.getPrice()*quantity);
-        repository.merge(purchase);
+        repository.save(purchase);
         return item;
     }
 
@@ -41,7 +39,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
         Review review = new Review(rating, comment, purchase);
-        this.repository.merge(purchase);
+        this.repository.save(purchase);
         return review;
     }
 
@@ -50,7 +48,7 @@ public class ToursServiceImpl implements ToursService{
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
         Service service = new Service(name, price, description, supplier);
         supplier.addSevice(service);
-        repository.merge(supplier);
+        repository.save(supplier);
         return service;
     }
 
@@ -84,8 +82,6 @@ public class ToursServiceImpl implements ToursService{
             TourGuideUser tourGuide = opTourGuide.get();
             route.addTourGuide(tourGuide);
             this.repository.merge(route);
-            tourGuide.addRoute(route);
-            this.repository.save(tourGuide);
         }
         else{
             throw new ToursException("No pudo realizarse la asignación");
@@ -104,7 +100,10 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
-
+        if(this.repository.purchasesOnRoute(route) == route.getMaxNumberUsers()){
+            throw new ToursException("No puede realizarse la compra");
+        }
+        
         Purchase purchase = new Purchase(code, user, route);
         user.addPurchase(purchase);
         repository.save(purchase);
@@ -341,10 +340,16 @@ public class ToursServiceImpl implements ToursService{
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
         
         Optional<Service> opService = this.repository.getServiceById(id);
-        Service service = opService.get();
-        service.setPrice(newPrice);
-        this.repository.merge(service);
-        return service;
+
+        if(opService.isPresent()){
+            Service service = opService.get();
+            service.setPrice(newPrice);
+            this.repository.merge(service);
+            return service;
+        }
+        else{
+            throw new ToursException("El producto no existe");
+        }
         
     }
 

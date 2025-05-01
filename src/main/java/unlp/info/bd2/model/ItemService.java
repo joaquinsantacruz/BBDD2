@@ -39,6 +39,8 @@ public class ItemService {
     }
     
     public ItemService(int quantity, Purchase purchase, Service service){
+        purchase.addItem(this, quantity * service.getPrice());
+        service.addItem(this);
         this.quantity = quantity;
         this.purchase = purchase;
         this.service = service;
