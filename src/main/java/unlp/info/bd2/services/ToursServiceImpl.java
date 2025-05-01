@@ -1,5 +1,6 @@
 package unlp.info.bd2.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -142,9 +143,16 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     @Transactional
-    public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
-
+    public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException{
         Supplier supplier = new Supplier(businessName, authorizationNumber);
+        repository.save(supplier);
+        return supplier;
+    }
+
+    @Override
+    @Transactional
+    public Supplier createSupplier(String businessName, String authorizationNumber, ArrayList<Service> services) throws ToursException {
+        Supplier supplier = new Supplier(businessName, authorizationNumber, services);
         repository.save(supplier);
         return supplier;
     }
