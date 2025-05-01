@@ -209,7 +209,7 @@ public class ToursRepositoryImpl implements ToursRepository{
     @Override
     public List<User> getUserSpendingMoreThan(float amount) {
         String hql = """
-                SELECT p.user 
+                SELECT DISTINCT p.user 
                 FROM Purchase p 
                 WHERE p.totalPrice >= :amount
                 """;
@@ -222,10 +222,9 @@ public class ToursRepositoryImpl implements ToursRepository{
     @Override
     public List<User> getTop5UsersMorePurchases() {
         String hql = """
-                SELECT p.user 
-                FROM Purchase p 
-                GROUP BY p.user 
-                ORDER BY COUNT(p) DESC
+                FROM User u
+                WHERE size(u.purchaseList) > 0
+                ORDER BY size(u.purchaseList) DESC 
                 """;
         return this.getSession()
                     .createQuery(hql, User.class)
