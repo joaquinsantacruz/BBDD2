@@ -160,7 +160,6 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
-
         User user = new User(username, password, fullName, email, birthdate, phoneNumber);
         repository.save(user);
         return user;
@@ -177,23 +176,19 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void deleteUser(User user) throws ToursException {
-        Optional<User> opUser = this.repository.getUserByUsername(user.getUsername());
-        if(!opUser.isPresent())
-            throw new ToursException("El usuario no existe");
-
-        if (!user.isActive()) {
-            throw new ToursException("El usuario se encuentra desactivado");            
-        }
-
-        if (!user.canBeDeactivated()) {
-            throw new ToursException("El usuario no puede ser desactivado");
-        }
-
-        if (!user.canBeRemoved()){
-            user.setActive(false);
-            this.repository.merge(user);
+        if (user.isActive()) {
+            if (user.canBeDeactivated()) {
+                if (!user.canBeRemoved()){
+                    user.setActive(false);
+                    this.repository.merge(user);
+                } else {
+                    this.repository.remove(user);
+                }
+            } else {
+                throw new ToursException("El usuario no puede ser desactivado");
+            }
         } else {
-            this.repository.remove(user);
+            throw new ToursException("El usuario se encuentra desactivado");            
         }
     }
 
