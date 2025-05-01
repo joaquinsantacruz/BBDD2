@@ -6,9 +6,11 @@ import java.util.Optional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import unlp.info.bd2.model.*;
+import unlp.info.bd2.utils.ToursException;
 
 public class ToursRepositoryImpl implements ToursRepository{
 
@@ -20,8 +22,11 @@ public class ToursRepositoryImpl implements ToursRepository{
     }
 
     @Override
-    public void save(Object o){
-        this.getSession().persist(o);
+    public void save(Object o) throws ToursException{
+        try{
+            this.getSession().persist(o);
+        }
+        
     }
 
     @Override

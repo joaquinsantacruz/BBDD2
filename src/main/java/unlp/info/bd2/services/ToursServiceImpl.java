@@ -33,7 +33,7 @@ public class ToursServiceImpl implements ToursService{
         ItemService item = new ItemService(quantity, purchase, service);
         service.addItem(item);
         purchase.addItem(item, service.getPrice()*quantity);
-        repository.save(item);
+        repository.merge(purchase);
         return item;
     }
 
@@ -41,8 +41,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
         Review review = new Review(rating, comment, purchase);
-        purchase.setReview(review);
-        this.repository.save(review);
+        this.repository.merge(purchase);
         return review;
     }
 
@@ -51,7 +50,7 @@ public class ToursServiceImpl implements ToursService{
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
         Service service = new Service(name, price, description, supplier);
         supplier.addSevice(service);
-        repository.save(service);
+        repository.merge(supplier);
         return service;
     }
 
@@ -68,9 +67,7 @@ public class ToursServiceImpl implements ToursService{
             route.addDriver(driver);
             this.repository.merge(route);
         }
-
-        
-        if(!optionalRoute.isPresent()){
+        else{
             throw new ToursException("No pudo realizarse la asignación");
         }
     }
@@ -90,9 +87,7 @@ public class ToursServiceImpl implements ToursService{
             tourGuide.addRoute(route);
             this.repository.save(tourGuide);
         }
-
-        
-        if(!optionalRoute.isPresent()){
+        else{
             throw new ToursException("No pudo realizarse la asignación");
         }
 
@@ -109,13 +104,6 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
-        if(this.repository.purchasesOnRoute(route) > route.getMaxNumberUsers()){
-            throw new ToursException("No puede realizarse la compra");
-        }
-
-        if(this.repository.getPurchaseByCode(code).isPresent()){
-            throw new ToursException("Constraint Violation");
-        }
 
         Purchase purchase = new Purchase(code, user, route);
         user.addPurchase(purchase);
@@ -131,10 +119,6 @@ public class ToursServiceImpl implements ToursService{
             throw new ToursException("No puede realizarse la compra");
         }
 
-        if(this.repository.getPurchaseByCode(code).isPresent()){
-            throw new ToursException("Constraint Violation");
-        }
-        
         Purchase purchase = new Purchase(code, user, route, date);
         user.addPurchase(purchase);
         repository.save(purchase);
@@ -160,9 +144,6 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
-        if(this.repository.getSupplierByAuthorizationNumber(authorizationNumber).isPresent()){
-            throw new ToursException("Constraint Violation");
-        }
 
         Supplier supplier = new Supplier(businessName, authorizationNumber);
         repository.save(supplier);
@@ -180,9 +161,6 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
-        if(this.repository.getUserByUsername(username).isPresent()){
-            throw new ToursException("Constraint Violation");
-        }
 
         User user = new User(username, password, fullName, email, birthdate, phoneNumber);
         repository.save(user);
@@ -360,12 +338,8 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        if(!this.repository.getServiceById(id).isPresent()){
-            throw new ToursException("Constraint Violation");
-        }
-
+        
         Optional<Service> opService = this.repository.getServiceById(id);
         Service service = opService.get();
         service.setPrice(newPrice);
