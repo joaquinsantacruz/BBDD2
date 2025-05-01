@@ -2,6 +2,7 @@ package unlp.info.bd2.services;
 import unlp.info.bd2.model.*;
 import unlp.info.bd2.utils.ToursException;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public interface ToursService {
     void assignDriverByUsername(String username, Long idRoute) throws ToursException;
     void assignTourGuideByUsername(String username, Long idRoute) throws ToursException;
     Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException;
+    Supplier createSupplier(String businessName, String authorizationNumber,  ArrayList<Service> services) throws ToursException;
     Service addServiceToSupplier(String name, float price, String description, Supplier supplier) throws ToursException;
     Service updateServicePriceById(Long id, float newPrice) throws ToursException;
     Optional<Supplier> getSupplierById(Long id);

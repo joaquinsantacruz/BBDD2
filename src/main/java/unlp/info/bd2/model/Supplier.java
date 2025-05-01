@@ -21,10 +21,10 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "business_name")
+    @Column(name = "business_name", nullable = false)
     private String businessName;
 
-    @Column(name = "authorization_number", unique = true, nullable = false)
+    @Column(name = "authorization_number", unique = true, nullable = false, updatable = false)
     private String authorizationNumber;
 
     @OneToMany(mappedBy = "supplier", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
@@ -36,6 +36,12 @@ public class Supplier {
         this.businessName = businessName;
         this.authorizationNumber = authorizationNumber;
         this.services = new ArrayList<Service>();
+    }
+
+    public Supplier(String businessName, String authorizationNumber, ArrayList<Service> services) {
+        this.businessName = businessName;
+        this.authorizationNumber = authorizationNumber;
+        this.services = services;
     }
 
     public Long getId() {

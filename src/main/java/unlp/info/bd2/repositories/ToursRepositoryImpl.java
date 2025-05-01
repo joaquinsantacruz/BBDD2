@@ -108,8 +108,7 @@ public class ToursRepositoryImpl implements ToursRepository{
     
     @Override
     public Optional<Supplier> getSupplierById(Long id){
-        Supplier supplier = this.getSession().get(Supplier.class, id);
-        return Optional.ofNullable(supplier);
+        return Optional.ofNullable(this.getSession().get(Supplier.class, id));
     }
 
     @Override
@@ -128,13 +127,15 @@ public class ToursRepositoryImpl implements ToursRepository{
 
     @Override
     public List<Supplier> getTopNSuppliersInPurchases(int n){
+        String hql = """
+        FROM Supplier s
+        JOIN s.services serv
+        JOIN serv.itemServiceList item
+        GROUP BY s
+        ORDER BY SUM(item.quantity) DESC
+        """;
         return this.getSession()
-        .createQuery("""
-            SELECT is.service.supplier 
-            FROM ItemService is 
-            GROUP BY is.service.supplier 
-            ORDER BY SUM(is.quantity) DESC
-            """, Supplier.class)
+        .createQuery(hql, Supplier.class)
         .setMaxResults(n)
         .getResultList();
     }
