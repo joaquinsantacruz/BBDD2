@@ -62,6 +62,13 @@ public class User {
         this.active = true;
     }
 
+    public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, boolean active, List<Purchase> purchases){
+        this(username, password, fullName, email, birthdate, phoneNumber);
+        this.active = active;
+        this.purchaseList = purchases;
+    }
+
+
     public void addPurchase(Purchase purchase){
         this.purchaseList.add(purchase);
     }

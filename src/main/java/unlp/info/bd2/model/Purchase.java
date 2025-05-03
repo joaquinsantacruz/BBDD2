@@ -25,13 +25,13 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String code;
 
-    @Column(name = "total_price")
+    @Column(name = "total_price", nullable = false)
     private float totalPrice;
 
-    @Column
+    @Column(nullable = false)
     private Date date;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {})
