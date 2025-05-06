@@ -17,13 +17,13 @@ import unlp.info.bd2.model.Stop;
 import unlp.info.bd2.model.Supplier;
 import unlp.info.bd2.model.TourGuideUser;
 import unlp.info.bd2.model.User;
-import unlp.info.bd2.repositories.ToursRepository;
 import unlp.info.bd2.utils.ToursException;
 
 import unlp.info.bd2.repositories.DriverUserRepository;
 import unlp.info.bd2.repositories.PurchaseRepository;
 import unlp.info.bd2.repositories.RouteRepository;
 import unlp.info.bd2.repositories.ServiceRepository;
+import unlp.info.bd2.repositories.StopRepository;
 import unlp.info.bd2.repositories.SupplierRepository;
 import unlp.info.bd2.repositories.TourGuideUserRepository;
 import unlp.info.bd2.repositories.UserRepository;
@@ -31,7 +31,6 @@ import unlp.info.bd2.repositories.UserRepository;
 
 public class ToursServiceImpl implements ToursService{
 
-    private ToursRepository repository;
     private DriverUserRepository dur;
     private PurchaseRepository pr;
     private RouteRepository rr;
@@ -39,10 +38,10 @@ public class ToursServiceImpl implements ToursService{
     private SupplierRepository sur;
     private TourGuideUserRepository tgr;
     private UserRepository ur;
+    private StopRepository str;
 
 
-    public ToursServiceImpl(ToursRepository repository, DriverUserRepository dur, PurchaseRepository pr, RouteRepository rr, ServiceRepository ser, SupplierRepository sur, TourGuideUserRepository tgr, UserRepository ur ){
-        this.repository = repository;
+    public ToursServiceImpl( DriverUserRepository dur, PurchaseRepository pr, RouteRepository rr, ServiceRepository ser, SupplierRepository sur, TourGuideUserRepository tgr, UserRepository ur ){
         this.dur = dur;
         this.pr = pr;
         this.rr = rr;
@@ -56,7 +55,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public ItemService addItemToPurchase(Service service, int quantity, Purchase purchase) throws ToursException {
         ItemService item = new ItemService(quantity, purchase, service);
-        repository.save(purchase);
+        pr.save(purchase);
         return item;
     }
 
@@ -64,7 +63,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
         Review review = new Review(rating, comment, purchase);
-        this.repository.save(purchase);
+        this.pr.save(purchase);
         return review;
     }
 
@@ -73,7 +72,7 @@ public class ToursServiceImpl implements ToursService{
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
         Service service = new Service(name, price, description, supplier);
         supplier.addSevice(service);
-        repository.save(supplier);
+        sur.save(supplier);
         return service;
     }
 
@@ -88,7 +87,7 @@ public class ToursServiceImpl implements ToursService{
             Route route = optionalRoute.get();
             DriverUser driver = opDriverUser.get();
             route.addDriver(driver);
-            this.repository.merge(route);
+            this.rr.save(route);
         }
         else{
             throw new ToursException("No pudo realizarse la asignación");
@@ -106,7 +105,7 @@ public class ToursServiceImpl implements ToursService{
             Route route = optionalRoute.get();
             TourGuideUser tourGuide = opTourGuide.get();
             route.addTourGuide(tourGuide);
-            this.repository.merge(route);
+            this.rr.save(route);
         }
         else{
             throw new ToursException("No pudo realizarse la asignación");
@@ -118,20 +117,20 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) throws ToursException {
         DriverUser driverUser = new DriverUser(username, password, fullName, email, birthdate, phoneNumber, expedient);
-        repository.save(driverUser);
+        dur.save(driverUser);
         return driverUser;
     }
 
     @Override
     @Transactional
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
-        if(this.repository.purchasesOnRoute(route) == route.getMaxNumberUsers()){
+        if(this.rr.purchasesOnRoute(route) == route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
         }
         
         Purchase purchase = new Purchase(code, user, route);
         user.addPurchase(purchase);
-        repository.save(purchase);
+        pr.save(purchase);
         return purchase;
         
     }
@@ -139,13 +138,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
-        if(this.repository.purchasesOnRoute(route) == route.getMaxNumberUsers()){
+        if(this.rr.purchasesOnRoute(route) == route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
         }
 
         Purchase purchase = new Purchase(code, user, route, date);
         user.addPurchase(purchase);
-        repository.save(purchase);
+        pr.save(purchase);
         return purchase;
     }
 
@@ -153,7 +152,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops) throws ToursException {
         Route route = new Route(name, price, totalKm, maxNumberOfUsers, stops);
-        repository.save(route);
+        rr.save(route);
         return route;
     }
 
@@ -161,7 +160,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Stop createStop(String name, String description) throws ToursException {
         Stop stop = new Stop(name, description);
-        this.repository.save(stop);
+        this.str.save(stop);
         return stop;
     }
 
@@ -169,7 +168,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException{
         Supplier supplier = new Supplier(businessName, authorizationNumber);
-        repository.save(supplier);
+        sur.save(supplier);
         return supplier;
     }
 
@@ -177,7 +176,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber, ArrayList<Service> services) throws ToursException {
         Supplier supplier = new Supplier(businessName, authorizationNumber, services);
-        repository.save(supplier);
+        sur.save(supplier);
         return supplier;
     }
 
@@ -185,7 +184,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) throws ToursException {
         TourGuideUser tourGuideUser = new TourGuideUser(username, password, fullName, email, birthdate, phoneNumber, education);
-        repository.save(tourGuideUser);
+        tgr.save(tourGuideUser);
         return tourGuideUser;
     }
 
@@ -193,7 +192,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
         User user = new User(username, password, fullName, email, birthdate, phoneNumber);
-        repository.save(user);
+        ur.save(user);
         return user;
     }
 
@@ -202,7 +201,7 @@ public class ToursServiceImpl implements ToursService{
     public void deletePurchase(Purchase purchase) throws ToursException {
         purchase.getUser().removePurchase(purchase);
         purchase.getItemServiceList().stream().forEach(item -> item.getService().removeItem(item));
-        this.repository.remove(purchase);
+        this.pr.delete(purchase);
     }
 
     @Override
@@ -212,9 +211,9 @@ public class ToursServiceImpl implements ToursService{
             if (user.canBeDeactivated()) {
                 if (!user.canBeRemoved()){
                     user.setActive(false);
-                    this.repository.merge(user);
+                    this.ur.save(user);
                 } else {
-                    this.repository.remove(user);
+                    this.ur.delete(user);
                 }
             } else {
                 throw new ToursException("El usuario no puede ser desactivado");
@@ -227,32 +226,32 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public User updateUser(User user) throws ToursException {
-        this.repository.merge(user);
+        this.ur.save(user);
         return user;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Purchase> getAllPurchasesOfUsername(String username) {
-        return this.repository.getAllPurchasesOfUsername(username);
+        return this.ur.getAllPurchasesOfUsername(username);
     }
 
     @Override
     @Transactional(readOnly = true)
     public long getCountOfPurchasesBetweenDates(Date start, Date end) {
-        return this.repository.getCountOfPurchasesBetweenDates(start, end);
+        return this.pr.getCountOfPurchasesBetweenDates(start, end);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Long getMaxStopOfRoutes() {
-        return this.repository.getMaxStopOfRoutes();
+        return this.rr.getMaxStopOfRoutes();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Service getMostDemandedService() {
-        return this.repository.getMostDemandedService();
+        return this.ser.getMostDemandedService();
     }
 
     @Override
@@ -270,37 +269,37 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Route> getRoutesBelowPrice(float price) {
-        return this.repository.getRoutesBelowPrice(price);
+        return this.rr.getRoutesBelowPrice(price);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Route> getRoutesWithStop(Stop stop) {
-        return this.repository.getRoutesWithStop(stop);
+        return this.rr.getRoutesWithStop(stop);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Route> getRoutsNotSell() {
-        return this.repository.getRoutesNotSell();
+        return this.rr.getRoutesNotSell();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Service> getServiceByNameAndSupplierId(String name, Long id) throws ToursException {
-        return this.repository.getServiceByNameAndSupplierId(name, id);
+        return this.ser.getServiceByNameAndSupplierId(name, id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Service> getServiceNoAddedToPurchases() {
-        return this.repository.getServiceNoAddedToPurchases();
+        return this.ser.getServiceNoAddedToPurchases();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Stop> getStopByNameStart(String name) {
-        return this.repository.getStopByNameStart(name);
+        return this.str.getStopByNameStart(name);
     }
 
     @Override
@@ -318,31 +317,31 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Purchase> getTop10MoreExpensivePurchasesInServices() {
-        return this.repository.getTop10MoreExpensivePurchasesInServices();
+        return this.pr.getTop10MoreExpensivePurchasesInServices();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Route> getTop3RoutesWithMaxRating() {
-        return this.repository.getTop3RoutesWithMaxRating();
+        return this.rr.getTop3RoutesWithMaxRating();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> getTop5UsersMorePurchases() {
-        return this.repository.getTop5UsersMorePurchases();
+        return this.ur.getTop5UsersMorePurchases();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
-        return this.repository.getTopNSuppliersInPurchases(n);
+        return this.sur.getTopNSuppliersInPurchases(n);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<TourGuideUser> getTourGuidesWithRating1() {
-        return this.repository.getTourGuidesWithRating1();
+        return this.tgr.getTourGuidesWithRating1();
     }
 
     @Override
@@ -360,7 +359,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
-        return this.repository.getUserSpendingMoreThan(mount);
+        return this.ur.getUserSpendingMoreThan(mount);
     }
 
     @Override
@@ -371,7 +370,7 @@ public class ToursServiceImpl implements ToursService{
         if(opService.isPresent()){
             Service service = opService.get();
             service.setPrice(newPrice);
-            this.repository.merge(service);
+            this.ser.save(service);
             return service;
         }
         else{

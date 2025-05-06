@@ -11,8 +11,8 @@ public class AppConfig {
 
     @Bean
     @Primary
-    public ToursService toursService(ToursRepository repository, DriverUserRepository dur, PurchaseRepository pr, RouteRepository rr, ServiceRepository ser, SupplierRepository sur, TourGuideUserRepository tgr, UserRepository ur) {
-        return new ToursServiceImpl(repository , dur , pr , rr , ser , sur , tgr , ur );
+    public ToursService toursService( DriverUserRepository dur, PurchaseRepository pr, RouteRepository rr, ServiceRepository ser, SupplierRepository sur, TourGuideUserRepository tgr, UserRepository ur) {
+        return new ToursServiceImpl( dur , pr , rr , ser , sur , tgr , ur );
     }
     
 
