@@ -20,12 +20,36 @@ import unlp.info.bd2.model.User;
 import unlp.info.bd2.repositories.ToursRepository;
 import unlp.info.bd2.utils.ToursException;
 
+import unlp.info.bd2.repositories.DriverUserRepository;
+import unlp.info.bd2.repositories.PurchaseRepository;
+import unlp.info.bd2.repositories.RouteRepository;
+import unlp.info.bd2.repositories.ServiceRepository;
+import unlp.info.bd2.repositories.SupplierRepository;
+import unlp.info.bd2.repositories.TourGuideUserRepository;
+import unlp.info.bd2.repositories.UserRepository;
+
+
 public class ToursServiceImpl implements ToursService{
 
     private ToursRepository repository;
+    private DriverUserRepository dur;
+    private PurchaseRepository pr;
+    private RouteRepository rr;
+    private ServiceRepository ser;
+    private SupplierRepository sur;
+    private TourGuideUserRepository tgr;
+    private UserRepository ur;
 
-    public ToursServiceImpl(ToursRepository repository){
+
+    public ToursServiceImpl(ToursRepository repository, DriverUserRepository dur, PurchaseRepository pr, RouteRepository rr, ServiceRepository ser, SupplierRepository sur, TourGuideUserRepository tgr, UserRepository ur ){
         this.repository = repository;
+        this.dur = dur;
+        this.pr = pr;
+        this.rr = rr;
+        this.ser = ser;
+        this.sur = sur;
+        this.tgr=tgr;
+        this.ur=ur;
     }
 
     @Override
@@ -56,7 +80,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
-        Optional<DriverUser> opDriverUser = this.repository.getDriverUserByUsername(username);
+        Optional<DriverUser> opDriverUser = this.dur.getDriverUserByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
         
@@ -74,7 +98,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
-        Optional<TourGuideUser> opTourGuide = this.repository.getTourGuideByUsername(username);
+        Optional<TourGuideUser> opTourGuide = this.tgr.getTourGuideByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
         
@@ -234,13 +258,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Purchase> getPurchaseByCode(String code) {
-        return this.repository.getPurchaseByCode(code);
+        return this.pr.getPurchaseByCode(code);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Route> getRouteById(Long id) {
-        return this.repository.getRouteById(id);
+        return this.rr.getRouteById(id);
     }
 
     @Override
@@ -282,13 +306,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
-        return this.repository.getSupplierByAuthorizationNumber(authorizationNumber);
+        return this.sur.getSupplierByAuthorizationNumber(authorizationNumber);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierById(Long id) {
-        return this.repository.getSupplierById(id);
+        return this.sur.getSupplierById(id);
     }
 
     @Override
@@ -324,13 +348,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getUserById(Long id) throws ToursException {
-        return this.repository.getUserById(id);
+        return this.ur.getUserById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getUserByUsername(String username) throws ToursException {
-        return this.repository.getUserByUsername(username);
+        return this.ur.getUserByUsername(username);
     }
 
     @Override
@@ -342,7 +366,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
         
-        Optional<Service> opService = this.repository.getServiceById(id);
+        Optional<Service> opService = this.ser.getServiceById(id);
 
         if(opService.isPresent()){
             Service service = opService.get();

@@ -81,11 +81,6 @@ public class ToursRepositoryImpl implements ToursRepository{
     }
 
     @Override
-    public Optional<Route> getRouteById(Long id) {
-        return Optional.ofNullable(this.getSession().get(Route.class, id));
-    }
-
-    @Override
     public List<Route> getRoutesBelowPrice(float price) {
         return this.getSession().createQuery("FROM Route r WHERE r.price < :price", Route.class)
                                 .setParameter("price", price)
@@ -104,25 +99,6 @@ public class ToursRepositoryImpl implements ToursRepository{
         Integer amount = this.getSession().createQuery("SELECT max(size(r.stops)) FROM Route r", Integer.class)
                                 .getSingleResult();
         return amount.longValue();
-    }
-    
-    @Override
-    public Optional<Supplier> getSupplierById(Long id){
-        return Optional.ofNullable(this.getSession().get(Supplier.class, id));
-    }
-
-    @Override
-    public Optional<Service> getServiceById(Long id){
-        return Optional.ofNullable(this.getSession().get(Service.class, id));
-    }
-
-    @Override
-    public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber){
-        String hql = "FROM Supplier s WHERE s.authorizationNumber = :authorizationNumber";
-        return this.getSession()
-                    .createQuery(hql, Supplier.class)
-                    .setParameter("authorizationNumber", authorizationNumber)
-                    .uniqueResultOptional();
     }
 
     @Override
@@ -194,13 +170,6 @@ public class ToursRepositoryImpl implements ToursRepository{
                                 .getResultList();
     }
 
-    @Override
-    public Optional<Purchase> getPurchaseByCode(String code){
-        return this.getSession().createQuery("FROM Purchase p WHERE p.code = :code", Purchase.class)
-                                .setParameter("code", code)
-                                .uniqueResultOptional();
-    }
-    
     public List<Purchase> getAllPurchasesOfUsername(String username) {
         return this.getSession().createQuery("FROM Purchase p WHERE p.user.username = :username", Purchase.class)
                                 .setParameter("username", username)

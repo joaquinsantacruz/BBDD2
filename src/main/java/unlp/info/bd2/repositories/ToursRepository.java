@@ -15,22 +15,16 @@ public interface ToursRepository {
 
 
     List<Stop> getStopByNameStart(String name);
-    Optional<Route> getRouteById(Long id);
     List<Route> getRoutesBelowPrice(float price);
     List<Route> getRoutesWithStop(Stop stop);
     Long getMaxStopOfRoutes();
     List<Route> getRoutesNotSell();
     List<Route> getTop3RoutesWithMaxRating();    
-    Optional<User> getUserById(Long id);
-    Optional<Service> getServiceById(Long id);
-    Optional<User> getUserByUsername(String username);
-    Optional<Supplier> getSupplierById(Long id);
-    Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber);
+    
     List<Supplier> getTopNSuppliersInPurchases(int n);
     Optional<Service> getServiceByNameAndSupplierId(String name, Long id);
     Service getMostDemandedService();
     List<Service> getServiceNoAddedToPurchases();
-    Optional<Purchase> getPurchaseByCode(String code);
     Long purchasesOnRoute(Route route);
     List<Purchase> getAllPurchasesOfUsername(String username);
     List<User> getUserSpendingMoreThan(float mount);
@@ -38,6 +32,4 @@ public interface ToursRepository {
     Long getCountOfPurchasesBetweenDates(Date start, Date end);
     List<User> getTop5UsersMorePurchases();
     List<TourGuideUser> getTourGuidesWithRating1();
-    Optional<TourGuideUser> getTourGuideByUsername(String username);
-    Optional<DriverUser> getDriverUserByUsername(String username);
 }

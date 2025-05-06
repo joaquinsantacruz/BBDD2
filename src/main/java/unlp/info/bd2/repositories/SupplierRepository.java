@@ -8,5 +8,7 @@ import unlp.info.bd2.model.Supplier;
 @Repository
 public interface SupplierRepository extends CrudRepository<Supplier, Long> {
     
-    Optional<Supplier> findByAuthorizationNumber(String authorizationNumber);
+    Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber);
+
+    Optional<Supplier> getSupplierById(Long id);
 }
