@@ -359,7 +359,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
-        return this.ur.getUserSpendingMoreThan(mount);
+        return this.ur.getUserDistinctByPurchase_TotalPriceGreaterThanEqual(mount);
     }
 
     @Override
@@ -378,5 +378,15 @@ public class ToursServiceImpl implements ToursService{
         }
         
     }
+
+	@Override
+	public List<User> getUsersWithNumberOfPurchases(int number) {
+		return this.ur.getUsersWithNumberOfPurchases(number);
+	}
+
+	@Override
+	public DriverUser getDriverUserWithMoreRoutes() {
+        return this.dur.getTopDriverUserWithMoreRoutes();
+	}
 
 }

@@ -13,4 +13,6 @@ public interface DriverUserRepository extends CrudRepository<DriverUser, Long> {
  
     Optional<DriverUser> getDriverUserByUsername(String username);
 
+    @Query("SELECT d FROM DriverUser d WHERE d.routes.size > 0 ORDER BY d.routes.size DESC")
+    DriverUser getTopDriverUserWithMoreRoutes();
 }

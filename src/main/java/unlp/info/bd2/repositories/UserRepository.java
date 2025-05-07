@@ -18,12 +18,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
     
     Optional<User> getUserByUsername(String username);
     
-    @Query("")
+    @Query("SELECT p FROM Purchase p WHERE p.user.username = ?1")
     List<Purchase> getAllPurchasesOfUsername(String username);
 
-    @Query("")
+    @Query("SELECT u FROM User u WHERE u.purchases.size > 0 ORDER BY u.purchases.size DESC")
     List<User> getTop5UsersMorePurchases();
 
-    @Query("")
-    List<User> getUserSpendingMoreThan(float mount);
+    List<User> getUserDistinctByPurchase_TotalPriceGreaterThanEqual(float mount);
+
+    @Query("SELECT u FROM User u WHERE u.purchases.size = ?1")
+    List<User> getUsersWithNumberOfPurchases(int number);
 }
