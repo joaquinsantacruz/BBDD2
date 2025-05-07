@@ -14,9 +14,7 @@ import unlp.info.bd2.model.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
     
-    Optional<User> getUserById(Long id);
-    
-    Optional<User> getUserByUsername(String username);
+    Optional<User> findByUsername(String username);
     
     @Query("SELECT u FROM User u WHERE u.purchases.size > 0 ORDER BY u.purchases.size DESC")
     List<User> getTop5UsersMorePurchases();
