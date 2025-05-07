@@ -11,11 +11,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 import unlp.info.bd2.config.AppConfig;
+import unlp.info.bd2.config.SpringDataConfiguration;
+import unlp.info.bd2.model.*;
 import unlp.info.bd2.services.ToursService;
 import unlp.info.bd2.utils.ToursException;
-import unlp.info.bd2.model.*;
+
+import javax.swing.text.html.Option;
+import java.time.LocalDate;
 import java.util.*;
-import unlp.info.bd2.config.SpringDataConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,8 +51,7 @@ class ToursApplicationTests {
 		this.dyes = cal1.getTime();
 	}
 
-	
-	
+
 	@Test
 	void createAndGetUserTest()  throws ToursException {
 		User user1 = this.toursService.createUser("user1", "1234", "Usuario Uno", "user1@gmail.com", dob1, "000111222333");
@@ -78,9 +80,11 @@ class ToursApplicationTests {
 		assertEquals(driverUser.getId(), driverUser1.getId());
 		assertEquals(driverUser.getExpedient(), "exp...");
 
+		System.out.println("Esto es una nueva linea");
+
 		assertThrows(ToursException.class, () -> this.toursService.createUser("userD", "1234", "Otro usuario", "otromail@gmail.com", dob1, "000111222999"), "Constraint Violation");
 	}
-	
+
 	@Test
 	void updateUserTest()  throws ToursException {
 		User user1 = this.toursService.createUser("user1", "1234", "Usuario Uno", "user1@gmail.com", dob1, "000111222333");
@@ -107,7 +111,7 @@ class ToursApplicationTests {
 		User unmodifiedUserFromDB = opUnmodifiedUserFromDB.get();
 		assertEquals(unmodifiedUserFromDB.getId(), user1.getId());
 	}
-	
+
 	@Test
 	void createAndGetRoutesAndStopsTest() throws ToursException {
 		Stop stop1 = this.toursService.createStop("Estadio Monumental", "Estadio de River Plate");
@@ -163,7 +167,7 @@ class ToursApplicationTests {
 		assertEquals(1, route.getTourGuideList().size());
 		assertEquals("userG1", route.getTourGuideList().get(0).getUsername());
 
-		assertThrows(ToursException.class, () -> this.toursService.assignTourGuideByUsername("user_no_existente", tourGuideUser1.getId()) , "|");
+		assertThrows(ToursException.class, () -> this.toursService.assignTourGuideByUsername("user_no_existente", tourGuideUser1.getId()) , "No pudo realizarse la asignación");
 		assertThrows(ToursException.class, () -> this.toursService.assignDriverByUsername(driverUser1.getUsername(), 1000000L) , "No pudo realizarse la asignación");
 	}
 
