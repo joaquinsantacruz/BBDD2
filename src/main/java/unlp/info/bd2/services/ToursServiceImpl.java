@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import unlp.info.bd2.model.DriverUser;
@@ -251,7 +252,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Service getMostDemandedService() {
-        return this.ser.getMostDemandedService();
+        return this.ser.getMostDemandedService(PageRequest.of(0, 1));
     }
 
     @Override
@@ -287,7 +288,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Service> getServiceByNameAndSupplierId(String name, Long id) throws ToursException {
-        return this.ser.getServiceByNameAndSupplierId(name, id);
+        return this.ser.findByNameAndSupplierId(name, id);
     }
 
     @Override
@@ -305,13 +306,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
-        return this.sur.getSupplierByAuthorizationNumber(authorizationNumber);
+        return this.sur.findByAuthorizationNumber(authorizationNumber);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierById(Long id) {
-        return this.sur.getSupplierById(id);
+        return this.sur.findById(id);
     }
 
     @Override
@@ -335,7 +336,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
-        return this.sur.getTopNSuppliersInPurchases(n);
+        return this.sur.getTopNSuppliersInPurchases(PageRequest.of(0, n));
     }
 
     @Override
@@ -365,7 +366,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
         
-        Optional<Service> opService = this.ser.getServiceById(id);
+        Optional<Service> opService = this.ser.findById(id);
 
         if(opService.isPresent()){
             Service service = opService.get();
@@ -379,4 +380,15 @@ public class ToursServiceImpl implements ToursService{
         
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Supplier> getTopNSuppliersItemsSold(int n) {
+        return this.sur.getTopNSuppliersItemsSold(PageRequest.of(0, n));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long getMaxServicesOfSupplier() {
+        return sur.getMaxServicesOfSupplier();
+    }
 }
