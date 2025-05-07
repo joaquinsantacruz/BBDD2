@@ -37,6 +37,7 @@ public interface ToursService {
     void deletePurchase(Purchase purchase) throws ToursException;
     Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException;
 
+    //TODO: HAY REVIEW REPOSITORY?
     // CONSULTAS HQL
     List<Purchase> getAllPurchasesOfUsername(String username);
     List<User> getUserSpendingMoreThan(float mount);

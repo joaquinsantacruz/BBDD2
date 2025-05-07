@@ -10,10 +10,15 @@ import unlp.info.bd2.services.*;
 public class AppConfig {
 
     @Bean
-    @Primary
-    public ToursService toursService( DriverUserRepository dur, PurchaseRepository pr, RouteRepository rr, ServiceRepository ser, SupplierRepository sur, TourGuideUserRepository tgr, UserRepository ur) {
-        return new ToursServiceImpl( dur , pr , rr , ser , sur , tgr , ur );
+    @Primary    
+    public ToursService createService() {
+        ToursRepository repository = this.createRepository();
+        return new ToursServiceImpl(repository);
     }
-    
 
+    @Bean
+    @Primary
+    public ToursRepository createRepository() {
+        return new ToursRepositoryImpl();
+    }
 }
