@@ -2,6 +2,7 @@ package unlp.info.bd2.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -10,12 +11,12 @@ import unlp.info.bd2.model.Supplier;
 @Repository
 public interface SupplierRepository extends CrudRepository<Supplier, Long> {
     
-    Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber);
+    Optional<Supplier> findByAuthorizationNumber(String authorizationNumber);
 
-    Optional<Supplier> getSupplierById(Long id);
+    @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
+    List<Supplier> getTopNSuppliersInPurchases(Pageable pageable);
 
-    @Query("")
-    List<Supplier> getTopNSuppliersInPurchases(int n);
+    @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
+    List<Supplier> getTopNSuppliersItemsSold(Pageable pageable);
 
-    
 }

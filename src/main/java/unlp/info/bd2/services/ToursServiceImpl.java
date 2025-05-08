@@ -279,7 +279,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Service getMostDemandedService() {
-        return this.serviceRepository.getMostDemandedService();
+        return this.serviceRepository.getMostDemandedService(PageRequest.of(0, 1));
     }
 
     @Override
@@ -315,7 +315,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Service> getServiceByNameAndSupplierId(String name, Long id) throws ToursException {
-        return this.serviceRepository.getServiceByNameAndSupplierId(name, id);
+        return this.serviceRepository.findByNameAndSupplierId(name, id);
     }
 
     @Override
@@ -333,13 +333,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
-        return this.supplierRepository.getSupplierByAuthorizationNumber(authorizationNumber);
+        return this.supplierRepository.findByAuthorizationNumber(authorizationNumber);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierById(Long id) {
-        return this.supplierRepository.getSupplierById(id);
+        return this.supplierRepository.findById(id);
     }
 
     @Override
@@ -363,7 +363,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
-        return this.supplierRepository.getTopNSuppliersInPurchases(n);
+        return this.supplierRepository.getTopNSuppliersInPurchases(PageRequest.of(0, n));
     }
 
     @Override
@@ -393,7 +393,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
         
-        Optional<Service> opService = this.serviceRepository.getServiceById(id);
+        Optional<Service> opService = this.serviceRepository.findById(id);
 
         if(opService.isPresent()){
             Service service = opService.get();
@@ -407,6 +407,17 @@ public class ToursServiceImpl implements ToursService{
         
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Supplier> getTopNSuppliersItemsSold(int n) {
+        return this.supplierRepository.getTopNSuppliersItemsSold(PageRequest.of(0, n));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long getMaxServicesOfSupplier() {
+        return serviceRepository.getMaxServicesOfSupplier();
+    }
 	@Override
 	public List<User> getUsersWithNumberOfPurchases(int number) {
 		return this.userRepository.getUsersWithNumberOfPurchases(number);
@@ -418,33 +429,10 @@ public class ToursServiceImpl implements ToursService{
         return drivers.isEmpty() ? null : drivers.get(0);
 	}
 
-    @Override
-    public List<Supplier> getTopNSuppliersItemsSold(int n) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTopNSuppliersItemsSold'");
-    }
+    
+   
 
-    @Override
-    public List<Route> getTop3RoutesWithMoreStops() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTop3RoutesWithMoreStops'");
-    }
+   
 
-    @Override
-    public Long getMaxServicesOfSupplier() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxServicesOfSupplier'");
-    }
-
-    @Override
-    public List<Route> getRoutesWithMinRating() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRoutesWithMinRating'");
-    }
-
-    @Override
-    public Route getMostBestSellingRoute() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMostBestSellingRoute'");
-    }
+   
 }
