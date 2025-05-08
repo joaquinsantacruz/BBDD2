@@ -92,7 +92,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
-        Optional<DriverUser> opDriverUser = this.dur.findByUsername(username);
+        Optional<DriverUser> opDriverUser = this.driverUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
         
@@ -110,7 +110,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
-        Optional<TourGuideUser> opTourGuide = this.tgr.findByUsername(username);
+        Optional<TourGuideUser> opTourGuide = this.tourGuideUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
         
@@ -364,7 +364,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<User> getTop5UsersMorePurchases() {
-        return this.ur.findTopUsersMorePurchases(Pageable.ofSize(5));
+        return this.userRepository.findTopUsersMorePurchases(Pageable.ofSize(5));
     }
 
     @Override
@@ -382,19 +382,19 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getUserById(Long id) throws ToursException {
-        return this.ur.findById(id);
+        return this.userRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getUserByUsername(String username) throws ToursException {
-        return this.ur.findByUsername(username);
+        return this.userRepository.findByUsername(username);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
-        return this.ur.findDistinctByPurchase_TotalPriceGreaterThanEqual(mount);
+        return this.userRepository.findDistinctByPurchase_TotalPriceGreaterThanEqual(mount);
     }
 
     @Override
@@ -416,11 +416,11 @@ public class ToursServiceImpl implements ToursService{
 
 	@Override
 	public List<User> getUsersWithNumberOfPurchases(int number) {
-		return this.ur.getUsersWithNumberOfPurchases(number);
+		return this.userRepository.getUsersWithNumberOfPurchases(number);
 	}
 
 	@Override
 	public DriverUser getDriverUserWithMoreRoutes() {
-        return this.dur.getTopDriverUserWithMoreRoutes(Pageable.ofSize(1));
+        return this.driverUserRepository.getTopDriverUserWithMoreRoutes(Pageable.ofSize(1));
 	}
 }
