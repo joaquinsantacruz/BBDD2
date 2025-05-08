@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,35 +35,35 @@ import unlp.info.bd2.repositories.UserRepository;
 
 public class ToursServiceImpl implements ToursService{
 
+    @Autowired
     private DriverUserRepository driverUserRepository;
-    private ItemServiceRepository itemServiceRepository;
-    private PurchaseRepository purchaseRepository;
-    private ReviewRepository reviewRepository;
-    private RouteRepository routeRepository;
-    private ServiceRepository serviceRepository;
-    private StopRepository stopRepository;
-    private SupplierRepository supplierRepository;
-    private TourGuideUserRepository tourGuideUserRepository;
-    private UserRepository userRepository;
-
     
+    @Autowired
+    private ItemServiceRepository itemServiceRepository;
 
-    public ToursServiceImpl(DriverUserRepository driverUserRepository, ItemServiceRepository itemServiceRepository,
-            PurchaseRepository purchaseRepository, ReviewRepository reviewRepository, RouteRepository routeRepository,
-            ServiceRepository serviceRepository, StopRepository stopRepository, SupplierRepository supplierRepository,
-            TourGuideUserRepository tourGuideUserRepository, UserRepository userRepository) {
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
-        this.driverUserRepository = driverUserRepository;
-        this.itemServiceRepository = itemServiceRepository;
-        this.purchaseRepository = purchaseRepository;
-        this.reviewRepository = reviewRepository;
-        this.routeRepository = routeRepository;
-        this.serviceRepository = serviceRepository;
-        this.stopRepository = stopRepository;
-        this.supplierRepository = supplierRepository;
-        this.tourGuideUserRepository = tourGuideUserRepository;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
+
+    @Autowired
+    private StopRepository stopRepository;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
+
+    @Autowired
+    private TourGuideUserRepository tourGuideUserRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     @Transactional
