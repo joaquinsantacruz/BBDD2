@@ -4,6 +4,7 @@ package unlp.info.bd2.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,21 +13,39 @@ import unlp.info.bd2.model.Stop;
 
 @Repository
 public interface RouteRepository extends CrudRepository<Route, Long> {
-
-    Optional<Route> getRouteById(Long id);
    
-    @Query("")
-    Long getMaxStopOfRoutes();
-    
-    @Query("")
-    List<Route> getRoutesBelowPrice(float price);
+    List<Route> findByPriceLessThan(float price);
 
-    @Query("")
-    List<Route> getRoutesWithStop(Stop stop);
+    List<Route> findByStopsContains(Stop stop);
 
-    @Query("")
-    List<Route> getRoutsNotSell();
+    @Query("FROM Route r ORDER BY size(r.stops) DESC")
+    List<Route> getTop3RoutesWithMoreStops(Pageable pageable);
 
-    @Query("")
-    List<Route> getTop3RoutesWithMaxRating();
+
+    @Query("FROM Route r LEFT JOIN Purchase p ON p.route = r WHERE p IS NULL")
+    List<Route> getRoutesNotSell();
+
+    @Query("""
+            SELECT p.route 
+            FROM Purchase p 
+            WHERE p.review IS NOT NULL 
+            GROUP BY p.route 
+            ORDER BY p.review.rating DESC
+            """)
+    List<Route> getTop3RoutesWithMaxAverageRating(Pageable pageable);
+
+    @Query("""
+            SELECT DISTINCT p.route
+            FROM Purchase p
+            WHERE p.review.rating >= 1
+            """)
+    List<Route> getRoutesWithMinRating();
+
+    @Query("""
+            SELECT p.route
+            FROM Purchase p
+            GROUP BY p.route
+            ORDER BY COUNT(p) DESC
+            """)
+    List<Route> getMostBestSellingRoute(Pageable pageable);
 }

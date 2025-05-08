@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import unlp.info.bd2.model.DriverUser;
@@ -21,71 +23,77 @@ import unlp.info.bd2.model.User;
 import unlp.info.bd2.repositories.*;
 import unlp.info.bd2.utils.ToursException;
 
-import unlp.info.bd2.repositories.DriverUserRepository;
-import unlp.info.bd2.repositories.PurchaseRepository;
-import unlp.info.bd2.repositories.RouteRepository;
-import unlp.info.bd2.repositories.ServiceRepository;
-import unlp.info.bd2.repositories.StopRepository;
-import unlp.info.bd2.repositories.SupplierRepository;
-import unlp.info.bd2.repositories.TourGuideUserRepository;
-import unlp.info.bd2.repositories.UserRepository;
-
 
 public class ToursServiceImpl implements ToursService{
 
+    @Autowired
     private DriverUserRepository driverUserRepository;
-    private ItemServiceRepository itemServiceRepository;
+    @Autowired
     private PurchaseRepository purchaseRepository;
-    private ReviewRepository reviewRepository;
+    @Autowired
     private RouteRepository routeRepository;
+    @Autowired
     private ServiceRepository serviceRepository;
+    @Autowired
     private StopRepository stopRepository;
+    @Autowired
     private SupplierRepository supplierRepository;
+    @Autowired
     private TourGuideUserRepository tourGuideUserRepository;
+    @Autowired
     private UserRepository userRepository;
 
     
 
-    public ToursServiceImpl(DriverUserRepository driverUserRepository, ItemServiceRepository itemServiceRepository,
-            PurchaseRepository purchaseRepository, ReviewRepository reviewRepository, RouteRepository routeRepository,
-            ServiceRepository serviceRepository, StopRepository stopRepository, SupplierRepository supplierRepository,
-            TourGuideUserRepository tourGuideUserRepository, UserRepository userRepository) {
-
-        this.driverUserRepository = driverUserRepository;
-        this.itemServiceRepository = itemServiceRepository;
-        this.purchaseRepository = purchaseRepository;
-        this.reviewRepository = reviewRepository;
-        this.routeRepository = routeRepository;
-        this.serviceRepository = serviceRepository;
-        this.stopRepository = stopRepository;
-        this.supplierRepository = supplierRepository;
-        this.tourGuideUserRepository = tourGuideUserRepository;
-        this.userRepository = userRepository;
-    }
-
     @Override
     @Transactional
     public ItemService addItemToPurchase(Service service, int quantity, Purchase purchase) throws ToursException {
-        ItemService item = new ItemService(quantity, purchase, service);
-        this.purchaseRepository.save(purchase);
-        return item;
+        try{
+            ItemService item = new ItemService(quantity, purchase, service);
+            purchase.addItem(item, quantity * service.getPrice());
+            service.addItem(item);
+            this.purchaseRepository.save(purchase);
+            return item;
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
     @Transactional
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
-        Review review = new Review(rating, comment, purchase);
-        this.purchaseRepository.save(purchase);
-        return review;
+        try{
+            Review review = new Review(rating, comment, purchase);
+            this.purchaseRepository.save(purchase);
+            return review;
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
     @Transactional
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
-        Service service = new Service(name, price, description, supplier);
-        supplier.addSevice(service);
-        this.supplierRepository.save(supplier);
-        return service;
+        try{
+            Service service = new Service(name, price, description, supplier);
+            supplier.addSevice(service);
+            this.supplierRepository.save(supplier);
+            return service;
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
@@ -128,13 +136,20 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) throws ToursException {
-        DriverUser driverUser = new DriverUser(username, password, fullName, email, birthdate, phoneNumber, expedient);
-        this.driverUserRepository.save(driverUser);
-        return driverUser;
+        try{
+            DriverUser driverUser = new DriverUser(username, password, fullName, email, birthdate, phoneNumber, expedient);
+            return this.driverUserRepository.save(driverUser);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
-    @Transactional //TODO: PREGUNTAR
+    @Transactional 
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
         if(this.purchaseRepository.countByRoute(route) == route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
@@ -143,8 +158,7 @@ public class ToursServiceImpl implements ToursService{
         try{
             Purchase purchase = new Purchase(code, user, route);
             user.addPurchase(purchase);
-            this.purchaseRepository.save(purchase);
-            return purchase;
+            return this.purchaseRepository.save(purchase);
         }
         catch(ConstraintViolationException cve){
             throw new ToursException("Constraint Violation");
@@ -165,8 +179,7 @@ public class ToursServiceImpl implements ToursService{
         try{
             Purchase purchase = new Purchase(code, user, route);
             user.addPurchase(purchase);
-            this.purchaseRepository.save(purchase);
-            return purchase;
+            return this.purchaseRepository.save(purchase);
         }
         catch(ConstraintViolationException cve){
             throw new ToursException("Constraint Violation");
@@ -179,57 +192,111 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops) throws ToursException {
-        Route route = new Route(name, price, totalKm, maxNumberOfUsers, stops);
-        this.routeRepository.save(route);
-        return route;
+        try{
+            Route route = new Route(name, price, totalKm, maxNumberOfUsers, stops);
+            return this.routeRepository.save(route);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
     @Transactional
     public Stop createStop(String name, String description) throws ToursException {
-        Stop stop = new Stop(name, description);
-        this.stopRepository.save(stop);
-        return stop;
+        try{
+            Stop stop = new Stop(name, description);
+            return this.stopRepository.save(stop);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
+        
     }
 
     @Override
     @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException{
-        Supplier supplier = new Supplier(businessName, authorizationNumber);
-        this.supplierRepository.save(supplier);
-        return supplier;
+        try{
+            Supplier supplier = new Supplier(businessName, authorizationNumber);
+            this.supplierRepository.save(supplier);
+            return supplier;
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
+        
     }
 
     @Override
     @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber, ArrayList<Service> services) throws ToursException {
-        Supplier supplier = new Supplier(businessName, authorizationNumber, services);
-        this.supplierRepository.save(supplier);
-        return supplier;
+        try{
+            Supplier supplier = new Supplier(businessName, authorizationNumber, services);
+            return this.supplierRepository.save(supplier);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
+        
     }
 
     @Override
     @Transactional
     public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String education) throws ToursException {
-        TourGuideUser tourGuideUser = new TourGuideUser(username, password, fullName, email, birthdate, phoneNumber, education);
-        this.tourGuideUserRepository.save(tourGuideUser);
-        return tourGuideUser;
+        try{
+            TourGuideUser tourGuideUser = new TourGuideUser(username, password, fullName, email, birthdate, phoneNumber, education);
+            return this.tourGuideUserRepository.save(tourGuideUser);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
     @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) throws ToursException {
-        User user = new User(username, password, fullName, email, birthdate, phoneNumber);
-        this.userRepository.save(user);
-        return user;
+        try{
+            User user = new User(username, password, fullName, email, birthdate, phoneNumber);
+            return this.userRepository.save(user);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
     @Transactional
     public void deletePurchase(Purchase purchase) throws ToursException {
-        purchase.getUser().removePurchase(purchase);
-        purchase.getItemServiceList().stream().forEach(item -> item.getService().removeItem(item));
-        this.purchaseRepository.delete(purchase);
+        try{
+            purchase.getUser().removePurchase(purchase);
+            purchase.getItemServiceList().stream().forEach(item -> item.getService().removeItem(item));
+            this.purchaseRepository.delete(purchase);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
@@ -254,8 +321,32 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public User updateUser(User user) throws ToursException {
-        this.userRepository.save(user);
-        return user;
+        try{
+            return this.userRepository.save(user);
+        }
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
+    }
+
+    @Override
+    public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
+        
+        Optional<Service> opService = this.serviceRepository.getServiceById(id);
+
+        if(opService.isPresent()){
+            Service service = opService.get();
+            service.setPrice(newPrice);
+            this.serviceRepository.save(service);
+            return service;
+        }
+        else{
+            throw new ToursException("El producto no existe");
+        }
+        
     }
 
     @Override
@@ -279,7 +370,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Long getMaxStopOfRoutes() {
-        return this.routeRepository.getMaxStopOfRoutes();
+        return 0L; //this.stopRepository.getMaxStopOfRoutes();
     }
 
     @Override
@@ -297,19 +388,19 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Route> getRouteById(Long id) {
-        return this.routeRepository.getRouteById(id);
+        return this.routeRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Route> getRoutesBelowPrice(float price) {
-        return this.routeRepository.getRoutesBelowPrice(price);
+        return this.routeRepository.findByPriceLessThan(price);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Route> getRoutesWithStop(Stop stop) {
-        return this.routeRepository.getRoutesWithStop(stop);
+        return this.routeRepository.findByStopsContains(stop);
     }
 
     @Override
@@ -333,7 +424,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Stop> getStopByNameStart(String name) {
-        return this.stopRepository.getStopByNameStart(name);
+        return this.stopRepository.getStopByName(name);
     }
 
     @Override
@@ -357,7 +448,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Route> getTop3RoutesWithMaxAverageRating() {
-        return this.routeRepository.getTop3RoutesWithMaxRating();
+        return this.routeRepository.getTop3RoutesWithMaxAverageRating(PageRequest.ofSize(3));
     }
 
     @Override
@@ -396,22 +487,6 @@ public class ToursServiceImpl implements ToursService{
         return this.userRepository.getUserSpendingMoreThan(mount);
     }
 
-    @Override
-    public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        
-        Optional<Service> opService = this.serviceRepository.getServiceById(id);
-
-        if(opService.isPresent()){
-            Service service = opService.get();
-            service.setPrice(newPrice);
-            this.serviceRepository.save(service);
-            return service;
-        }
-        else{
-            throw new ToursException("El producto no existe");
-        }
-        
-    }
 
     @Override
     public List<User> getUsersWithNumberOfPurchases(int number) {
@@ -427,8 +502,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public List<Route> getTop3RoutesWithMoreStops() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTop3RoutesWithMoreStops'");
+        return this.routeRepository.getTop3RoutesWithMoreStops(PageRequest.ofSize(3));
     }
 
     @Override
@@ -445,8 +519,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     public Route getMostBestSellingRoute() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMostBestSellingRoute'");
+        return this.routeRepository.getMostBestSellingRoute(PageRequest.ofSize(1)).get(0);
     }
 
     @Override

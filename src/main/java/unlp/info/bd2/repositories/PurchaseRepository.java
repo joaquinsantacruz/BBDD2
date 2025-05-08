@@ -15,15 +15,16 @@ import unlp.info.bd2.model.Service;
 public interface PurchaseRepository extends CrudRepository<Purchase, Long> {
     
     Optional<Purchase> findByCode(String code);
+    
     List<Purchase> findByUser_Username(String username);
     
     Long countByDateBetween(Date start, Date end);
     
     List<Purchase> findByItemServiceList_Service(Service service);
     
-    Long countByRoute(Route route); //TODO: PREGUNTAR
-    
     List<Purchase> findTop10ByOrderByTotalPriceDesc();
+
+    Long countByRoute(Route route);
 
 
 }
