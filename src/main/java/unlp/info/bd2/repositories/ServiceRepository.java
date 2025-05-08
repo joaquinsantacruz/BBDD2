@@ -13,13 +13,11 @@ import unlp.info.bd2.model.Service;
 @Repository
 public interface ServiceRepository extends CrudRepository<Service, Long> {
     
-    Optional<Service> findById(Long id);
-
     Optional<Service> findByNameAndSupplierId(String name, Long id);
 
     @Query("SELECT is.service FROM ItemService is GROUP BY is.service ORDER BY SUM(is.quantity) DESC")
     Service getMostDemandedService(Pageable pageable);
 
-    @Query("SELECT s FROM Service s WHERE size(s.itemServiceList) = 0")
+    @Query("SELECT s FROM Service s WHERE SIZE(s.itemServiceList) = 0")
     List<Service> getServiceNoAddedToPurchases();
 }
