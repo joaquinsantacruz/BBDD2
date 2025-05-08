@@ -13,15 +13,10 @@ public interface SupplierRepository extends CrudRepository<Supplier, Long> {
     
     Optional<Supplier> findByAuthorizationNumber(String authorizationNumber);
 
-    Optional<Supplier> findById(Long id);
-
     @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
     List<Supplier> getTopNSuppliersInPurchases(Pageable pageable);
 
     @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
     List<Supplier> getTopNSuppliersItemsSold(Pageable pageable);
-
-    @Query("SELECT MAX(COUNT(sv)) FROM Supplier s JOIN s.services sv GROUP BY s")
-    Long getMaxServicesOfSupplier();
 
 }
