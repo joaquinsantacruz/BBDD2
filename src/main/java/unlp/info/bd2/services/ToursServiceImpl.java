@@ -308,7 +308,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Route> getRoutsNotSell() {
+    public List<Route> getRoutesNotSell() {
         return this.routeRepository.getRoutsNotSell();
     }
 
