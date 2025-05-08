@@ -51,7 +51,7 @@ public interface ToursService {
     List<Purchase> getPurchaseWithService(Service service);
     Long getMaxStopOfRoutes();
     Long getMaxServicesOfSupplier();
-    List<Route> getRoutsNotSell();
+    List<Route> getRoutesNotSell();
     List<Route> getTop3RoutesWithMaxAverageRating();
     List<Route> getRoutesWithMinRating();
     Service getMostDemandedService();
