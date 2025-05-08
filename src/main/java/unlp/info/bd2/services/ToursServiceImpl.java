@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +23,6 @@ import unlp.info.bd2.model.TourGuideUser;
 import unlp.info.bd2.model.User;
 import unlp.info.bd2.repositories.*;
 import unlp.info.bd2.utils.ToursException;
-
-import unlp.info.bd2.repositories.DriverUserRepository;
-import unlp.info.bd2.repositories.PurchaseRepository;
-import unlp.info.bd2.repositories.RouteRepository;
-import unlp.info.bd2.repositories.ServiceRepository;
-import unlp.info.bd2.repositories.StopRepository;
-import unlp.info.bd2.repositories.SupplierRepository;
-import unlp.info.bd2.repositories.TourGuideUserRepository;
-import unlp.info.bd2.repositories.UserRepository;
 
 
 public class ToursServiceImpl implements ToursService{
@@ -317,7 +309,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Route> getRoutsNotSell() {
-        return this.routeRepository.getRoutesNotSell();
+        return this.routeRepository.getRoutsNotSell();
     }
 
     @Override
@@ -422,6 +414,37 @@ public class ToursServiceImpl implements ToursService{
 
 	@Override
 	public DriverUser getDriverUserWithMoreRoutes() {
-        return this.driverUserRepository.getTopDriverUserWithMoreRoutes(Pageable.ofSize(1));
+        List<DriverUser> drivers = this.driverUserRepository.getTopDriverUserWithMoreRoutes(PageRequest.of(0, 1));
+        return drivers.isEmpty() ? null : drivers.get(0);
 	}
+
+    @Override
+    public List<Supplier> getTopNSuppliersItemsSold(int n) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTopNSuppliersItemsSold'");
+    }
+
+    @Override
+    public List<Route> getTop3RoutesWithMoreStops() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTop3RoutesWithMoreStops'");
+    }
+
+    @Override
+    public Long getMaxServicesOfSupplier() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getMaxServicesOfSupplier'");
+    }
+
+    @Override
+    public List<Route> getRoutesWithMinRating() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRoutesWithMinRating'");
+    }
+
+    @Override
+    public Route getMostBestSellingRoute() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getMostBestSellingRoute'");
+    }
 }
