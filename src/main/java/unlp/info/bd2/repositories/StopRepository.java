@@ -12,5 +12,5 @@ import unlp.info.bd2.model.Stop;
 public interface StopRepository extends CrudRepository<Stop, Long> {
     
     @Query("")
-    List<Stop> getStopByNameStart(String name);
+    List<Stop> getStopByName(String name);
 }

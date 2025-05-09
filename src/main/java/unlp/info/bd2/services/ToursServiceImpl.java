@@ -236,8 +236,7 @@ public class ToursServiceImpl implements ToursService{
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException{
         try{
             Supplier supplier = new Supplier(businessName, authorizationNumber);
-            this.supplierRepository.save(supplier);
-            return supplier;
+            return this.supplierRepository.save(supplier);
         }
         catch(ConstraintViolationException cve){
             throw new ToursException("Constraint Violation");
@@ -400,7 +399,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Route> getRoutesNotSell() {
-        return this.routeRepository.getRoutsNotSell();
+        return this.routeRepository.getRoutesNotSell();
     }
 
     @Override
@@ -448,6 +447,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public List<Route> getTop3RoutesWithMoreStops() {
         return this.routeRepository.getTop3RoutesWithMoreStops(PageRequest.ofSize(3));
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -527,6 +527,11 @@ public class ToursServiceImpl implements ToursService{
     @Override
     public Route getMostBestSellingRoute() {
         return this.routeRepository.getMostBestSellingRoute(PageRequest.ofSize(1)).get(0);
+    }
+
+    @Override
+    public List<Route> getRoutesWithMinRating() {
+        return this.routeRepository.getRoutesWithMinRating();
     }
 
    
