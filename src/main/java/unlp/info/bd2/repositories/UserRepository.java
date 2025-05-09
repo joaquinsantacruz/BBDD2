@@ -21,6 +21,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findDistinctByPurchaseList_TotalPriceGreaterThanEqual(float mount);
 
-    @Query("SELECT u FROM User u WHERE SIZE(u.purchaseList) = ?1")
+    @Query("SELECT u FROM User u WHERE SIZE(u.purchaseList) >= ?1")
     List<User> getUsersWithNumberOfPurchases(int number);
 }

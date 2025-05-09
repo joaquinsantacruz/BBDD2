@@ -29,6 +29,8 @@ public class DriverUser extends User {
     )
     private List<Route> routes; 
 
+    public DriverUser(){}
+
     public DriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) {
         super(username, password, fullName, email, birthdate, phoneNumber);
         this.expedient = expedient;

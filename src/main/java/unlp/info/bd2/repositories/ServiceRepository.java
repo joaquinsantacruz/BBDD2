@@ -21,6 +21,6 @@ public interface ServiceRepository extends CrudRepository<Service, Long> {
     @Query("SELECT s FROM Service s WHERE SIZE(s.itemServiceList) = 0")
     List<Service> getServiceNoAddedToPurchases();
 
-    @Query("SELECT MAX(COUNT(sv)) FROM Supplier s JOIN s.services sv GROUP BY s")
-    Long getMaxServicesOfSupplier();
+    @Query("SELECT COUNT(s) FROM Service s GROUP BY s.supplier.id ORDER BY COUNT(s) DESC")
+    List<Long> getMaxServicesOfSupplier(Pageable pageable);
 }

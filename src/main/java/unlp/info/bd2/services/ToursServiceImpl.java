@@ -511,7 +511,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Long getMaxServicesOfSupplier() {
-        return serviceRepository.getMaxServicesOfSupplier();
+        return serviceRepository.getMaxServicesOfSupplier(PageRequest.of(0, 1)).get(0);
     }
 	@Override
 	public List<User> getUsersWithNumberOfPurchases(int number) {
