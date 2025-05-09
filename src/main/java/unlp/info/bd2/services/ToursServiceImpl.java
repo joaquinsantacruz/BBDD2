@@ -63,7 +63,7 @@ public class ToursServiceImpl implements ToursService{
             ItemService item = new ItemService(quantity, purchase, service);
             purchase.addItem(item, quantity * service.getPrice());
             service.addItem(item);
-            this.purchaseRepository.save(purchase);
+            this.itemServiceRepository.save(item);
             return item;
         }
         catch(ConstraintViolationException cve){
@@ -79,7 +79,7 @@ public class ToursServiceImpl implements ToursService{
     public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
         try{
             Review review = new Review(rating, comment, purchase);
-            this.purchaseRepository.save(purchase);
+            this.reviewRepository.save(review);
             return review;
         }
         catch(ConstraintViolationException cve){
@@ -96,7 +96,7 @@ public class ToursServiceImpl implements ToursService{
         try{
             Service service = new Service(name, price, description, supplier);
             supplier.addSevice(service);
-            this.supplierRepository.save(supplier);
+            this.serviceRepository.save(service);
             return service;
         }
         catch(ConstraintViolationException cve){
@@ -188,7 +188,7 @@ public class ToursServiceImpl implements ToursService{
         }
 
         try{
-            Purchase purchase = new Purchase(code, user, route);
+            Purchase purchase = new Purchase(code, user, route, date);
             user.addPurchase(purchase);
             return this.purchaseRepository.save(purchase);
         }
@@ -363,7 +363,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Long getMaxStopOfRoutes() {
-        return 0L; //this.stopRepository.getMaxStopOfRoutes();
+        return this.routeRepository.getMaxStopOfRoutes();
     }
 
     @Override
@@ -398,7 +398,7 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Route> getRoutesNotSell() {
+    public List<Route> getRoutsNotSell() {
         return this.routeRepository.getRoutesNotSell();
     }
 
@@ -417,7 +417,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Stop> getStopByNameStart(String name) {
-        return this.stopRepository.getStopByName(name);
+        return this.stopRepository.getStopByNameStartingWith(name);
     }
 
     @Override
@@ -435,7 +435,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Purchase> getTop10MoreExpensivePurchasesWithServices() {
-        return this.purchaseRepository.findTop10ByOrderByTotalPriceDesc();
+        return this.purchaseRepository.getTop10MoreExpensivePurchasesWithServices(PageRequest.ofSize(10));
     }
 
     @Override

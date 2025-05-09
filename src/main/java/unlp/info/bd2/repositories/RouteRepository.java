@@ -35,9 +35,10 @@ public interface RouteRepository extends CrudRepository<Route, Long> {
     List<Route> getTop3RoutesWithMaxAverageRating(Pageable pageable);
 
     @Query("""
-            SELECT DISTINCT p.route
-            FROM Purchase p
-            WHERE p.review.rating >= 1
+            SELECT DISTINCT r
+            FROM Route r
+            JOIN Purchase p ON p.route = r
+            WHERE p.review.rating = 1
             """)
     List<Route> getRoutesWithMinRating();
 
@@ -48,4 +49,7 @@ public interface RouteRepository extends CrudRepository<Route, Long> {
             ORDER BY COUNT(p) DESC
             """)
     List<Route> getMostBestSellingRoute(Pageable pageable);
+
+    @Query("SELECT max(size(r.stops)) FROM Route r ")
+    Long getMaxStopOfRoutes();
 }
