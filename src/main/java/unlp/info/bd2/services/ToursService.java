@@ -49,9 +49,9 @@ public interface ToursService {
     Long getCountOfPurchasesBetweenDates(Date start, Date end);
     List<Route> getRoutesWithStop(Stop stop);
     List<Purchase> getPurchaseWithService(Service service);
-    Long getMaxStopOfRoutes(); //TODO: DONDE VA?
+    Long getMaxStopOfRoutes(); //
     Long getMaxServicesOfSupplier();
-    List<Route> getRoutesNotSell();
+    List<Route> getRoutsNotSell();
     List<Route> getTop3RoutesWithMaxAverageRating();
     List<Route> getRoutesWithMinRating();
     Service getMostDemandedService();

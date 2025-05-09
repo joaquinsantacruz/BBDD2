@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import unlp.info.bd2.model.Purchase;
 import unlp.info.bd2.model.User;
 
 @Repository
