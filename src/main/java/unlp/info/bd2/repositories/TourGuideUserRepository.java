@@ -12,7 +12,7 @@ import unlp.info.bd2.model.TourGuideUser;
 @Repository
 public interface TourGuideUserRepository extends CrudRepository<TourGuideUser, Long> {
     
-    Optional<TourGuideUser> getTourGuideByUsername(String username);
+    Optional<TourGuideUser> findByUsername(String username);
 
     @Query("")
     List<TourGuideUser> getTourGuidesWithRating1();

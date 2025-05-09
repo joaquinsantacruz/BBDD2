@@ -37,7 +37,6 @@ public interface ToursService {
     void deletePurchase(Purchase purchase) throws ToursException;
     Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException;
 
-    //TODO: HAY REVIEW REPOSITORY?
     // CONSULTAS HQL
     List<Purchase> getAllPurchasesOfUsername(String username);
     List<User> getUserSpendingMoreThan(float mount);
@@ -52,7 +51,7 @@ public interface ToursService {
     List<Purchase> getPurchaseWithService(Service service);
     Long getMaxStopOfRoutes(); //TODO: DONDE VA?
     Long getMaxServicesOfSupplier();
-    List<Route> getRoutsNotSell();
+    List<Route> getRoutesNotSell();
     List<Route> getTop3RoutesWithMaxAverageRating();
     List<Route> getRoutesWithMinRating();
     Service getMostDemandedService();

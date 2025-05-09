@@ -28,22 +28,33 @@ public class ToursServiceImpl implements ToursService{
 
     @Autowired
     private DriverUserRepository driverUserRepository;
+    
+    @Autowired
+    private ItemServiceRepository itemServiceRepository;
+
     @Autowired
     private PurchaseRepository purchaseRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
     @Autowired
     private RouteRepository routeRepository;
+
     @Autowired
     private ServiceRepository serviceRepository;
+
     @Autowired
     private StopRepository stopRepository;
+
     @Autowired
     private SupplierRepository supplierRepository;
+
     @Autowired
     private TourGuideUserRepository tourGuideUserRepository;
+
     @Autowired
     private UserRepository userRepository;
-
-    
 
     @Override
     @Transactional
@@ -99,7 +110,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void assignDriverByUsername(String username, Long idRoute) throws ToursException {
-        Optional<DriverUser> opDriverUser = this.driverUserRepository.getDriverUserByUsername(username);
+        Optional<DriverUser> opDriverUser = this.driverUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
         
@@ -117,7 +128,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public void assignTourGuideByUsername(String username, Long idRoute) throws ToursException {
-        Optional<TourGuideUser> opTourGuide = this.tourGuideUserRepository.getTourGuideByUsername(username);
+        Optional<TourGuideUser> opTourGuide = this.tourGuideUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
         
@@ -333,23 +344,6 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
-    public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        
-        Optional<Service> opService = this.serviceRepository.getServiceById(id);
-
-        if(opService.isPresent()){
-            Service service = opService.get();
-            service.setPrice(newPrice);
-            this.serviceRepository.save(service);
-            return service;
-        }
-        else{
-            throw new ToursException("El producto no existe");
-        }
-        
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<Purchase> getAllPurchasesOfUsername(String username) {
         return this.purchaseRepository.findByUser_Username(username);
@@ -376,7 +370,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Service getMostDemandedService() {
-        return this.serviceRepository.getMostDemandedService();
+        return this.serviceRepository.getMostDemandedService(PageRequest.of(0, 1));
     }
 
     @Override
@@ -405,14 +399,14 @@ public class ToursServiceImpl implements ToursService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Route> getRoutsNotSell() {
-        return this.routeRepository.getRoutesNotSell();
+    public List<Route> getRoutesNotSell() {
+        return this.routeRepository.getRoutsNotSell();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Service> getServiceByNameAndSupplierId(String name, Long id) throws ToursException {
-        return this.serviceRepository.getServiceByNameAndSupplierId(name, id);
+        return this.serviceRepository.findByNameAndSupplierId(name, id);
     }
 
     @Override
@@ -430,13 +424,13 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierByAuthorizationNumber(String authorizationNumber) {
-        return this.supplierRepository.getSupplierByAuthorizationNumber(authorizationNumber);
+        return this.supplierRepository.findByAuthorizationNumber(authorizationNumber);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Supplier> getSupplierById(Long id) {
-        return this.supplierRepository.getSupplierById(id);
+        return this.supplierRepository.findById(id);
     }
 
     @Override
@@ -452,15 +446,19 @@ public class ToursServiceImpl implements ToursService{
     }
 
     @Override
+    public List<Route> getTop3RoutesWithMoreStops() {
+        return this.routeRepository.getTop3RoutesWithMoreStops(PageRequest.ofSize(3));
+
+    @Override
     @Transactional(readOnly = true)
     public List<User> getTop5UsersMorePurchases() {
-        return this.userRepository.getTop5UsersMorePurchases();
+        return this.userRepository.findTopUsersMorePurchases(PageRequest.ofSize(5));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Supplier> getTopNSuppliersInPurchases(int n) {
-        return this.supplierRepository.getTopNSuppliersInPurchases(n);
+        return this.supplierRepository.getTopNSuppliersInPurchases(PageRequest.of(0, n));
     }
 
     @Override
@@ -472,60 +470,66 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getUserById(Long id) throws ToursException {
-        return this.userRepository.getUserById(id);
+        return this.userRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getUserByUsername(String username) throws ToursException {
-        return this.userRepository.getUserByUsername(username);
+        return this.userRepository.findByUsername(username);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
-        return this.userRepository.getUserSpendingMoreThan(mount);
-    }
-
-
-    @Override
-    public List<User> getUsersWithNumberOfPurchases(int number) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUsersWithNumberOfPurchases'");
+        return this.userRepository.findDistinctByPurchase_TotalPriceGreaterThanEqual(mount);
     }
 
     @Override
+    public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
+        
+        Optional<Service> opService = this.serviceRepository.findById(id);
+
+        if(opService.isPresent()){
+            Service service = opService.get();
+            service.setPrice(newPrice);
+            this.serviceRepository.save(service);
+            return service;
+        }
+        else{
+            throw new ToursException("El producto no existe");
+        }
+        
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Supplier> getTopNSuppliersItemsSold(int n) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTopNSuppliersItemsSold'");
+        return this.supplierRepository.getTopNSuppliersItemsSold(PageRequest.of(0, n));
     }
 
     @Override
-    public List<Route> getTop3RoutesWithMoreStops() {
-        return this.routeRepository.getTop3RoutesWithMoreStops(PageRequest.ofSize(3));
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public Long getMaxServicesOfSupplier() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxServicesOfSupplier'");
+        return serviceRepository.getMaxServicesOfSupplier();
     }
+	@Override
+	public List<User> getUsersWithNumberOfPurchases(int number) {
+		return this.userRepository.getUsersWithNumberOfPurchases(number);
+	}
 
-    @Override
-    public List<Route> getRoutesWithMinRating() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRoutesWithMinRating'");
-    }
+	@Override
+	public DriverUser getDriverUserWithMoreRoutes() {
+        List<DriverUser> drivers = this.driverUserRepository.getTopDriverUserWithMoreRoutes(PageRequest.of(0, 1));
+        return drivers.isEmpty() ? null : drivers.get(0);
+	}
 
     @Override
     public Route getMostBestSellingRoute() {
         return this.routeRepository.getMostBestSellingRoute(PageRequest.ofSize(1)).get(0);
     }
 
-    @Override
-    public DriverUser getDriverUserWithMoreRoutes() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDriverUserWithMoreRoutes'");
-    }
+   
 
+   
 }

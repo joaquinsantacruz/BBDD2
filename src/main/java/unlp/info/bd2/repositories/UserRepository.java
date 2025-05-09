@@ -4,6 +4,7 @@ package unlp.info.bd2.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -14,16 +15,13 @@ import unlp.info.bd2.model.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
     
-    Optional<User> getUserById(Long id);
+    Optional<User> findByUsername(String username);
     
-    Optional<User> getUserByUsername(String username);
-    
-    @Query("")
-    List<Purchase> getAllPurchasesOfUsername(String username);
+    @Query("SELECT u FROM User u WHERE SIZE(u.purchases) > 0 ORDER BY SIZE(u.purchases) DESC")
+    List<User> findTopUsersMorePurchases(Pageable pageable);
 
-    @Query("")
-    List<User> getTop5UsersMorePurchases();
+    List<User> findDistinctByPurchase_TotalPriceGreaterThanEqual(float mount);
 
-    @Query("")
-    List<User> getUserSpendingMoreThan(float mount);
+    @Query("SELECT u FROM User u WHERE SIZE(u.purchases) = ?1")
+    List<User> getUsersWithNumberOfPurchases(int number);
 }
