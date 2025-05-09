@@ -14,7 +14,12 @@ public interface TourGuideUserRepository extends CrudRepository<TourGuideUser, L
     
     Optional<TourGuideUser> findByUsername(String username);
 
-    @Query("")
+    @Query("""
+            FROM TourGuideUser tg
+            JOIN tg.routes r
+            JOIN Purchase p ON p.route = r
+            WHERE p.review.rating = 1
+            """)
     List<TourGuideUser> getTourGuidesWithRating1();
 
 }

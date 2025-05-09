@@ -369,7 +369,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Service getMostDemandedService() {
-        return this.serviceRepository.getMostDemandedService(PageRequest.of(0, 1));
+        return this.serviceRepository.getMostDemandedService(PageRequest.of(0, 1)).get(0);
     }
 
     @Override
@@ -482,7 +482,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
-        return this.userRepository.findDistinctByPurchase_TotalPriceGreaterThanEqual(mount);
+        return this.userRepository.findDistinctByPurchaseList_TotalPriceGreaterThanEqual(mount);
     }
 
     @Override

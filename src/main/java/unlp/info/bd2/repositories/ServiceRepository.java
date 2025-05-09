@@ -16,7 +16,7 @@ public interface ServiceRepository extends CrudRepository<Service, Long> {
     Optional<Service> findByNameAndSupplierId(String name, Long id);
 
     @Query("SELECT is.service FROM ItemService is GROUP BY is.service ORDER BY SUM(is.quantity) DESC")
-    Service getMostDemandedService(Pageable pageable);
+    List<Service> getMostDemandedService(Pageable pageable);
 
     @Query("SELECT s FROM Service s WHERE SIZE(s.itemServiceList) = 0")
     List<Service> getServiceNoAddedToPurchases();

@@ -17,11 +17,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
     
     Optional<User> findByUsername(String username);
     
-    @Query("SELECT u FROM User u WHERE SIZE(u.purchases) > 0 ORDER BY SIZE(u.purchases) DESC")
+    @Query("SELECT u FROM User u WHERE SIZE(u.purchaseList) > 0 ORDER BY SIZE(u.purchaseList) DESC")
     List<User> findTopUsersMorePurchases(Pageable pageable);
 
-    List<User> findDistinctByPurchase_TotalPriceGreaterThanEqual(float mount);
+    List<User> findDistinctByPurchaseList_TotalPriceGreaterThanEqual(float mount);
 
-    @Query("SELECT u FROM User u WHERE SIZE(u.purchases) = ?1")
+    @Query("SELECT u FROM User u WHERE SIZE(u.purchaseList) = ?1")
     List<User> getUsersWithNumberOfPurchases(int number);
 }
