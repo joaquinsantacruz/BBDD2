@@ -115,10 +115,18 @@ public class ToursServiceImpl implements ToursService{
         
         
         if(opDriverUser.isPresent() && optionalRoute.isPresent()){
-            Route route = optionalRoute.get();
-            DriverUser driver = opDriverUser.get();
-            route.addDriver(driver);
-            this.routeRepository.save(route);
+            try{
+                Route route = optionalRoute.get();
+                DriverUser driver = opDriverUser.get();
+                route.addDriver(driver);
+                this.routeRepository.save(route);
+            }
+            catch(ConstraintViolationException cve){
+                throw new ToursException("Constraint Violation");
+            }
+            catch(Exception e){
+                throw new ToursException("Se produjo otro error");
+            }
         }
         else{
             throw new ToursException("No pudo realizarse la asignación");
@@ -133,10 +141,18 @@ public class ToursServiceImpl implements ToursService{
         
         
         if(opTourGuide.isPresent() && optionalRoute.isPresent()){
-            Route route = optionalRoute.get();
-            TourGuideUser tourGuide = opTourGuide.get();
-            route.addTourGuide(tourGuide);
-            this.routeRepository.save(route);
+            try{
+                Route route = optionalRoute.get();
+                TourGuideUser tourGuide = opTourGuide.get();
+                route.addTourGuide(tourGuide);
+                this.routeRepository.save(route);
+            }
+            catch(ConstraintViolationException cve){
+                throw new ToursException("Constraint Violation");
+            }
+            catch(Exception e){
+                throw new ToursException("Se produjo otro error");
+            }
         }
         else{
             throw new ToursException("No pudo realizarse la asignación");
@@ -314,11 +330,19 @@ public class ToursServiceImpl implements ToursService{
     public void deleteUser(User user) throws ToursException {
         if (user.isActive()) {
             if (user.canBeDeactivated()) {
-                if (!user.canBeRemoved()){
-                    user.setActive(false);
-                    this.userRepository.save(user);
-                } else {
-                    this.userRepository.delete(user);
+                try{
+                    if (!user.canBeRemoved()){
+                        user.setActive(false);
+                        this.userRepository.save(user);
+                    } else {
+                        this.userRepository.delete(user);
+                    }
+                }
+                catch(ConstraintViolationException cve){
+                    throw new ToursException("Constraint Violation");
+                }
+                catch(Exception e){
+                    throw new ToursException("Se produjo otro error");
                 }
             } else {
                 throw new ToursException("El usuario no puede ser desactivado");
@@ -340,6 +364,31 @@ public class ToursServiceImpl implements ToursService{
         catch(Exception e){
             throw new ToursException("Se produjo otro error");
         }
+    }
+
+    @Override
+    public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
+        
+        Optional<Service> opService = this.serviceRepository.findById(id);
+
+        if(opService.isPresent()){
+            try{
+                Service service = opService.get();
+                service.setPrice(newPrice);
+                this.serviceRepository.save(service);
+                return service;
+            }
+            catch(ConstraintViolationException cve){
+                throw new ToursException("Constraint Violation");
+            }
+            catch(Exception e){
+                throw new ToursException("Se produjo otro error");
+            }
+        }
+        else{
+            throw new ToursException("El producto no existe");
+        }
+        
     }
 
     @Override
@@ -483,23 +532,6 @@ public class ToursServiceImpl implements ToursService{
     @Transactional(readOnly = true)
     public List<User> getUserSpendingMoreThan(float mount) {
         return this.userRepository.findDistinctByPurchaseList_TotalPriceGreaterThanEqual(mount);
-    }
-
-    @Override
-    public Service updateServicePriceById(Long id, float newPrice) throws ToursException {
-        
-        Optional<Service> opService = this.serviceRepository.findById(id);
-
-        if(opService.isPresent()){
-            Service service = opService.get();
-            service.setPrice(newPrice);
-            this.serviceRepository.save(service);
-            return service;
-        }
-        else{
-            throw new ToursException("El producto no existe");
-        }
-        
     }
 
     @Override
