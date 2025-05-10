@@ -30,7 +30,7 @@ public interface RouteRepository extends CrudRepository<Route, Long> {
             FROM Purchase p 
             WHERE p.review IS NOT NULL 
             GROUP BY p.route 
-            ORDER BY p.review.rating DESC
+            ORDER BY AVG(p.review.rating) DESC
             """)
     List<Route> getTop3RoutesWithMaxAverageRating(Pageable pageable);
 
