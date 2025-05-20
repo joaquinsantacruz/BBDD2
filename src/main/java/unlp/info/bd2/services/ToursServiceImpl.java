@@ -95,7 +95,6 @@ public class ToursServiceImpl implements ToursService{
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
         try{
             Service service = new Service(name, price, description, supplier);
-            //supplier.addSevice(service);//Quiere que esto se haga en el constructor de service, que directamente se agregue a la lista de su variable supplier cuando se crea?
             this.serviceRepository.save(service);
             return service;
         }
@@ -113,24 +112,19 @@ public class ToursServiceImpl implements ToursService{
         Optional<DriverUser> opDriverUser = this.driverUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
-        
-        if(opDriverUser.isPresent() && optionalRoute.isPresent()){
-            try{
-                Route route = optionalRoute.get();
-                DriverUser driver = opDriverUser.get();
-                route.addDriver(driver);
-                this.routeRepository.save(route);
-            }
-            catch(ConstraintViolationException cve){
-                throw new ToursException("Constraint Violation");
-            }
-            catch(Exception e){
-                throw new ToursException("Se produjo otro error");
-            }
+        try{
+            Route route = optionalRoute.get();
+            DriverUser driver = opDriverUser.get();
+            route.addDriver(driver);
+            this.routeRepository.save(route);
         }
-        else{
-            throw new ToursException("No pudo realizarse la asignación");
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
         }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
+
     }
 
     @Override
@@ -139,25 +133,18 @@ public class ToursServiceImpl implements ToursService{
         Optional<TourGuideUser> opTourGuide = this.tourGuideUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
         
-        
-        if(opTourGuide.isPresent() && optionalRoute.isPresent()){
-            try{
-                Route route = optionalRoute.get();
-                TourGuideUser tourGuide = opTourGuide.get();
-                route.addTourGuide(tourGuide);
-                this.routeRepository.save(route);
-            }
-            catch(ConstraintViolationException cve){
-                throw new ToursException("Constraint Violation");
-            }
-            catch(Exception e){
-                throw new ToursException("Se produjo otro error");
-            }
+        try{
+            Route route = optionalRoute.get();
+            TourGuideUser tourGuide = opTourGuide.get();
+            route.addTourGuide(tourGuide);
+            this.routeRepository.save(route);
         }
-        else{
-            throw new ToursException("No pudo realizarse la asignación");
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
         }
-
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
+        }
     }
 
     @Override
@@ -355,22 +342,17 @@ public class ToursServiceImpl implements ToursService{
         
         Optional<Service> opService = this.serviceRepository.findById(id);
 
-        if(opService.isPresent()){
-            try{
-                Service service = opService.get();
-                service.setPrice(newPrice);
-                this.serviceRepository.save(service);
-                return service;
-            }
-            catch(ConstraintViolationException cve){
-                throw new ToursException("Constraint Violation");
-            }
-            catch(Exception e){
-                throw new ToursException("Se produjo otro error");
-            }
+        try{
+            Service service = opService.get();
+            service.setPrice(newPrice);
+            this.serviceRepository.save(service);
+            return service;
         }
-        else{
-            throw new ToursException("El producto no existe");
+        catch(ConstraintViolationException cve){
+            throw new ToursException("Constraint Violation");
+        }
+        catch(Exception e){
+            throw new ToursException("Se produjo otro error");
         }
         
     }
