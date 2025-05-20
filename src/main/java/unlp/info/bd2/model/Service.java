@@ -47,6 +47,7 @@ public class Service {
         this.description = description;
         this.itemServiceList = new ArrayList<ItemService>();
         this.supplier = supplier;
+        this.supplier.addSevice(this);//Asi?
     }
 
 

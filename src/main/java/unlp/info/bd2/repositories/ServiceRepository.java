@@ -15,12 +15,11 @@ public interface ServiceRepository extends CrudRepository<Service, Long> {
     
     Optional<Service> findByNameAndSupplierId(String name, Long id);
 
+    List<Service> findAllByItemServiceListIsEmpty();
+
     @Query("SELECT is.service FROM ItemService is GROUP BY is.service ORDER BY SUM(is.quantity) DESC")
     List<Service> getMostDemandedService(Pageable pageable);
 
-    @Query("SELECT s FROM Service s WHERE SIZE(s.itemServiceList) = 0")
-    List<Service> getServiceNoAddedToPurchases();
-
-    @Query("SELECT COUNT(s) FROM Service s GROUP BY s.supplier.id ORDER BY COUNT(s) DESC")
-    List<Long> getMaxServicesOfSupplier(Pageable pageable);
+    @Query("SELECT MAX(size(s.services)) FROM Supplier s")
+    Long getMaxServicesOfSupplier();
 }

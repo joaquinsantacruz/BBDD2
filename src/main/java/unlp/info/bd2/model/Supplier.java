@@ -38,12 +38,6 @@ public class Supplier {
         this.services = new ArrayList<Service>();
     }
 
-    public Supplier(String businessName, String authorizationNumber, List<Service> services) {
-        this.businessName = businessName;
-        this.authorizationNumber = authorizationNumber;
-        this.services = services;
-    }
-
     public Long getId() {
         return id;
     }

@@ -95,7 +95,7 @@ public class ToursServiceImpl implements ToursService{
     public Service addServiceToSupplier(String name, float price, String description, Supplier supplier)throws ToursException {
         try{
             Service service = new Service(name, price, description, supplier);
-            supplier.addSevice(service);
+            //supplier.addSevice(service);//Quiere que esto se haga en el constructor de service, que directamente se agregue a la lista de su variable supplier cuando se crea?
             this.serviceRepository.save(service);
             return service;
         }
@@ -252,22 +252,6 @@ public class ToursServiceImpl implements ToursService{
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException{
         try{
             Supplier supplier = new Supplier(businessName, authorizationNumber);
-            return this.supplierRepository.save(supplier);
-        }
-        catch(ConstraintViolationException cve){
-            throw new ToursException("Constraint Violation");
-        }
-        catch(Exception e){
-            throw new ToursException("Se produjo otro error");
-        }
-        
-    }
-
-    @Override
-    @Transactional
-    public Supplier createSupplier(String businessName, String authorizationNumber, ArrayList<Service> services) throws ToursException {
-        try{
-            Supplier supplier = new Supplier(businessName, authorizationNumber, services);
             return this.supplierRepository.save(supplier);
         }
         catch(ConstraintViolationException cve){
@@ -460,7 +444,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Service> getServiceNoAddedToPurchases() {
-        return this.serviceRepository.getServiceNoAddedToPurchases();
+        return this.serviceRepository.findAllByItemServiceListIsEmpty();
     }
 
     @Override
@@ -543,7 +527,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Long getMaxServicesOfSupplier() {
-        return serviceRepository.getMaxServicesOfSupplier(PageRequest.of(0, 1)).get(0);
+        return serviceRepository.getMaxServicesOfSupplier();
     }
 	@Override
 	public List<User> getUsersWithNumberOfPurchases(int number) {
