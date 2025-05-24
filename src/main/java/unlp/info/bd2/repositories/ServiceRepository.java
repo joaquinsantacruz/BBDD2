@@ -20,6 +20,4 @@ public interface ServiceRepository extends CrudRepository<Service, Long> {
     @Query("SELECT is.service FROM ItemService is GROUP BY is.service ORDER BY SUM(is.quantity) DESC")
     List<Service> getMostDemandedService(Pageable pageable);
 
-    @Query("SELECT MAX(size(s.services)) FROM Supplier s")
-    Long getMaxServicesOfSupplier();
 }

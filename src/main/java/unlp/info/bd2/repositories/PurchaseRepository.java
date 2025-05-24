@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import unlp.info.bd2.model.Purchase;
@@ -24,10 +23,9 @@ public interface PurchaseRepository extends CrudRepository<Purchase, Long> {
     
     List<Purchase> findByItemServiceList_Service(Service service);
     
-    @Query("FROM Purchase p WHERE p.itemServiceList is not empty ORDER BY totalPrice DESC")
-    List<Purchase> getTop10MoreExpensivePurchasesWithServices(Pageable pageable);
+    List<Purchase> findTop10ByItemServiceListIsNotEmptyOrderByTotalPriceDesc(Pageable pageable);
 
-    Long countByRoute(Route route);
+    Long countByRouteAndDate(Route route, Date today);
 
 
-}
+}  

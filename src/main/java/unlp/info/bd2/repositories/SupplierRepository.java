@@ -19,4 +19,7 @@ public interface SupplierRepository extends CrudRepository<Supplier, Long> {
     @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
     List<Supplier> getTopNSuppliersItemsSold(Pageable pageable);
 
+    @Query("SELECT MAX(size(s.services)) FROM Supplier s")
+    Long getMaxServicesOfSupplier();
+
 }

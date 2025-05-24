@@ -58,6 +58,7 @@ public class Purchase {
         this.route = route;
         this.totalPrice = route.getPrice();
         this.date = new Date();
+        user.addPurchase(this);
     }
 
     public Purchase(String code, User user, Route route, Date date){
@@ -65,12 +66,17 @@ public class Purchase {
         this.user = user;
         this.route = route;
         this.date = date;
+        this.user.addPurchase(this);
         this.totalPrice = route.getPrice();
     }
 
     public void addItem(ItemService item, float price){
         this.itemServiceList.add(item);
         this.totalPrice += price;
+    }
+
+    public void removeFromUser(){
+        this.user.removePurchase(this);
     }
 
     public Long getId() {

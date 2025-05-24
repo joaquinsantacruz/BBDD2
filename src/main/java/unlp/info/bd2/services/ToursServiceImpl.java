@@ -165,13 +165,12 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional 
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
-        if(this.purchaseRepository.countByRoute(route) == route.getMaxNumberUsers()){
+        if(this.purchaseRepository.countByRouteAndDate(route, new Date()) == route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
         }
         
         try{
             Purchase purchase = new Purchase(code, user, route);
-            user.addPurchase(purchase);
             return this.purchaseRepository.save(purchase);
         }
         catch(ConstraintViolationException cve){
@@ -186,13 +185,12 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
-        if(this.purchaseRepository.countByRoute(route) == route.getMaxNumberUsers()){
+        if(this.purchaseRepository.countByRouteAndDate(route, date) == route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
         }
 
         try{
             Purchase purchase = new Purchase(code, user, route, date);
-            user.addPurchase(purchase);
             return this.purchaseRepository.save(purchase);
         }
         catch(ConstraintViolationException cve){
@@ -284,8 +282,7 @@ public class ToursServiceImpl implements ToursService{
     @Transactional
     public void deletePurchase(Purchase purchase) throws ToursException {
         try{
-            purchase.getUser().removePurchase(purchase);
-            purchase.getItemServiceList().stream().forEach(item -> item.getService().removeItem(item));
+            purchase.removeFromUser();
             this.purchaseRepository.delete(purchase);
         }
         catch(ConstraintViolationException cve){
@@ -450,7 +447,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public List<Purchase> getTop10MoreExpensivePurchasesWithServices() {
-        return this.purchaseRepository.getTop10MoreExpensivePurchasesWithServices(PageRequest.ofSize(10));
+        return this.purchaseRepository.findTop10ByItemServiceListIsNotEmptyOrderByTotalPriceDesc(PageRequest.ofSize(10));
     }
 
     @Override
@@ -509,7 +506,7 @@ public class ToursServiceImpl implements ToursService{
     @Override
     @Transactional(readOnly = true)
     public Long getMaxServicesOfSupplier() {
-        return serviceRepository.getMaxServicesOfSupplier();
+        return this.supplierRepository.getMaxServicesOfSupplier();
     }
 	@Override
 	public List<User> getUsersWithNumberOfPurchases(int number) {
