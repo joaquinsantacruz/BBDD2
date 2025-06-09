@@ -1,26 +1,39 @@
 package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Document(collection = "routes")
 public class Route {
 
+    @Id
     private ObjectId id;
 
+    @Field
     private String name;
 
+    @Field
     private float price;
 
+    @Field(name = "total_km")
     private float totalKm;
 
+    @Field(name = "max_number_users")
     private int maxNumberUsers;
 
+    @Field
     private List<Stop> stops;
 
+    @DBRef
     private List<DriverUser> driverList;
 
+    @DBRef
     private List<TourGuideUser> tourGuideList;
 
     public ObjectId getId() {
