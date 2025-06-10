@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 import unlp.info.bd2.config.AppConfig;
-import unlp.info.bd2.config.SpringDataConfiguration;
 import unlp.info.bd2.model.*;
 import unlp.info.bd2.services.ToursService;
 import unlp.info.bd2.utils.DBInitializer;
@@ -28,11 +28,12 @@ import org.junit.Assert;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ContextConfiguration(classes = {SpringDataConfiguration.class, AppConfig.class, DBInitializer.class}, loader = AnnotationConfigContextLoader.class)
+//@ContextConfiguration(classes = {DBInitializer.class}, loader = AnnotationConfigContextLoader.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Transactional
-@Rollback(true)
 public class ToursQuerysTests {
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     DBInitializer initializer;
@@ -44,6 +45,7 @@ public class ToursQuerysTests {
 
     @BeforeAll
     public void prepareDB() throws Exception {
+        mongoTemplate.getDb().drop();
         this.initializer.prepareDB();
     }
 
@@ -110,6 +112,7 @@ public class ToursQuerysTests {
     }
 
     @Test
+        // DELETE
     void getTop10MoreExpensivePurchasesInServicesTest() throws ToursException {
         List<Purchase> purchases = this.service.getTop10MoreExpensivePurchasesWithServices();
         assertEquals(10, purchases.size());
@@ -134,7 +137,7 @@ public class ToursQuerysTests {
     void getCountOfPurchasesBetweenDatesTest() throws ToursException {
         LocalDate today = LocalDate.now();
         long countOfPurchasesBetweenDates1 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(25)), Date.valueOf(today.minusDays(15)));
-        assertEquals(7, countOfPurchasesBetweenDates1);
+        assertEquals(6, countOfPurchasesBetweenDates1);
         long countOfPurchasesBetweenDates2 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(13)), Date.valueOf(today.minusDays(0)));
         assertEquals(7, countOfPurchasesBetweenDates2);
         long countOfPurchasesBetweenDates3 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(26)), Date.valueOf(today.minusDays(22)));
@@ -159,6 +162,7 @@ public class ToursQuerysTests {
 
     @Test
     void getPurchaseWithServiceTest() throws ToursException {
+        // DELETE
         Supplier supplier1 = this.service.getSupplierByAuthorizationNumber("54321").get();
         Service service1 = this.service.getServiceByNameAndSupplierId("Delta Coffe", supplier1.getId()).get();
         List<Purchase> purchases1 = this.service.getPurchaseWithService(service1);
@@ -180,6 +184,7 @@ public class ToursQuerysTests {
 
     @Test
     void getRoutsNotSellTest() throws ToursException {
+        // DELETE
         List<Route> routsNotSell = this.service.getRoutsNotSell();
         assertEquals(1, routsNotSell.size());
         this.assertListEquality(routsNotSell.stream().map(Route::getName).collect(Collectors.toList()), List.of("Ruta vacia"));

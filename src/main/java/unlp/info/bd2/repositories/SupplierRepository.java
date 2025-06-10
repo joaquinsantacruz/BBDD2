@@ -1,25 +1,8 @@
-package unlp.info.bd2.repositories;
-import java.util.List;
-import java.util.Optional;
+package unlp.info.bd2.persistence;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import unlp.info.bd2.model.Supplier;
 
-@Repository
-public interface SupplierRepository extends CrudRepository<Supplier, Long> {
-    
-    Optional<Supplier> findByAuthorizationNumber(String authorizationNumber);
-
-    @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
-    List<Supplier> getTopNSuppliersInPurchases(Pageable pageable);
-
-    @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
-    List<Supplier> getTopNSuppliersItemsSold(Pageable pageable);
-
-    @Query("SELECT MAX(size(s.services)) FROM Supplier s")
-    Long getMaxServicesOfSupplier();
-
-}
+public interface SupplierRepository extends MongoRepository<Supplier, ObjectId> {
+} 

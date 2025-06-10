@@ -1,45 +1,22 @@
 package unlp.info.bd2.model;
 
-import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import org.bson.types.ObjectId;
 
-@Entity
-@Table(name = "stop")
 public class Stop {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private ObjectId id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String description;
 
-    @ManyToMany(mappedBy = "stops", fetch = FetchType.LAZY, cascade = {})
-    private List<Route> routes;
 
-    public Stop() {
-    }
-
-    public Stop(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

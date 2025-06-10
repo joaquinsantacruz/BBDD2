@@ -1,16 +1,8 @@
-package unlp.info.bd2.repositories;
+package unlp.info.bd2.persistence;
 
-
-import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import unlp.info.bd2.model.Stop;
 
-@Repository
-public interface StopRepository extends CrudRepository<Stop, Long> {
-    
-
-    List<Stop> getStopByNameStartingWith(String name);
-
-}
+public interface StopRepository extends MongoRepository<Stop, ObjectId> {
+} 

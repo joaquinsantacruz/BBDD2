@@ -1,54 +1,23 @@
 package unlp.info.bd2.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "item")
+import org.bson.types.ObjectId;
+
 public class ItemService {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    ObjectId id;
 
-    @Column(nullable = false)
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {})
-    @JoinColumn(name = "purchase_id")
     private Purchase purchase;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {})
-    @JoinColumn(name = "service_id")
     private Service service;
 
-    public ItemService(){}
-
-    public ItemService(Long id, int quantity, Purchase purchase, Service service){
-        this.id = id;
-        this.quantity = quantity;
-        this.purchase = purchase;
-        this.service = service;
-    }
-    
-    public ItemService(int quantity, Purchase purchase, Service service){
-        this.quantity = quantity;
-        this.purchase = purchase;
-        this.service = service;
-    }
-
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

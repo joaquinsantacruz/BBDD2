@@ -1,52 +1,24 @@
 package unlp.info.bd2.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "review")
+import org.bson.types.ObjectId;
+
 public class Review {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private ObjectId id;
 
-    @Column(nullable = false)
     private int rating;
 
-    @Column(nullable = false)
     private String comment;
 
-    @OneToOne(mappedBy = "review", fetch = FetchType.EAGER, cascade = {})
     private Purchase purchase;
 
-    public Review(){}
-    
-    public Review(int rating, String comment, Purchase purchase){
-        purchase.setReview(this);
-        this.rating = rating;
-        this.comment = comment;
-        this.purchase = purchase;
-    }
-    
-    public Review(Long id, int rating, String comment, Purchase purchase){
-        this.id = id;
-        this.rating = rating;
-        this.comment = comment;
-        this.purchase = purchase;
-    }
 
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

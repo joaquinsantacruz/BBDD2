@@ -1,11 +1,8 @@
 package unlp.info.bd2.repositories;
 
-
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import unlp.info.bd2.model.Review;
 
-@Repository
-public interface ReviewRepository extends CrudRepository<Review, Long> {
-    
-}
+public interface ReviewRepository extends MongoRepository<Review, ObjectId> {
+} 

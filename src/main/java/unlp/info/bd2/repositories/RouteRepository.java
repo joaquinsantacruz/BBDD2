@@ -1,55 +1,24 @@
 package unlp.info.bd2.repositories;
 
-
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.Aggregation;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import unlp.info.bd2.model.Route;
 import unlp.info.bd2.model.Stop;
 
-@Repository
-public interface RouteRepository extends CrudRepository<Route, Long> {
-   
-    List<Route> findByPriceLessThan(float price);
+public interface RouteRepository extends MongoRepository<Route, ObjectId> {
 
-    List<Route> findByStopsContains(Stop stop);
+    @Aggregation(pipeline = {
+        "{ $addFields: { stopsCount: { $size: '$stops' } } }",
+        "{ $sort: {'$stopsCount: -1' } }",
+        "{ $limit: 3 }"
+    })
+    List<Route> getTop3RoutesWithMoreStops();
 
-    @Query("FROM Route r ORDER BY size(r.stops) DESC")
-    List<Route> getTop3RoutesWithMoreStops(Pageable pageable);
+    List<Route> findByStopsContaining(Stop stop);
 
-
-    @Query("FROM Route r LEFT JOIN Purchase p ON p.route = r WHERE p IS NULL")
-    List<Route> getRoutesNotSell();
-
-    @Query("""
-            SELECT p.route 
-            FROM Purchase p 
-            WHERE p.review IS NOT NULL 
-            GROUP BY p.route 
-            ORDER BY AVG(p.review.rating) DESC
-            """)
-    List<Route> getTop3RoutesWithMaxAverageRating(Pageable pageable);
-
-    @Query("""
-            SELECT DISTINCT r
-            FROM Route r
-            JOIN Purchase p ON p.route = r
-            WHERE p.review.rating = 1
-            """)
-    List<Route> getRoutesWithMinRating();
-
-    @Query("""
-            SELECT p.route
-            FROM Purchase p
-            GROUP BY p.route
-            ORDER BY COUNT(p) DESC
-            """)
-    List<Route> getMostBestSellingRoute(Pageable pageable);
-
-    @Query("SELECT max(size(r.stops)) FROM Route r ")
+    @
     Long getMaxStopOfRoutes();
-}
+} 

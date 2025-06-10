@@ -1,11 +1,8 @@
-package unlp.info.bd2.repositories;
+package unlp.info.bd2.persistence;
 
-
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import unlp.info.bd2.model.ItemService;
 
-@Repository
-public interface ItemServiceRepository extends CrudRepository<ItemService, Long> {
-    
-}
+public interface ItemServiceRepository extends MongoRepository<ItemService, ObjectId> {
+} 

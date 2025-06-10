@@ -1,83 +1,46 @@
 package unlp.info.bd2.model;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "route")
+@Document(collection = "routes")
 public class Route {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private ObjectId id;
 
-    @Column(nullable = false)
+    @Field
     private String name;
 
-    @Column(nullable = false)
+    @Field
     private float price;
 
-    @Column(name = "total_km", nullable = false)
+    @Field(name = "total_km")
     private float totalKm;
 
-    @Column(name = "max_number_users", nullable = false)
+    @Field(name = "max_number_users")
     private int maxNumberUsers;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {})
-    @JoinTable(
-        name = "route_stop",
-        joinColumns = @JoinColumn(name = "route_id"),
-        inverseJoinColumns = @JoinColumn(name = "stop_id")
-    )
+    @Field
     private List<Stop> stops;
 
-    @ManyToMany(mappedBy = "routes", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @DBRef
     private List<DriverUser> driverList;
 
-    @ManyToMany(mappedBy = "routes", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @DBRef
     private List<TourGuideUser> tourGuideList;
 
-    public Route() {
-
-    }
-    
-    public Route(String name, float price, float totalKm, int maxNumberUsers, List<Stop> stops) {
-        this.name = name;
-        this.price = price;
-        this.totalKm = totalKm;
-        this.maxNumberUsers = maxNumberUsers;
-        this.stops = stops;
-        this.driverList = new ArrayList<DriverUser>();
-        this.tourGuideList = new ArrayList<TourGuideUser>();
-    }
-
-    public void addDriver(DriverUser driverUser){
-        this.driverList.add(driverUser);
-        driverUser.addRoute(this);
-    }
-
-    public void addTourGuide(TourGuideUser tourGuide){
-        this.tourGuideList.add(tourGuide);
-        tourGuide.addRoute(this);
-    }
-
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

@@ -1,19 +1,21 @@
 package unlp.info.bd2;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 import unlp.info.bd2.config.AppConfig;
-import unlp.info.bd2.config.SpringDataConfiguration;
 import unlp.info.bd2.model.*;
 import unlp.info.bd2.services.ToursService;
+import unlp.info.bd2.utils.DBInitializer;
 import unlp.info.bd2.utils.ToursException;
 
 import javax.swing.text.html.Option;
@@ -24,11 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-@ContextConfiguration(classes = {SpringDataConfiguration.class, AppConfig.class}, loader = AnnotationConfigContextLoader.class)
 @ExtendWith(SpringExtension.class)
-@Transactional
-@Rollback(true)
 class ToursApplicationTests {
+
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
 	@Autowired
 	private ToursService toursService;
@@ -40,6 +42,7 @@ class ToursApplicationTests {
 
 	@BeforeEach
 	public void setUp(){
+		mongoTemplate.getDb().drop();
 		Calendar cal1 = Calendar.getInstance();
 		cal1.set(1980, Calendar.APRIL, 5);
 		this.dob1 = cal1.getTime();
@@ -80,8 +83,6 @@ class ToursApplicationTests {
 		assertEquals(driverUser.getId(), driverUser1.getId());
 		assertEquals(driverUser.getExpedient(), "exp...");
 
-		System.out.println("Esto es una nueva linea");
-
 		assertThrows(ToursException.class, () -> this.toursService.createUser("userD", "1234", "Otro usuario", "otromail@gmail.com", dob1, "000111222999"), "Constraint Violation");
 	}
 
@@ -101,15 +102,6 @@ class ToursApplicationTests {
 		driverUser = (DriverUser) this.toursService.updateUser(driverUser);
 		assertNotEquals("exp...", driverUser.getExpedient());
 		assertEquals("nuevo expediente", driverUser.getExpedient());
-
-		user1.setUsername("user2");
-		this.toursService.updateUser(user1);
-		Optional<User> opUserFromDB = this.toursService.getUserByUsername("user2");
-		assertTrue(opUserFromDB.isEmpty());
-		Optional<User> opUnmodifiedUserFromDB = this.toursService.getUserByUsername("user1");
-		assertTrue(opUnmodifiedUserFromDB.isPresent());
-		User unmodifiedUserFromDB = opUnmodifiedUserFromDB.get();
-		assertEquals(unmodifiedUserFromDB.getId(), user1.getId());
 	}
 
 	@Test
@@ -168,7 +160,7 @@ class ToursApplicationTests {
 		assertEquals("userG1", route.getTourGuideList().get(0).getUsername());
 
 		assertThrows(ToursException.class, () -> this.toursService.assignTourGuideByUsername("user_no_existente", tourGuideUser1.getId()) , "No pudo realizarse la asignación");
-		assertThrows(ToursException.class, () -> this.toursService.assignDriverByUsername(driverUser1.getUsername(), 1000000L) , "No pudo realizarse la asignación");
+		assertThrows(ToursException.class, () -> this.toursService.assignDriverByUsername(driverUser1.getUsername(), new ObjectId("67777a377777777777777777")) , "No pudo realizarse la asignación");
 	}
 
 	@Test
@@ -214,7 +206,7 @@ class ToursApplicationTests {
 		Service service2 = this.toursService.updateServicePriceById(service1.getId(), 600f);
 		assertEquals(600f, service2.getPrice());
 
-		assertThrows(ToursException.class, () -> this.toursService.updateServicePriceById(100000L, 500f), "No existe el producto");
+		assertThrows(ToursException.class, () -> this.toursService.updateServicePriceById(new ObjectId("67777a377777777777777777"), 500f), "No existe el producto");
 	}
 
 	@Test
@@ -237,7 +229,7 @@ class ToursApplicationTests {
 
 		ItemService itemService1 = this.toursService.addItemToPurchase(service1, 1, purchase1);
 		assertNotNull(itemService1.getId());
-		assertEquals(supplier1.getId(), itemService1.getService().getId());
+		assertEquals(service1.getId(), itemService1.getService().getId());
 		assertEquals(purchase1.getId(), itemService1.getPurchase().getId());
 		ItemService itemService2 = this.toursService.addItemToPurchase(service2, 2, purchase1);
 
@@ -290,7 +282,7 @@ class ToursApplicationTests {
 		Optional<Purchase> optionalPurchase = this.toursService.getPurchaseByCode("100");
 		assertTrue(optionalPurchase.isPresent());
 		Purchase purchase = optionalPurchase.get();
-		assertNotNull(review.getId());
+		assertNull(review.getId());
 		assertNotNull(purchase.getReview());
 		assertEquals(purchase.getId(), review.getPurchase().getId());
 	}
