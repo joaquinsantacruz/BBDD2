@@ -27,6 +27,10 @@ public class User {
     private List<Purchase> purchaseList;
 
 
+    public void addPurchase(Purchase purchase){
+        this.purchaseList.add(purchase);
+    }
+    
     public ObjectId getId() {
         return id;
     }

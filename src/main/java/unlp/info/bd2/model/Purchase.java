@@ -1,29 +1,59 @@
 package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 import java.util.List;
 
+@Document(collection = "purchases")
 public class Purchase {
 
+    @Id
     ObjectId id;
 
+    @Field
     private String code;
 
+    @Field(name = "total_price")
     private float totalPrice;
 
+    @Field
     private Date date;
 
+    //TODO: put annotation
     private User user;
 
+    //TODO: put annotation
     private Route route;
 
+    @Field
     private Review review;
 
+    @Field
     private List<ItemService> itemServiceList;
 
+    public Purchase(){}
 
+    public Purchase(String code, User user, Route route){
+        this.code = code;
+        this.user = user;
+        this.route = route;
+        this.totalPrice = route.getPrice();
+        this.date = new Date();
+        user.addPurchase(this);
+    }
+
+    public Purchase(String code, User user, Route route, Date date){
+        this.code = code;
+        this.user = user;
+        this.route = route;
+        this.date = date;
+        this.user.addPurchase(this);
+        this.totalPrice = route.getPrice();
+    }
 
     public ObjectId getId() {
         return id;

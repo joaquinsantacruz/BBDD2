@@ -2,16 +2,32 @@ package unlp.info.bd2.model;
 
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+@Document(collection = "reviews")
 public class Review {
 
+    @Id
     private ObjectId id;
 
+    @Field
     private int rating;
 
+    @Field
     private String comment;
 
+    @Field
     private Purchase purchase;
+
+    public Review(){}
+
+    public Review(int rating, String comment, Purchase purchase){
+        this.rating = rating;
+        this.comment = comment;
+        this.purchase = purchase;
+    }
 
 
     public ObjectId getId() {
