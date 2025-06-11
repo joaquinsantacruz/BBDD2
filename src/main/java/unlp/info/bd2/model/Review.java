@@ -2,6 +2,7 @@ package unlp.info.bd2.model;
 
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Transient;
 
 public class Review {
 
@@ -11,6 +12,7 @@ public class Review {
 
     private String comment;
 
+    @Transient
     private Purchase purchase;
 
 

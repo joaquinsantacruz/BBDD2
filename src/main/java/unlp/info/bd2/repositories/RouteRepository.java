@@ -19,6 +19,6 @@ public interface RouteRepository extends MongoRepository<Route, ObjectId> {
 
     List<Route> findByStopsContaining(Stop stop);
 
-    @
-    Long getMaxStopOfRoutes();
+    
+    //Long getMaxStopOfRoutes();
 } 
