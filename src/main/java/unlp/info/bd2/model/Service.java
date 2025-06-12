@@ -15,13 +15,10 @@ public class Service {
     @Id
     private ObjectId id;
 
-    @Field
     private String name;
 
-    @Field
     private float price;
 
-    @Field
     private String description;
 
     @DBRef

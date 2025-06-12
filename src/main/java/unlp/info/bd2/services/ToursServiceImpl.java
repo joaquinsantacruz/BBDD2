@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,9 @@ import unlp.info.bd2.utils.ToursException;
 
 public class ToursServiceImpl implements ToursService {
 
+    @Autowired
     private SupplierRepository supplierRepository;
+    @Autowired
     private ServiceRepository serviceRepository;
 
     @Override
@@ -122,15 +125,13 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional
     public Supplier createSupplier(String businessName, String authorizationNumber) throws ToursException {
+        if (this.supplierRepository.findByAuthorizationNumber(authorizationNumber).isPresent()) {
+            throw new ToursException("Constraint Violation: clave duplicada");
+        }
         try {
             Supplier supplier = new Supplier(businessName, authorizationNumber);
             return this.supplierRepository.save(supplier);
-        }
-        catch (DuplicateKeyException dke) {
-            // Mongo usa DuplicateKeyException para violación de índices únicos
-            throw new ToursException("Constraint Violation: clave duplicada");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ToursException("Se produjo otro error");
         }
     }
