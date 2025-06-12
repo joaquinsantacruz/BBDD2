@@ -70,6 +70,36 @@ public class User {
         return this.purchaseList.isEmpty();
     }
 
+    public User(){}
+    
+    public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) {
+        this.username = username;
+        this.password = password;
+        this.name = fullName;
+        this.email = email;
+        this.birthdate = birthdate;
+        this.phoneNumber = phoneNumber;
+        this.purchaseList = new ArrayList<Purchase>();
+        this.active = true;
+    }
+
+    public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, boolean active, List<Purchase> purchases){
+        this(username, password, fullName, email, birthdate, phoneNumber);
+        this.active = active;
+        this.purchaseList = purchases;
+    }
+
+
+    public void addPurchase(Purchase purchase){
+        this.purchaseList.add(purchase);
+    }
+
+    public void removePurchase(Purchase purchase){
+        this.purchaseList.remove(purchase);
+    }
+    
+
+    
     public ObjectId getId() {
         return id;
     }

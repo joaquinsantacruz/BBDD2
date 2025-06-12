@@ -31,6 +31,7 @@ public class DriverUser extends User {
         this.routes.add(route);
     }
 
+
     public void removeRoute(Route route){
         this.routes.remove(route);
     }
@@ -42,7 +43,7 @@ public class DriverUser extends User {
     public boolean canBeRemoved(){
         return this.routes.isEmpty();
     }
-
+  
     public String getExpedient() {
         return expedient;
     }

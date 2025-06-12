@@ -1,12 +1,18 @@
 package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Document(collection = "services")
 public class Service {
 
+    @Id
     private ObjectId id;
 
     private String name;
@@ -15,10 +21,30 @@ public class Service {
 
     private String description;
 
+    @DBRef
     private List<ItemService> itemServiceList;
 
+    @DBRef
     private Supplier supplier;
 
+    public Service(){}
+
+    public Service(String name, float price, String description, Supplier supplier) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.itemServiceList = new ArrayList<ItemService>();
+        this.supplier = supplier;
+        this.supplier.addSevice(this);
+    }
+
+    public void addItem(ItemService item){
+        this.itemServiceList.add(item);
+    }
+
+    public void removeItem(ItemService item){
+        this.itemServiceList.remove(item);
+    }
 
     public ObjectId getId() {
         return id;

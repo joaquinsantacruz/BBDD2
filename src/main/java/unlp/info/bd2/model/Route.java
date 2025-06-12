@@ -36,6 +36,30 @@ public class Route {
     @DBRef
     private List<TourGuideUser> tourGuideList;
 
+    public Route() {
+
+    }
+    
+    public Route(String name, float price, float totalKm, int maxNumberUsers, List<Stop> stops) {
+        this.name = name;
+        this.price = price;
+        this.totalKm = totalKm;
+        this.maxNumberUsers = maxNumberUsers;
+        this.stops = stops;
+        this.driverList = new ArrayList<DriverUser>();
+        this.tourGuideList = new ArrayList<TourGuideUser>();
+    }
+
+    public void addDriver(DriverUser driverUser){
+        this.driverList.add(driverUser);
+        driverUser.addRoute(this);
+    }
+
+    public void addTourGuide(TourGuideUser tourGuide){
+        this.tourGuideList.add(tourGuide);
+        tourGuide.addRoute(this);
+    }
+    
     public ObjectId getId() {
         return id;
     }
