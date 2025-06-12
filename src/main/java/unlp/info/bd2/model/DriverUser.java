@@ -5,13 +5,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+@Document(collection = "users")
 public class DriverUser extends User {
 
+    @Field
     private String expedient;
 
+    @DBRef
+    @Field
     private List<Route> routes;
 
-     public DriverUser(){}
+    public DriverUser(){}
 
     public DriverUser(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, String expedient) {
         super(username, password, fullName, email, birthdate, phoneNumber);
@@ -22,7 +30,20 @@ public class DriverUser extends User {
     public void addRoute(Route route){
         this.routes.add(route);
     }
-    
+
+
+    public void removeRoute(Route route){
+        this.routes.remove(route);
+    }
+
+    public boolean canBeDeactivated(){
+        return this.routes.isEmpty();
+    }
+
+    public boolean canBeRemoved(){
+        return this.routes.isEmpty();
+    }
+  
     public String getExpedient() {
         return expedient;
     }
@@ -35,7 +56,7 @@ public class DriverUser extends User {
         return routes;
     }
 
-    public void setRouts(List<Route> routs) {
-        this.routes = routs;
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
     }
 }
