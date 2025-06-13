@@ -1,8 +1,7 @@
 package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
@@ -26,7 +25,7 @@ public class Purchase {
     //TODO: put annotation
     private User user;
 
-    //TODO: put annotation
+    @DBRef
     private Route route;
 
     @Field
@@ -41,18 +40,18 @@ public class Purchase {
         this.code = code;
         this.user = user;
         this.route = route;
-        this.totalPrice = route.getPrice();
-        this.date = new Date();
-        user.addPurchase(this);
     }
 
-    public Purchase(String code, User user, Route route, Date date){
+    public Purchase(String code, Date date, User user, Route route){
         this.code = code;
+        this.date = date;
         this.user = user;
         this.route = route;
-        this.date = date;
-        this.user.addPurchase(this);
-        this.totalPrice = route.getPrice();
+    }
+
+    public void addItem(ItemService itemService, float price){
+        this.itemServiceList.add(itemService);
+        this.totalPrice += price;
     }
 
     public ObjectId getId() {

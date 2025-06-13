@@ -2,12 +2,11 @@ package unlp.info.bd2.model;
 
 
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-
-
+@Document(collection = "item_services")
 public class ItemService {
 
     @Id
@@ -16,7 +15,7 @@ public class ItemService {
     @Field
     private int quantity;
 
-    //TODO
+    @DBRef
     private Purchase purchase;
 
     @DBRef

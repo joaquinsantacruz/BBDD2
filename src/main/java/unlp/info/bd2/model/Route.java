@@ -15,10 +15,8 @@ public class Route {
     @Id
     private ObjectId id;
 
-    @Field
     private String name;
-
-    @Field
+    
     private float price;
 
     @Field(name = "total_km")
@@ -36,8 +34,10 @@ public class Route {
     @DBRef
     private List<TourGuideUser> tourGuideList;
 
-    public Route(){}
+    public Route() {
 
+    }
+    
     public Route(String name, float price, float totalKm, int maxNumberUsers, List<Stop> stops) {
         this.name = name;
         this.price = price;
@@ -48,6 +48,15 @@ public class Route {
         this.tourGuideList = new ArrayList<TourGuideUser>();
     }
 
+    public void addDriver(DriverUser driverUser){
+        this.driverList.add(driverUser);
+        driverUser.addRoute(this);
+    }
+
+    public void addTourGuide(TourGuideUser tourGuideUser){
+        this.tourGuideList.add(tourGuideUser);
+        tourGuideUser.addRoute(this);
+    }
     public ObjectId getId() {
         return id;
     }

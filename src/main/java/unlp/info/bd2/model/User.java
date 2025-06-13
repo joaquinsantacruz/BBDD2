@@ -1,13 +1,19 @@
 package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Document(collection = "users")
 public class User {
 
+    @Id
     private ObjectId id;
 
     private String username;
@@ -20,15 +26,48 @@ public class User {
 
     private Date birthdate;
 
+    @Field(name = "phone_number")
     private String phoneNumber;
 
     private boolean active;
 
+    @DBRef
+    @Field(name = "purchase_list")
     private List<Purchase> purchaseList;
 
+    public User(){}
+
+    public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber) {
+        this.username = username;
+        this.password = password;
+        this.name = fullName;
+        this.email = email;
+        this.birthdate = birthdate;
+        this.phoneNumber = phoneNumber;
+        this.purchaseList = new ArrayList<Purchase>();
+        this.active = true;
+    }
+
+    public User(String username, String password, String fullName, String email, Date birthdate, String phoneNumber, boolean active, List<Purchase> purchases){
+        this(username, password, fullName, email, birthdate, phoneNumber);
+        this.active = active;
+        this.purchaseList = purchases;
+    }
 
     public void addPurchase(Purchase purchase){
         this.purchaseList.add(purchase);
+    }
+
+    public void removePurchase(Purchase purchase){
+        this.purchaseList.remove(purchase);
+    }
+
+    public boolean canBeDeactivated(){
+        return true;
+    }
+
+    public boolean canBeRemoved(){
+        return this.purchaseList.isEmpty();
     }
     
     public ObjectId getId() {

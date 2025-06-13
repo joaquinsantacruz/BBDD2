@@ -1,18 +1,48 @@
 package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Document(collection = "suppliers")
 public class Supplier {
 
+    @Id
     private ObjectId id;
 
+    @Field (name = "business_name")
     private String businessName;
 
+    @Field (name = "authorization_number")
+    @Indexed(unique = true) //TODO: mover chequeo a ToursServiceImpl
     private String authorizationNumber;
 
+    @DBRef//TODO: poner embebido
     private List<Service> services;
+
+    public Supplier() {}
+
+    public Supplier(String businessName, String authorizationNumber) {
+        this.businessName = businessName;
+        this.authorizationNumber = authorizationNumber;
+        this.services = new ArrayList<Service>();
+    }
+
+    public Supplier(String businessName, String authorizationNumber, List<Service> services) {
+        this.businessName = businessName;
+        this.authorizationNumber = authorizationNumber;
+        this.services = services;
+    }
+
+    public void addSevice(Service service){
+        this.services.add(service);
+    }
 
     public ObjectId getId() {
         return id;

@@ -18,13 +18,13 @@ public class Stop {
     @Field
     private String description;
 
-
     public Stop(){}
 
     public Stop(String name, String description){
         this.name = name;
         this.description = description;
     }
+    
     public ObjectId getId() {
         return id;
     }
