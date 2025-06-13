@@ -54,42 +54,42 @@ public class ToursQuerysTests {
 
     }
 
-    // @Test
-    // void getAllPurchasesOfUsernameTest() throws ToursException {
-    //     List<Purchase> purchases1 = this.service.getAllPurchasesOfUsername("user1");
-    //     assertEquals(6, purchases1.size());
-    //     this.assertListEquality(purchases1.stream().map(Purchase::getCode).collect(Collectors.toList()), Arrays.asList("P001", "P005","P009", "P011", "P015", "P019"));
-    //     List<Purchase> purchases2 = this.service.getAllPurchasesOfUsername("user3");
-    //     assertEquals(1, purchases2.size());
-    //     this.assertListEquality(purchases2.stream().map(Purchase::getCode).collect(Collectors.toList()), Arrays.asList("P003"));
-    //     List<Purchase> purchases3 = this.service.getAllPurchasesOfUsername("user5");
-    //     assertEquals(0, purchases3.size());
-    // }
+    @Test
+    void getAllPurchasesOfUsernameTest() throws ToursException {
+        List<Purchase> purchases1 = this.service.getAllPurchasesOfUsername("user1");
+        assertEquals(6, purchases1.size());
+        this.assertListEquality(purchases1.stream().map(Purchase::getCode).collect(Collectors.toList()), Arrays.asList("P001", "P005","P009", "P011", "P015", "P019"));
+        List<Purchase> purchases2 = this.service.getAllPurchasesOfUsername("user3");
+        assertEquals(1, purchases2.size());
+        this.assertListEquality(purchases2.stream().map(Purchase::getCode).collect(Collectors.toList()), Arrays.asList("P003"));
+        List<Purchase> purchases3 = this.service.getAllPurchasesOfUsername("user5");
+        assertEquals(0, purchases3.size());
+    }
 
-    // @Test
-    // void getUserSpendingMoreThanTest() throws ToursException {
-    //     List<User> users1 = this.service.getUserSpendingMoreThan(500);
-    //     assertEquals(6, users1.size());
-    //     this.assertListEquality(users1.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user3", "user4", "user6", "user7", "user9", "user10"));
-    //     List<User> users2 = this.service.getUserSpendingMoreThan(800);
-    //     assertEquals(3, users2.size());
-    //     this.assertListEquality(users2.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user4", "user7", "user10"));
-    //     List<User> users3 = this.service.getUserSpendingMoreThan(1000);
-    //     assertEquals(0, users3.size());
-    // }
+    @Test
+    void getUserSpendingMoreThanTest() throws ToursException {
+        List<User> users1 = this.service.getUserSpendingMoreThan(500);
+        assertEquals(6, users1.size());
+        this.assertListEquality(users1.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user3", "user4", "user6", "user7", "user9", "user10"));
+        List<User> users2 = this.service.getUserSpendingMoreThan(800);
+        assertEquals(3, users2.size());
+        this.assertListEquality(users2.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user4", "user7", "user10"));
+        List<User> users3 = this.service.getUserSpendingMoreThan(1000);
+        assertEquals(0, users3.size());
+    }
 
-    // @Test
-    // void getUsersWithNumberOfPurchasesTest() throws ToursException {
-    //     List<User> users1 = this.service.getUsersWithNumberOfPurchases(6);
-    //     assertEquals(1, users1.size());
-    //     this.assertListEquality(users1.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1"));
-    //     List<User> users2 = this.service.getUsersWithNumberOfPurchases(3);
-    //     assertEquals(2, users2.size());
-    //     this.assertListEquality(users2.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1", "user2"));
-    //     List<User> users3 = this.service.getUsersWithNumberOfPurchases(2);
-    //     assertEquals(5, users3.size());
-    //     this.assertListEquality(users3.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1", "user2", "user6", "user7", "user10"));
-    // }
+    @Test
+    void getUsersWithNumberOfPurchasesTest() throws ToursException {
+        List<User> users1 = this.service.getUsersWithNumberOfPurchases(6);
+        assertEquals(1, users1.size());
+        this.assertListEquality(users1.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1"));
+        List<User> users2 = this.service.getUsersWithNumberOfPurchases(3);
+        assertEquals(2, users2.size());
+        this.assertListEquality(users2.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1", "user2"));
+        List<User> users3 = this.service.getUsersWithNumberOfPurchases(2);
+        assertEquals(5, users3.size());
+        this.assertListEquality(users3.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1", "user2", "user6", "user7", "user10"));
+    }
 
     @Test
     void getTopNSuppliersInPurchasesTest() throws ToursException {
@@ -111,52 +111,52 @@ public class ToursQuerysTests {
         this.assertListEquality(suppliers2.stream().map(Supplier::getAuthorizationNumber).collect(Collectors.toList()), Arrays.asList("12345"));
     }
 
-    // @Test
-    // void getTop5UsersMorePurchasesTest() throws ToursException {
-    //     List<User> usersMorePurchases = this.service.getTop5UsersMorePurchases();
-    //     assertEquals(5, usersMorePurchases.size());
-    //     this.assertListEquality(usersMorePurchases.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1", "user2", "user6", "user7", "user10"));
-    // }
+    @Test
+    void getTop5UsersMorePurchasesTest() throws ToursException {
+        List<User> usersMorePurchases = this.service.getTop5UsersMorePurchases();
+        assertEquals(5, usersMorePurchases.size());
+        this.assertListEquality(usersMorePurchases.stream().map(User::getUsername).collect(Collectors.toList()), Arrays.asList("user1", "user2", "user6", "user7", "user10"));
+    }
 
-    // @Test
-    // void getTop3RoutesWithMoreStopsTest() throws ToursException {
-    //     List<Route> routesWithMoreStops = this.service.getTop3RoutesWithMoreStops();
-    //     assertEquals(3, routesWithMoreStops.size());
-    //     this.assertListEquality(routesWithMoreStops.stream().map(Route::getName).collect(Collectors.toList()), Arrays.asList("City Tour", "Historical Adventure", "Architectural Expedition"));
-    // }
+    @Test
+    void getTop3RoutesWithMoreStopsTest() throws ToursException {
+        List<Route> routesWithMoreStops = this.service.getTop3RoutesWithMoreStops();
+        assertEquals(3, routesWithMoreStops.size());
+        this.assertListEquality(routesWithMoreStops.stream().map(Route::getName).collect(Collectors.toList()), Arrays.asList("City Tour", "Historical Adventure", "Architectural Expedition"));
+    }
 
-    // @Test
-    // void getCountOfPurchasesBetweenDatesTest() throws ToursException {
-    //     LocalDate today = LocalDate.now();
-    //     long countOfPurchasesBetweenDates1 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(25)), Date.valueOf(today.minusDays(15)));
-    //     assertEquals(6, countOfPurchasesBetweenDates1);
-    //     long countOfPurchasesBetweenDates2 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(13)), Date.valueOf(today.minusDays(0)));
-    //     assertEquals(7, countOfPurchasesBetweenDates2);
-    //     long countOfPurchasesBetweenDates3 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(26)), Date.valueOf(today.minusDays(22)));
-    //     assertEquals(0, countOfPurchasesBetweenDates3);
-    // }
+    @Test
+    void getCountOfPurchasesBetweenDatesTest() throws ToursException {
+        LocalDate today = LocalDate.now();
+        long countOfPurchasesBetweenDates1 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(25)), Date.valueOf(today.minusDays(15)));
+        assertEquals(6, countOfPurchasesBetweenDates1);
+        long countOfPurchasesBetweenDates2 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(13)), Date.valueOf(today.minusDays(0)));
+        assertEquals(7, countOfPurchasesBetweenDates2);
+        long countOfPurchasesBetweenDates3 = this.service.getCountOfPurchasesBetweenDates(Date.valueOf(today.minusDays(26)), Date.valueOf(today.minusDays(22)));
+        assertEquals(0, countOfPurchasesBetweenDates3);
+    }
 
-    // @Test
-    // void getRoutesWithStopTest() throws ToursException {
-    //     Stop stop1 = this.service.getStopByNameStart("Diagonal Norte").get(0);
-    //     Stop stop2 = this.service.getStopByNameStart("Teatro Colón").get(0);
-    //     Stop stop3 = this.service.getStopByNameStart("La Boca").get(0);
+    @Test
+    void getRoutesWithStopTest() throws ToursException {
+        Stop stop1 = this.service.getStopByNameStart("Diagonal Norte").get(0);
+        Stop stop2 = this.service.getStopByNameStart("Teatro Colón").get(0);
+        Stop stop3 = this.service.getStopByNameStart("La Boca").get(0);
 
-    //     List<Route> routes1 = this.service.getRoutesWithStop(stop1);
-    //     assertEquals(2, routes1.size());
-    //     this.assertListEquality(routes1.stream().map(Route::getName).collect(Collectors.toList()), List.of("City Tour", "Ruta vacia"));
-    //     List<Route> routes2 = this.service.getRoutesWithStop(stop2);
-    //     assertEquals(2, routes2.size());
-    //     this.assertListEquality(routes2.stream().map(Route::getName).collect(Collectors.toList()), List.of("Historical Adventure", "Architectural Expedition"));
-    //     List<Route> routes3 = this.service.getRoutesWithStop(stop3);
-    //     assertEquals(0, routes3.size());
-    // }
+        List<Route> routes1 = this.service.getRoutesWithStop(stop1);
+        assertEquals(2, routes1.size());
+        this.assertListEquality(routes1.stream().map(Route::getName).collect(Collectors.toList()), List.of("City Tour", "Ruta vacia"));
+        List<Route> routes2 = this.service.getRoutesWithStop(stop2);
+        assertEquals(2, routes2.size());
+        this.assertListEquality(routes2.stream().map(Route::getName).collect(Collectors.toList()), List.of("Historical Adventure", "Architectural Expedition"));
+        List<Route> routes3 = this.service.getRoutesWithStop(stop3);
+        assertEquals(0, routes3.size());
+    }
 
-    // @Test
-    // void getMaxStopOfRoutesTest() throws ToursException {
-    //     Long maxStopOfRoutes = this.service.getMaxStopOfRoutes();
-    //     assertEquals(9, maxStopOfRoutes);
-    // }
+    @Test
+    void getMaxStopOfRoutesTest() throws ToursException {
+        Long maxStopOfRoutes = this.service.getMaxStopOfRoutes();
+        assertEquals(9, maxStopOfRoutes);
+    }
 
     @Test
     void getMaxServicesOfSupplierTest() throws ToursException {
@@ -164,20 +164,20 @@ public class ToursQuerysTests {
         assertEquals(4, maxServicesOfSupplier);
     }
 
-    // @Test
-    // void getTop3RoutesWithMaxRatingTest() throws ToursException {
-    //     List<Route> routesWithMaxRating = this.service.getTop3RoutesWithMaxAverageRating();
-    //     assertEquals(3, routesWithMaxRating.size());
-    //     this.assertListEquality(routesWithMaxRating.stream().map(Route::getName).collect(Collectors.toList()), List.of("City Tour", "Historical Adventure", "Architectural Expedition"));
-    // }
+    @Test
+    void getTop3RoutesWithMaxRatingTest() throws ToursException {
+        List<Route> routesWithMaxRating = this.service.getTop3RoutesWithMaxAverageRating();
+        assertEquals(3, routesWithMaxRating.size());
+        this.assertListEquality(routesWithMaxRating.stream().map(Route::getName).collect(Collectors.toList()), List.of("City Tour", "Historical Adventure", "Architectural Expedition"));
+    }
 
-    // @Test
-    // void getMostBestSellingRouteTest() throws ToursException {
-    //     Route mostBestSellingRoute = this.service.getMostBestSellingRoute();
-    //     assertEquals("City Tour", mostBestSellingRoute.getName());
-    //     assertEquals(9, mostBestSellingRoute.getStops().size());
-    //     assertEquals("Diagonal Norte", mostBestSellingRoute.getStops().get(0).getName());
-    // }
+    @Test
+    void getMostBestSellingRouteTest() throws ToursException {
+        Route mostBestSellingRoute = this.service.getMostBestSellingRoute();
+        assertEquals("City Tour", mostBestSellingRoute.getName());
+        assertEquals(9, mostBestSellingRoute.getStops().size());
+        assertEquals("Diagonal Norte", mostBestSellingRoute.getStops().get(0).getName());
+    }
 
 
     private <T> void assertListEquality(List<T> list1, List<T> list2) {

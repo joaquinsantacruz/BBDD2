@@ -6,17 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "users")
 public class DriverUser extends User {
 
-    @Field
     private String expedient;
 
     @DBRef
-    @Field
     private List<Route> routes;
 
     public DriverUser(){}

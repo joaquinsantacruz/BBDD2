@@ -15,10 +15,8 @@ public class Route {
     @Id
     private ObjectId id;
 
-    @Field
     private String name;
-
-    @Field
+    
     private float price;
 
     @Field(name = "total_km")
@@ -55,11 +53,10 @@ public class Route {
         driverUser.addRoute(this);
     }
 
-    public void addTourGuide(TourGuideUser tourGuide){
-        this.tourGuideList.add(tourGuide);
-        tourGuide.addRoute(this);
+    public void addTourGuide(TourGuideUser tourGuideUser){
+        this.tourGuideList.add(tourGuideUser);
+        tourGuideUser.addRoute(this);
     }
-    
     public ObjectId getId() {
         return id;
     }

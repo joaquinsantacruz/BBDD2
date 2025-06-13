@@ -38,9 +38,6 @@ import unlp.info.bd2.utils.ToursException;
 public class ToursServiceImpl implements ToursService {
 
     @Autowired
-    private DriverUserRepository driverUserRepository;
-    
-    @Autowired
     private ItemServiceRepository itemServiceRepository;
 
     @Autowired
@@ -66,6 +63,170 @@ public class ToursServiceImpl implements ToursService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DriverUserRepository driverUserRepository;
+
+
+    @Override
+    @Transactional
+    public ItemService addItemToPurchase(Service service, int quantity, Purchase purchase) throws ToursException {
+        try{
+            ItemService item = new ItemService(quantity, purchase, service);
+            purchase.addItem(item, quantity * service.getPrice());
+            service.addItem(item);
+            this.itemServiceRepository.save(item);
+            this.purchaseRepository.save(purchase);
+            this.serviceRepository.save(service);
+            return item;
+        }
+        catch(Exception e){
+            throw new ToursException("Constraint Violation");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Review addReviewToPurchase(int rating, String comment, Purchase purchase) throws ToursException {
+        try{
+            Review review = new Review(rating, comment, purchase);
+            this.purchaseRepository.save(purchase);
+            return review;
+        }
+        catch(Exception e){
+            throw new ToursException("Constraint Violation");
+        }
+
+    }
+
+
+    @Override
+    @Transactional
+    public Purchase createPurchase(String code, Route route, User user) throws ToursException {
+
+        if(this.purchaseRepository.existsByCode(code)){
+            throw new ToursException("Constraint Violation");
+        }
+
+        if(this.purchaseRepository.countByRouteAndDate(route, new Date()) == route.getMaxNumberUsers()){
+            throw new ToursException("No puede realizarse la compra");
+        }
+        
+        Purchase purchase = new Purchase(code, user, route);
+        return this.purchaseRepository.save(purchase);
+    }
+
+    @Override
+    @Transactional
+    public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
+         if(this.purchaseRepository.existsByCode(code)){
+            throw new ToursException("Constraint Violation");
+        }
+
+        if(this.purchaseRepository.countByRouteAndDate(route, date) == route.getMaxNumberUsers()){
+            throw new ToursException("No puede realizarse la compra");
+        }
+        
+        Purchase purchase = new Purchase(code, user, route);
+        return this.purchaseRepository.save(purchase);
+    }
+
+    @Override
+    public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops)
+            throws ToursException {
+        try{
+            Route route = new Route(name, price, totalKm, maxNumberOfUsers, stops);
+            return this.routeRepository.save(route);
+        }
+        catch(Exception e){
+            throw new ToursException("Constraint Violation");
+        }
+    }
+
+    @Override
+    public Stop createStop(String name, String description) throws ToursException {
+        try{
+            Stop stop = new Stop(name, description);
+            return this.stopRepository.save(stop);
+        }
+        catch(Exception e){
+            throw new ToursException("Constraint Violation");
+        }
+    }
+
+    @Override
+    public void deletePurchase(Purchase purchase) throws ToursException {
+        try{
+            this.purchaseRepository.delete(purchase);
+        }
+        catch(Exception e){
+            throw new ToursException("Constraint Violation");
+        }
+    }
+
+    @Override
+    public List<Route> getTop3RoutesWithMaxAverageRating() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Route> getTop3RoutesWithMoreStops() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Stop> getStopByNameStart(String name) {
+        return this.stopRepository.findByNameStartingWith(name);
+    }
+
+    @Override
+    public Long getMaxStopOfRoutes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Route getMostBestSellingRoute() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Optional<Purchase> getPurchaseByCode(String code) {
+        // TODO Auto-generated method stub
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Route> getRouteById(ObjectId id) {
+        return this.routeRepository.findById(id);
+    }
+
+    @Override
+    public List<Route> getRoutesBelowPrice(float price) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Route> getRoutesWithStop(Stop stop) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+     @Override
+    public List<Purchase> getAllPurchasesOfUsername(String username) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Long getCountOfPurchasesBetweenDates(Date start, Date end) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public User createUser(String username, String password, String fullName, String email, Date birthdate,
