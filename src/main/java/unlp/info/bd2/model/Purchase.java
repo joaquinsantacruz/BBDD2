@@ -1,7 +1,9 @@
 package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
@@ -40,6 +42,8 @@ public class Purchase {
         this.code = code;
         this.user = user;
         this.route = route;
+        this.totalPrice = route.getPrice();
+        this.user.addPurchase(this);
     }
 
     public Purchase(String code, Date date, User user, Route route){
@@ -47,6 +51,8 @@ public class Purchase {
         this.date = date;
         this.user = user;
         this.route = route;
+        this.totalPrice = route.getPrice();
+        this.user.addPurchase(this);
     }
 
     public void addItem(ItemService itemService, float price){

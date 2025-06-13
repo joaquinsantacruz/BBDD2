@@ -44,9 +44,6 @@ public class ToursServiceImpl implements ToursService {
     private PurchaseRepository purchaseRepository;
 
     @Autowired
-    private ReviewRepository reviewRepository;
-
-    @Autowired
     private RouteRepository routeRepository;
 
     @Autowired
@@ -206,7 +203,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public List<Route> getRoutesBelowPrice(float price) {
-        return this.routeRepository.
+        return this.routeRepository.findByPriceLessThan(price);
     }
 
     @Override

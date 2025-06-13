@@ -19,5 +19,7 @@ public interface RouteRepository extends MongoRepository<Route, ObjectId> {
 
     List<Route> findByStopsContaining(Stop stop);
 
+    List<Route> findByPriceLessThan(float price);
+
     
 }
