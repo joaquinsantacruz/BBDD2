@@ -175,8 +175,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public List<Route> getTop3RoutesWithMoreStops() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.routeRepository.getTop3RoutesWithMoreStops(PageRequest.ofSize(3));
     }
 
     @Override
@@ -186,8 +185,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Long getMaxStopOfRoutes() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.routeRepository.getMaxStopOfRoutes();
     }
 
     @Override
@@ -213,8 +211,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public List<Route> getRoutesWithStop(Stop stop) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.routeRepository.findByStopsContaining(stop);
     }
 
      @Override
@@ -225,8 +222,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Long getCountOfPurchasesBetweenDates(Date start, Date end) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.purchaseRepository.countByDateBetween(start, end);
     }
 
     @Override
