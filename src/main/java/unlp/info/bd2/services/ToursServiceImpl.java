@@ -219,7 +219,8 @@ public class ToursServiceImpl implements ToursService {
 
      @Override
     public List<Purchase> getAllPurchasesOfUsername(String username) {
-        return this.purchaseRepository.findByUserUsername(username);
+        User user = this.userRepository.findByUsername(username).orElseThrow();
+        return this.purchaseRepository.findByUser_Id(user.getId());
     }
 
     @Override

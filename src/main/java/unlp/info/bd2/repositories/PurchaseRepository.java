@@ -13,8 +13,7 @@ import unlp.info.bd2.model.Route;
 
 public interface PurchaseRepository extends MongoRepository<Purchase, ObjectId> {
 
-    @Query("{ 'user.username' : ?0}")
-    List<Purchase> findByUserUsername(String username);
+    List<Purchase> findByUser_Id(ObjectId Id);
 
     Optional<Purchase> findByCode(String code);
 
