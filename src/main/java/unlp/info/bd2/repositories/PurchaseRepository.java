@@ -6,12 +6,15 @@ import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+
 import unlp.info.bd2.model.Purchase;
 import unlp.info.bd2.model.Route;
 
 public interface PurchaseRepository extends MongoRepository<Purchase, ObjectId> {
 
-    List<Purchase> findByUser_Username(String username);
+    @Query("{ 'user.username' : ?0}")
+    List<Purchase> findByUserUsername(String username);
 
     Optional<Purchase> findByCode(String code);
 
