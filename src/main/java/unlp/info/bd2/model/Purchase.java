@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,16 +16,14 @@ public class Purchase {
     @Id
     ObjectId id;
 
-    @Field
     private String code;
 
     @Field(name = "total_price")
     private float totalPrice;
 
-    @Field
     private Date date;
 
-    //TODO: put annotation
+    @DBRef
     private User user;
 
     @DBRef
@@ -34,7 +33,7 @@ public class Purchase {
     private Review review;
 
     @Field
-    private List<ItemService> itemServiceList;
+    private List<ItemService> itemServiceList = new ArrayList<ItemService>();
 
     public Purchase(){}
 
@@ -42,8 +41,8 @@ public class Purchase {
         this.code = code;
         this.user = user;
         this.route = route;
+        this.date = new Date();
         this.totalPrice = route.getPrice();
-        this.user.addPurchase(this);
     }
 
     public Purchase(String code, Date date, User user, Route route){
@@ -52,7 +51,6 @@ public class Purchase {
         this.user = user;
         this.route = route;
         this.totalPrice = route.getPrice();
-        this.user.addPurchase(this);
     }
 
     public void addItem(ItemService itemService, float price){

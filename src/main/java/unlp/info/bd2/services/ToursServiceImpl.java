@@ -101,11 +101,11 @@ public class ToursServiceImpl implements ToursService {
     @Transactional
     public Purchase createPurchase(String code, Route route, User user) throws ToursException {
 
-        if(this.purchaseRepository.existsByCode(code)){
+        if(this.purchaseRepository.findByCode(code).isPresent()){
             throw new ToursException("Constraint Violation");
         }
 
-        if(this.purchaseRepository.countByRouteAndDate(route, new Date()) == route.getMaxNumberUsers()){
+        if(this.purchaseRepository.countByRoute(route) == route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
         }
         
@@ -116,19 +116,23 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
-         if(this.purchaseRepository.existsByCode(code)){
+         if(this.purchaseRepository.findByCode(code).isPresent()){
             throw new ToursException("Constraint Violation");
         }
 
-        if(this.purchaseRepository.countByRouteAndDate(route, date) == route.getMaxNumberUsers()){
+        if(this.purchaseRepository.countByRoute(route) >= route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
         }
         
         Purchase purchase = new Purchase(code, user, route);
-        return this.purchaseRepository.save(purchase);
+        Purchase savedPurchase = this.purchaseRepository.save(purchase);
+        user.addPurchase(savedPurchase);
+        this.userRepository.save(user);
+        return savedPurchase;
     }
 
     @Override
+    @Transactional
     public Route createRoute(String name, float price, float totalKm, int maxNumberOfUsers, List<Stop> stops)
             throws ToursException {
         try{
@@ -141,6 +145,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public Stop createStop(String name, String description) throws ToursException {
         try{
             Stop stop = new Stop(name, description);
@@ -152,6 +157,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public void deletePurchase(Purchase purchase) throws ToursException {
         try{
             this.purchaseRepository.delete(purchase);
@@ -192,8 +198,7 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     public Optional<Purchase> getPurchaseByCode(String code) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return this.purchaseRepository.findByCode(code);
     }
 
     @Override
@@ -214,8 +219,7 @@ public class ToursServiceImpl implements ToursService {
 
      @Override
     public List<Purchase> getAllPurchasesOfUsername(String username) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.purchaseRepository.findByUser_Username(username);
     }
 
     @Override
@@ -225,6 +229,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public User createUser(String username, String password, String fullName, String email, Date birthdate,
             String phoneNumber) throws ToursException {
         if (userRepository.findByUsername(username).isPresent()) {
@@ -239,6 +244,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public DriverUser createDriverUser(String username, String password, String fullName, String email, Date birthdate,
             String phoneNumber, String expedient) throws ToursException {
         if (userRepository.findByUsername(username).isPresent()) {
@@ -254,6 +260,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public TourGuideUser createTourGuideUser(String username, String password, String fullName, String email,
             Date birthdate, String phoneNumber, String education) throws ToursException {
         if (userRepository.findByUsername(username).isPresent()) {
@@ -279,6 +286,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) throws ToursException {
         try {
             return userRepository.save(user);
@@ -288,6 +296,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(User user) throws ToursException {
         if (user.isActive()) {
             if (user.canBeDeactivated()) {
@@ -311,6 +320,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public void assignDriverByUsername(String username, ObjectId idRoute) throws ToursException {
         Optional<DriverUser> opDriverUser = this.driverUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
@@ -327,6 +337,7 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
+    @Transactional
     public void assignTourGuideByUsername(String username, ObjectId idRoute) throws ToursException {
         Optional<TourGuideUser> opTourGuide = this.tourGuideUserRepository.findByUsername(username);
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
@@ -370,6 +381,7 @@ public class ToursServiceImpl implements ToursService {
 
 
     @Override
+    @Transactional
     public Service updateServicePriceById(ObjectId id, float newPrice) throws ToursException {
         try {
             Service service = this.serviceRepository.findById(id).get(); 

@@ -12,10 +12,8 @@ public class Stop {
     @Id
     private ObjectId id;
 
-    @Field
     private String name;
 
-    @Field
     private String description;
 
     public Stop(){}

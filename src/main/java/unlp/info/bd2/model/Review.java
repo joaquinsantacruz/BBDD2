@@ -4,22 +4,19 @@ package unlp.info.bd2.model;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "reviews")
 public class Review {
 
     @Id
     private ObjectId id;
 
-    @Field
     private int rating;
 
-    @Field
     private String comment;
 
-    @Transient
+    @DBRef
     private Purchase purchase;
 
     public Review(){}
@@ -28,6 +25,7 @@ public class Review {
         this.rating = rating;
         this.comment = comment;
         this.purchase = purchase;
+        this.purchase.setReview(this);
     }
     public ObjectId getId() {
         return id;
