@@ -18,29 +18,32 @@ public interface SupplierRepository extends MongoRepository<Supplier, ObjectId> 
 
     @Aggregation(pipeline = {
         "{ $unwind: '$services' }",
-        "{ $unwind: '$services.itemServiceList' }",
-        "{ $group: { _id: '$_id', totalQuantity: { $sum: '$services.itemServiceList.quantity' }, supplier: { $first: '$$ROOT' } } }",
-        "{ $sort: { totalQuantity: -1 } }",
-        "{ $replaceRoot: { newRoot: '$supplier' } }"
+        "{ $addFields: { 'itemServiceCount': { $size: { $ifNull: ['$services.itemServiceList', []] } } } }",
+        "{ $group: { " +
+                "_id: '$_id', " +
+                "businessName: { $first: '$businessName' }, " +
+                "authorizationNumber: { $first: '$authorizationNumber' }, " +
+                "services: { $push: '$services' }, " +
+                "totalItemServices: { $sum: '$itemServiceCount' } " +
+                "} }",
+        "{ $sort: { totalItemServices: -1 } }",
+        "{ $project: { totalItemServices: 0 } }"
     })
     List<Supplier> getTopNSuppliersInPurchases(Pageable pageable);
 
     @Aggregation(pipeline = {
-    "{ $unwind: '$services' }",
-    "{ $unwind: '$services.itemServiceList' }",
-    "{ $group: { _id: '$_id', totalItemsSold: { $sum: '$services.itemServiceList.quantity' }, supplier: { $first: '$$ROOT' } } }",
-    "{ $sort: { totalItemsSold: -1 } }",
-    "{ $replaceRoot: { newRoot: '$supplier' } }"
+        "{ $unwind: '$services' }",
+        "{ $addFields: { 'itemServiceCount': { $size: { $ifNull: ['$services.itemServiceList', []] } } } }",
+        "{ $group: { " +
+                "_id: '$_id', " +
+                "businessName: { $first: '$businessName' }, " +
+                "authorizationNumber: { $first: '$authorizationNumber' }, " +
+                "services: { $push: '$services' }, " +
+                "totalItemServices: { $sum: '$itemServiceCount' } " +
+                "} }",
+        "{ $sort: { totalItemServices: -1 } }",
+        "{ $project: { totalItemServices: 0 } }"
     })
     List<Supplier> getTopNSuppliersItemsSold(Pageable pageable);
-
-    @Aggregation(pipeline = {
-    // Cuenta cuántos servicios tiene cada proveedor
-    "{ $project: { serviceCount: { $size: '$services' } } }",
-    // Ordena por cantidad de servicios de mayor a menor
-    "{ $sort: { serviceCount: -1 } }",
-    // Limita a uno solo (el que más tiene)
-    "{ $limit: 1 }"
-    })
-    Optional<Document> getMaxServicesOfSupplier();
+    
 } 

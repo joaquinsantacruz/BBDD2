@@ -18,7 +18,7 @@ public class Purchase {
 
     private String code;
 
-    @Field(name = "total_price")
+    // @Field(name = "total_price")
     private float totalPrice;
 
     private Date date;
@@ -32,7 +32,8 @@ public class Purchase {
     @Field
     private Review review;
 
-    @Field
+    @DBRef
+    // @Field(name = "item_service_list")
     private List<ItemService> itemServiceList = new ArrayList<ItemService>();
 
     public Purchase(){}

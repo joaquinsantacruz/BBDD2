@@ -22,8 +22,10 @@ public class Service {
     private String description;
 
     @DBRef
+    // @Field(name = "item_service_list")
     private List<ItemService> itemServiceList;
 
+    @DBRef
     private Supplier supplier;
 
     public Service(){}
@@ -34,7 +36,7 @@ public class Service {
         this.description = description;
         this.itemServiceList = new ArrayList<ItemService>();
         this.supplier = supplier;
-        this.supplier.addSevice(this);
+        this.supplier.addService(this);
     }
 
     public void addItem(ItemService item){

@@ -16,13 +16,13 @@ public class Supplier {
     @Id
     private ObjectId id;
 
-    @Field (name = "business_name")
+    // @Field (name = "business_name")
     private String businessName;
 
-    @Field (name = "authorization_number")
+    // @Field (name = "authorization_number")
     private String authorizationNumber;
 
-    @DBRef//TODO: poner embebido
+    // @DBRef
     private List<Service> services;
 
     public Supplier() {}
@@ -39,7 +39,7 @@ public class Supplier {
         this.services = services;
     }
 
-    public void addSevice(Service service){
+    public void addService(Service service){
         this.services.add(service);
     }
 

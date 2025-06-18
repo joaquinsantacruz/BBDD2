@@ -3,10 +3,7 @@ package unlp.info.bd2.model;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 public class Review {
 
@@ -17,7 +14,7 @@ public class Review {
 
     private String comment;
 
-    @Reference
+    @Transient
     private Purchase purchase;
 
     public Review(){}
@@ -28,6 +25,7 @@ public class Review {
         this.purchase = purchase;
         this.purchase.setReview(this);
     }
+
     public ObjectId getId() {
         return id;
     }
