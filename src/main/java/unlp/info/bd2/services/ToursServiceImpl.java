@@ -295,6 +295,10 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional
     public void deleteUser(User user) throws ToursException {
+        if (user instanceof TourGuideUser tourGuideUser) {
+            user = this.tourGuideUserRepository.findByUsername(tourGuideUser.getUsername())
+                    .orElseThrow(() -> new ToursException("No se encontró el guía con el nombre: " + tourGuideUser.getUsername()));
+        }
         if (user.isActive()) {
             if (user.canBeDeactivated()) {
                 try{
@@ -327,6 +331,7 @@ public class ToursServiceImpl implements ToursService {
             DriverUser driver = opDriverUser.get();
             route.addDriver(driver);
             this.routeRepository.save(route);
+            this.driverUserRepository.save(driver);
         }
         catch(Exception e){
             throw new ToursException("Error asignando el Driver: " + e.getMessage());
@@ -344,6 +349,7 @@ public class ToursServiceImpl implements ToursService {
             TourGuideUser tourGuide = opTourGuide.get();
             route.addTourGuide(tourGuide);
             this.routeRepository.save(route);
+            this.tourGuideUserRepository.save(tourGuide);
         }
         catch(Exception e){
             throw new ToursException("Error asignando el TourGuide: " + e.getMessage());
@@ -372,7 +378,7 @@ public class ToursServiceImpl implements ToursService {
             return this.serviceRepository.save(service);
         }
         catch (Exception e) {
-            throw new ToursException("Se produjo un error al guardar el servicio");
+            throw new ToursException("Se produjo un error al guardar el servicio: " + e.getMessage());
         }
     }
 

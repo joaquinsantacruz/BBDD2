@@ -20,7 +20,6 @@ public class Supplier {
     private String businessName;
 
     @Field (name = "authorization_number")
-    @Indexed(unique = true) //TODO: mover chequeo a ToursServiceImpl
     private String authorizationNumber;
 
     @DBRef//TODO: poner embebido

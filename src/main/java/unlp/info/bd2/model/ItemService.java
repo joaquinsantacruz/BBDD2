@@ -22,7 +22,6 @@ public class ItemService {
     @DBRef
     private Service service;
 
-
     public ItemService(){}
 
     public ItemService(int quantity, Purchase purchase, Service service){

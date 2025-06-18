@@ -26,7 +26,6 @@ public class DriverUser extends User {
         this.routes.add(route);
     }
 
-
     public void removeRoute(Route route){
         this.routes.remove(route);
     }

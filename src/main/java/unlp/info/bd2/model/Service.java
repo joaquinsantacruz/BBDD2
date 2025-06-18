@@ -24,7 +24,6 @@ public class Service {
     @DBRef
     private List<ItemService> itemServiceList;
 
-    @DBRef //TODO: no va dbref
     private Supplier supplier;
 
     public Service(){}

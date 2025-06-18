@@ -29,14 +29,14 @@ public class Route {
     private List<Stop> stops;
 
     @DBRef
+    @Field(name = "driver_list")
     private List<DriverUser> driverList;
 
     @DBRef
+    @Field(name = "tour_guide_list")
     private List<TourGuideUser> tourGuideList;
 
-    public Route() {
-
-    }
+    public Route() {}
     
     public Route(String name, float price, float totalKm, int maxNumberUsers, List<Stop> stops) {
         this.name = name;
