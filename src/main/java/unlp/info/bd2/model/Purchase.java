@@ -18,7 +18,7 @@ public class Purchase {
 
     private String code;
 
-    // @Field(name = "total_price")
+    @Field(name = "total_price")
     private float totalPrice;
 
     private Date date;
@@ -29,11 +29,10 @@ public class Purchase {
     @DBRef
     private Route route;
 
-    @Field
     private Review review;
 
     @DBRef
-    // @Field(name = "item_service_list")
+    @Field(name = "item_service_list")
     private List<ItemService> itemServiceList = new ArrayList<ItemService>();
 
     public Purchase(){}
@@ -44,13 +43,15 @@ public class Purchase {
         this.route = route;
         this.date = new Date();
         this.totalPrice = route.getPrice();
+        this.user.addPurchase(this);
     }
 
-    public Purchase(String code, Date date, User user, Route route){
+    public Purchase(String code, User user, Route route, Date date){
         this.code = code;
-        this.date = date;
         this.user = user;
         this.route = route;
+        this.date = date;
+        this.user.addPurchase(this);
         this.totalPrice = route.getPrice();
     }
 

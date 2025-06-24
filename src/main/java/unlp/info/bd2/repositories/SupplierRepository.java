@@ -16,34 +16,17 @@ public interface SupplierRepository extends MongoRepository<Supplier, ObjectId> 
 
     Optional<Supplier> findByAuthorizationNumber(String authorizationNumber);
 
-    @Aggregation(pipeline = {
-        "{ $unwind: '$services' }",
-        "{ $addFields: { 'itemServiceCount': { $size: { $ifNull: ['$services.itemServiceList', []] } } } }",
-        "{ $group: { " +
-                "_id: '$_id', " +
-                "businessName: { $first: '$businessName' }, " +
-                "authorizationNumber: { $first: '$authorizationNumber' }, " +
-                "services: { $push: '$services' }, " +
-                "totalItemServices: { $sum: '$itemServiceCount' } " +
-                "} }",
-        "{ $sort: { totalItemServices: -1 } }",
-        "{ $project: { totalItemServices: 0 } }"
-    })
+    @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
     List<Supplier> getTopNSuppliersInPurchases(Pageable pageable);
 
-    @Aggregation(pipeline = {
-        "{ $unwind: '$services' }",
-        "{ $addFields: { 'itemServiceCount': { $size: { $ifNull: ['$services.itemServiceList', []] } } } }",
-        "{ $group: { " +
-                "_id: '$_id', " +
-                "businessName: { $first: '$businessName' }, " +
-                "authorizationNumber: { $first: '$authorizationNumber' }, " +
-                "services: { $push: '$services' }, " +
-                "totalItemServices: { $sum: '$itemServiceCount' } " +
-                "} }",
-        "{ $sort: { totalItemServices: -1 } }",
-        "{ $project: { totalItemServices: 0 } }"
-    })
+    @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
     List<Supplier> getTopNSuppliersItemsSold(Pageable pageable);
     
+    // Posible arreglo
+    @Aggregation(pipeline = {
+            "{ $group: { _id: '$supplier', totalServices: { $sum: 1 } } }",
+            "{ $sort: { totalServices: -1 } }",
+            "{ $project: { _id: 0, totalServices: 1 } }"
+    })
+    Long getMaxServicesOfSupplier();
 } 

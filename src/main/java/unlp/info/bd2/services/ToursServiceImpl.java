@@ -105,30 +105,25 @@ public class ToursServiceImpl implements ToursService {
             throw new ToursException("Constraint Violation");
         }
 
-        if(this.purchaseRepository.countByRoute(route) == route.getMaxNumberUsers()){
-            throw new ToursException("No puede realizarse la compra");
-        }
-        
-        Purchase purchase = new Purchase(code, user, route);
-        return this.purchaseRepository.save(purchase);
+        return this.createPurchase(code, new Date(), route, user);
     }
 
     @Override
     @Transactional
     public Purchase createPurchase(String code, Date date, Route route, User user) throws ToursException {
-         if(this.purchaseRepository.findByCode(code).isPresent()){
+
+        if(this.purchaseRepository.findByCode(code).isPresent()){
             throw new ToursException("Constraint Violation");
         }
 
-        if(this.purchaseRepository.countByRoute(route) >= route.getMaxNumberUsers()){
+        if(this.purchaseRepository.countByRouteIdAndDate(route.getId(), date) >= route.getMaxNumberUsers()){
             throw new ToursException("No puede realizarse la compra");
         }
-        
-        Purchase purchase = new Purchase(code, user, route);
-        Purchase savedPurchase = this.purchaseRepository.save(purchase);
-        user.addPurchase(savedPurchase);
+
+        Purchase purchase = new Purchase(code, user, route, date);
+        this.purchaseRepository.save(purchase);
         this.userRepository.save(user);
-        return savedPurchase;
+        return purchase;
     }
 
     @Override
@@ -170,7 +165,7 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional(readOnly = true)
     public List<Route> getTop3RoutesWithMaxAverageRating() {
-        return this.purchaseRepository.getTop3RoutesWithMaxAverageRating(PageRequest.ofSize(3));
+        return this.routeRepository.getTop3RoutesWithMaxAverageRating(PageRequest.ofSize(3));
     }
 
     @Override
@@ -195,7 +190,7 @@ public class ToursServiceImpl implements ToursService {
     @Transactional(readOnly = true)
     public Route getMostBestSellingRoute() {
         Pageable pageable = PageRequest.of(0, 1);
-        List<Route> routes = this.purchaseRepository.getMostBestSellingRoute(pageable);
+        List<Route> routes = this.routeRepository.getMostBestSellingRoute(pageable);
         return routes.isEmpty() ? null : routes.get(0); 
     }
 
@@ -428,8 +423,8 @@ public class ToursServiceImpl implements ToursService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> getUserSpendingMoreThan(float mount) {
-        return this.purchaseRepository.getUserSpendingMoreThan(mount);
+    public List<User> getUserSpendingMoreThan(float amount) {
+        return this.userRepository.getUserSpendingMoreThan(amount);
     }
 
     @Override
@@ -461,6 +456,6 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional(readOnly = true)
     public Long getMaxServicesOfSupplier() {
-        return serviceRepository.getMaxServicesOfSupplier();
+        return supplierRepository.getMaxServicesOfSupplier();
     }
 }

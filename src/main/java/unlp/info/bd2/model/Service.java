@@ -22,7 +22,7 @@ public class Service {
     private String description;
 
     @DBRef
-    // @Field(name = "item_service_list")
+    @Field(name = "item_service_list")
     private List<ItemService> itemServiceList;
 
     @DBRef

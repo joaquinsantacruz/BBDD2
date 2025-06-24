@@ -26,13 +26,13 @@ public class User {
 
     private Date birthdate;
 
-    // @Field(name = "phone_number")
+    @Field(name = "phone_number")
     private String phoneNumber;
 
     private boolean active;
 
     @DBRef
-    // @Field(name = "purchase_list")
+    @Field(name = "purchase_list")
     private List<Purchase> purchaseList;
 
     public User(){}

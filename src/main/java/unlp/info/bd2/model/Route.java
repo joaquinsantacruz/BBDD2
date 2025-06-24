@@ -19,21 +19,21 @@ public class Route {
     
     private float price;
 
-    // @Field(name = "total_km")
+    @Field(name = "total_km")
     private float totalKm;
 
-    // @Field(name = "max_number_users")
+    @Field(name = "max_number_users")
     private int maxNumberUsers;
 
     @Field
     private List<Stop> stops;
 
     @DBRef
-    // @Field(name = "driver_list")
+    @Field(name = "driver_list")
     private List<DriverUser> driverList;
 
     @DBRef
-    // @Field(name = "tour_guide_list")
+    @Field(name = "tour_guide_list")
     private List<TourGuideUser> tourGuideList;
 
     public Route() {}

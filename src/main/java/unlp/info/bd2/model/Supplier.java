@@ -16,10 +16,10 @@ public class Supplier {
     @Id
     private ObjectId id;
 
-    // @Field (name = "business_name")
+    @Field (name = "business_name")
     private String businessName;
 
-    // @Field (name = "authorization_number")
+    @Field (name = "authorization_number")
     private String authorizationNumber;
 
     // @DBRef
