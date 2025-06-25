@@ -29,25 +29,15 @@ public interface RouteRepository extends MongoRepository<Route, ObjectId> {
     })
     Long getMaxStopOfRoutes();
 
-    // Posible arreglo
-    @Aggregation(pipeline = {
-        "{ $match: { review: { $ne: null } } }",
-        "{ $group: { _id: '$route.$id', averageRating: { $avg: '$review.rating' } } }",
-        "{ $sort: { averageRating: -1 } }",
-        "{ $lookup: { from: 'routes', localField: '_id', foreignField: '_id', as: 'route' } }",
-        "{ $unwind: '$route' }",
-        "{ $replaceRoot: { newRoot: '$route' } }"
-    })
+    @Query("FROM Route r ORDER BY size(r.stops) DESC")
     List<Route> getTop3RoutesWithMaxAverageRating(Pageable pageable);
 
-    // Posible arreglo
-    @Aggregation(pipeline = {
-        "{ $group: { _id: '$route.$id', totalSales: { $sum: 1 } } }",
-        "{ $sort: { totalSales: -1 } }",
-        "{ $lookup: { from: 'routes', localField: '_id', foreignField: '_id', as: 'route' } }",
-        "{ $unwind: '$route' }",
-        "{ $replaceRoot: { newRoot: '$route' } }"
-    })
+    @Query("""
+            SELECT p.route
+            FROM Purchase p
+            GROUP BY p.route
+            ORDER BY COUNT(p) DESC
+            """)
     List<Route> getMostBestSellingRoute(Pageable pageable);
     
 }
