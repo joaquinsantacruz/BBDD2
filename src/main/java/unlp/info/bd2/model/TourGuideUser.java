@@ -11,7 +11,7 @@ public class TourGuideUser extends User {
 
     private String education;
 
-    @DBRef
+    @DBRef(lazy = true)
     private List<Route> routes;
 
     public TourGuideUser(){}

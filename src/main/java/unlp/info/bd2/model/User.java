@@ -32,7 +32,7 @@ public class User {
 
     private boolean active;
 
-    @DBRef
+    @DBRef(lazy = true)
     @Field(name = "purchase_list")
     private List<Purchase> purchaseList;
 

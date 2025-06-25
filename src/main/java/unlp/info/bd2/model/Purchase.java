@@ -24,15 +24,15 @@ public class Purchase {
 
     private Date date;
 
-    @DBRef
+    @DBRef(lazy = false)
     private User user;
 
-    @DBRef
+    @DBRef(lazy = false)
     private Route route;
 
     private Review review;
 
-    @DBRef
+    @DBRef(lazy = true)
     @Field(name = "item_service_list")
     private List<ItemService> itemServiceList = new ArrayList<ItemService>();
 

@@ -11,7 +11,7 @@ public class DriverUser extends User {
 
     private String expedient;
 
-    @DBRef
+    @DBRef(lazy = true)
     private List<Route> routes;
 
     public DriverUser(){}

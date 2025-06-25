@@ -26,14 +26,14 @@ public class Route {
     @Field(name = "max_number_users")
     private int maxNumberUsers;
 
-    @DBRef
+    @DBRef(lazy = false)
     private List<Stop> stops;
 
-    @DBRef
+    @DBRef(lazy = true)
     @Field(name = "driver_list")
     private List<DriverUser> driverList;
 
-    @DBRef
+    @DBRef(lazy = true)
     @Field(name = "tour_guide_list")
     private List<TourGuideUser> tourGuideList;
 

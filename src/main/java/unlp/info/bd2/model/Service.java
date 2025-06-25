@@ -22,11 +22,11 @@ public class Service {
 
     private String description;
 
-    @DBRef
+    @DBRef(lazy = true)
     @Field(name = "item_service_list")
     private List<ItemService> itemServiceList;
 
-    @DBRef
+    @DBRef(lazy = false)
     private Supplier supplier;
 
     public Service(){}
