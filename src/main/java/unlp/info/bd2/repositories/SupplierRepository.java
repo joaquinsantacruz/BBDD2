@@ -21,12 +21,11 @@ public interface SupplierRepository extends MongoRepository<Supplier, ObjectId> 
 
     @Query("SELECT s FROM Supplier s JOIN s.services serv JOIN serv.itemServiceList item GROUP BY s ORDER BY SUM(item.quantity) DESC")
     List<Supplier> getTopNSuppliersItemsSold(Pageable pageable);
-    
-    // Posible arreglo
+
     @Aggregation(pipeline = {
-            "{ $group: { _id: '$supplier', totalServices: { $sum: 1 } } }",
-            "{ $sort: { totalServices: -1 } }",
-            "{ $project: { _id: 0, totalServices: 1 } }"
+            "{ $project: {serviceCount: { $size: $services}}}",
+            "{ $sort: {serviceCount: -1}}",
+            "{ $limit: 1}"
     })
     Long getMaxServicesOfSupplier();
 } 

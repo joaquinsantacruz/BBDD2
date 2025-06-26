@@ -37,7 +37,6 @@ public class Service {
         this.description = description;
         this.itemServiceList = new ArrayList<ItemService>();
         this.supplier = supplier;
-        this.supplier.addService(this);
     }
 
     public void addItem(ItemService item){

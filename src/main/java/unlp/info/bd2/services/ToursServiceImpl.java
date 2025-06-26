@@ -154,8 +154,15 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional
     public void deletePurchase(Purchase purchase) throws ToursException {
+        Optional<Purchase> optionalPurchase = this.purchaseRepository.findByCode(purchase.getCode());
+        if (optionalPurchase.isEmpty()) {
+            throw new ToursException("La compra con codigo " + purchase.getCode() + " no existe.");
+        }
+
+        Purchase realPurchase = optionalPurchase.get();
         try{
-            this.purchaseRepository.delete(purchase);
+            this.itemServiceRepository.deleteAll(realPurchase.getItemServiceList());
+            this.purchaseRepository.delete(realPurchase);
         }
         catch(Exception e){
             throw new ToursException("Constraint Violation");
@@ -218,7 +225,7 @@ public class ToursServiceImpl implements ToursService {
         return this.routeRepository.findByStopsContaining(stop);
     }
 
-     @Override
+    @Override
     @Transactional(readOnly = true)
     public List<Purchase> getAllPurchasesOfUsername(String username) {
         User user = this.userRepository.findByUsername(username).orElseThrow();
@@ -303,40 +310,50 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional
     public void deleteUser(User user) throws ToursException {
-        if (user instanceof TourGuideUser tourGuideUser) {
-            user = this.tourGuideUserRepository.findByUsername(tourGuideUser.getUsername())
-                    .orElseThrow(() -> new ToursException("No se encontró el guía con el nombre: " + tourGuideUser.getUsername()));
+        Optional<User> optionalUser = this.userRepository.findByUsername(user.getUsername());
+        if (optionalUser.isEmpty()) {
+            throw new ToursException("El usuario con nombre: " + user.getUsername() + " no existe.");
         }
-        if (user.isActive()) {
-            if (user.canBeDeactivated()) {
-                try{
-                    if (!user.canBeRemoved()){
-                        user.setActive(false);
-                        this.userRepository.save(user);
-                    } else {
-                        this.userRepository.delete(user);
-                    }
-                }
-                catch(Exception e){
-                    throw new ToursException("Error eliminando el usuario: " + e.getMessage());
-                }
+
+        User realUser = optionalUser.get();
+
+        if (!realUser.isActive()) {
+            throw new ToursException("El usuario ya se encuentra desactivado");
+        }
+
+        if (!realUser.canBeDeactivated()) {
+            throw new ToursException("El usuario no puede ser desactivado");
+        }
+
+        try {
+            if (realUser.canBeRemoved()) {
+                this.userRepository.delete(realUser);
             } else {
-                throw new ToursException("El usuario no puede ser desactivado");
+                realUser.setActive(false);
+                this.userRepository.save(realUser);
             }
-        } else {
-            throw new ToursException("El usuario se encuentra desactivado");            
+        } catch (Exception e) {
+            throw new ToursException("Error eliminando el usuario: " + e.getMessage());
         }
     }
 
     @Override
     @Transactional
     public void assignDriverByUsername(String username, ObjectId idRoute) throws ToursException {
-        Optional<DriverUser> opDriverUser = this.driverUserRepository.findByUsername(username);
+        Optional<DriverUser> optionalDriverUser = this.driverUserRepository.findByUsername(username);
+        if (optionalDriverUser.isEmpty()) {
+            throw new ToursException("El Driver user con nombre: " + username + " no existe.");
+        }
+
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
-        
+        if (optionalRoute.isEmpty()) {
+            throw new ToursException("La ruta con id: " + idRoute + " no existe.");
+        }
+
+
+        Route route = optionalRoute.get();
+        DriverUser driver = optionalDriverUser.get();
         try{
-            Route route = optionalRoute.get();
-            DriverUser driver = opDriverUser.get();
             route.addDriver(driver);
             this.routeRepository.save(route);
             this.driverUserRepository.save(driver);
@@ -349,18 +366,25 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional
     public void assignTourGuideByUsername(String username, ObjectId idRoute) throws ToursException {
-        Optional<TourGuideUser> opTourGuide = this.tourGuideUserRepository.findByUsername(username);
+        Optional<TourGuideUser> optionalTourGuideUser = this.tourGuideUserRepository.findByUsername(username);
+        if (optionalTourGuideUser.isEmpty()) {
+            throw new ToursException("El Tour Guide user con nombre: " + username + " no existe.");
+        }
+
         Optional<Route> optionalRoute = this.getRouteById(idRoute);
-        
+        if (optionalRoute.isEmpty()) {
+            throw new ToursException("La ruta con id: " + idRoute + " no existe.");
+        }
+
+        Route route = optionalRoute.get();
+        TourGuideUser tourGuide = optionalTourGuideUser.get();
         try{
-            Route route = optionalRoute.get();
-            TourGuideUser tourGuide = opTourGuide.get();
             route.addTourGuide(tourGuide);
             this.routeRepository.save(route);
             this.tourGuideUserRepository.save(tourGuide);
         }
         catch(Exception e){
-            throw new ToursException("Error asignando el TourGuide: " + e.getMessage());
+            throw new ToursException("Error asignando el Driver: " + e.getMessage());
         }
     }
 
@@ -392,14 +416,14 @@ public class ToursServiceImpl implements ToursService {
     @Override
     @Transactional
     public Service updateServicePriceById(ObjectId id, float newPrice) throws ToursException {
-        try {
-            Service service = this.serviceRepository.findById(id).get(); 
-            service.setPrice(newPrice);
-            return this.serviceRepository.save(service);
+        Optional<Service> optionalService = this.serviceRepository.findById(id);
+        if (optionalService.isEmpty()) {
+            throw new ToursException("El servicio con ID " + id + " no existe.");
         }
-        catch (Exception e) {
-            throw new ToursException("Error al actualizar el servicio");
-        }
+
+        Service service = optionalService.get();
+        service.setPrice(newPrice);
+        return this.serviceRepository.save(service);
     }
 
 
