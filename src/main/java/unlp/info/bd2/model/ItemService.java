@@ -16,10 +16,10 @@ public class ItemService {
 
     private int quantity;
 
-    @DBRef
+    @DBRef(lazy = false)
     private Purchase purchase;
 
-    @DBRef
+    @DBRef(lazy = false)
     private Service service;
 
     public ItemService(){}

@@ -23,7 +23,7 @@ public class Supplier {
     @Field (name = "authorization_number")
     private String authorizationNumber;
 
-    // @DBRef
+    @DBRef(lazy = true)
     private List<Service> services;
 
     public Supplier() {}
