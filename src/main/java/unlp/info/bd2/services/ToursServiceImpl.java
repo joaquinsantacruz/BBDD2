@@ -122,6 +122,7 @@ public class ToursServiceImpl implements ToursService {
 
         Purchase purchase = new Purchase(code, user, route, date);
         this.purchaseRepository.save(purchase);
+        user.addPurchase(purchase);
         this.userRepository.save(user);
         return purchase;
     }

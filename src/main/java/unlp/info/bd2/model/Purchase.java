@@ -24,10 +24,8 @@ public class Purchase {
 
     private Date date;
 
-    @DBRef(lazy = false)
     private User user;
 
-    @DBRef(lazy = false)
     private Route route;
 
     private Review review;
@@ -44,7 +42,6 @@ public class Purchase {
         this.route = route;
         this.date = new Date();
         this.totalPrice = route.getPrice();
-        this.user.addPurchase(this);
     }
 
     public Purchase(String code, User user, Route route, Date date){
@@ -52,7 +49,6 @@ public class Purchase {
         this.user = user;
         this.route = route;
         this.date = date;
-        this.user.addPurchase(this);
         this.totalPrice = route.getPrice();
     }
 

@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import unlp.info.bd2.model.User;
 
 public interface UserRepository extends MongoRepository<User, ObjectId> {
@@ -26,10 +27,8 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
 
     // Posible arreglo
     @Aggregation(pipeline = {
-        "{ $match: { 'purchase_list.total_price': { $gte: ?0 } } }",
-        "{ $addFields: { qualifyingPurchases: { $filter: { input: '$purchase_list', as: 'p', cond: { $gte: ['$$p.total_price', ?0] } } } } }",
-        "{ $match: { 'qualifyingPurchases.0': { $exists: true } } }",
-        "{ $project: { qualifyingPurchases: 0 } }"
+            "{ $lookup: { from: 'purchases', localField: '_id', foreignField: 'user._id', as: 'purchase_list' } }",
+            "{ $match: { 'purchase_list.total_price': { $gte: ?0 } } }"
     })
     List<User> getUserSpendingMoreThan(float amount);
 
